@@ -1,5 +1,5 @@
 {
-  "name": "shopo",
+  "name": "datn",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -14,7 +14,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-range": "^1.8.14",
-    "react-router-dom": "^6.20.0",
+    "react-router-dom": "^6.23.1",
     "react-slick": "^0.29.0",
     "slick-carousel": "^1.8.1"
   },
