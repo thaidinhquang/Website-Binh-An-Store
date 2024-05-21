@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom'
-import Cart from '../Pages/Cart/Cart'
+import Cart from '../Cart/Cart'
 import SearchBox from './SearchBox'
-import Compair from '../../icons/Compair'
-import ThinBag from '../../icons/ThinBag'
-import ThinLove from '../../icons/ThinLove'
-import ThinPeople from '../../icons/ThinPeople'
+import Compair from '../icons/Compair'
+import ThinBag from '../icons/ThinBag'
+import ThinLove from '../icons/ThinLove'
+import ThinPeople from '../icons/ThinPeople'
 
 const Middlebar = ({className}) => {
   return (

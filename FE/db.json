@@ -1,0 +1,31 @@
+{
+  "products": [
+    {
+      "id": "0f6c",
+      "name": "product 4 new",
+      "price": "2",
+      "image": "https://picsum.photos/200/300",
+      "description": "2",
+      "categoryID": "",
+      "stock": "2"
+    },
+    {
+      "id": "5ffb",
+      "name": "sinh nhật tuổi mới ZABA",
+      "price": "200",
+      "image": "https://picsum.photos/200/300",
+      "description": "222",
+      "categoryID": "",
+      "stock": "2"
+    },
+    {
+      "id": "22ef",
+      "name": "sinh nhật tuổi mới ZABA",
+      "price": "200",
+      "image": "https://picsum.photos/200/300",
+      "description": "ádnjasdkjadkajsd",
+      "categoryID": "",
+      "stock": "30"
+    }
+  ]
+}

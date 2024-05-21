@@ -1,5 +1,5 @@
 
-import ThinBag from '../../icons/ThinBag'
+import ThinBag from '../icons/ThinBag'
 import Middlebar from './Middlebar'
 import Navbar from './Navbar'
 

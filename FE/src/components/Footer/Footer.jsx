@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
-import Instagram from "../../icons/Instagram"
-import Facebook from "../../icons/Facebook"
-import Youtube from "../../icons/Youtube"
+import Instagram from "../icons/Instagram"
+import Facebook from "../icons/Facebook"
+import Youtube from "../icons/Youtube"
 
 const Footer = () => {
   return (

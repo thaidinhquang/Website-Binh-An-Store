@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import Arrow from '../../icons/Arrow';
+import Arrow from '../icons/Arrow';
 import { Link } from 'react-router-dom';
 
 const Navbar = ({className}) => {
