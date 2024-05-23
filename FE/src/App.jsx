@@ -6,6 +6,7 @@ import ProductAdd from "./components/Admin/Product/ProductAdd";
 import ProductEdit from "./components/Admin/Product/ProductEdit";
 import About from "./components/About/About";
 import LayOutHome from "./components/layout/LayOutHome";
+import LayOutAdmin from "./components/layout/LayOutAdmin";
 function App() {
   return (
     <>
@@ -17,12 +18,13 @@ function App() {
         expand={true}
       />
       <Routes>
-        <Route path="/" element={<LayOutHome/>}>
+        <Route path="/" element={<LayOutHome />}>
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
         </Route>
 
-        <Route path="admin">
+        <Route path="admin" element={<LayOutAdmin />}>
+
           <Route path="product">
             <Route index element={<ProductList />} />
             <Route path="add" element={<ProductAdd />} />
