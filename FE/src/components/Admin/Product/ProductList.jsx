@@ -55,28 +55,30 @@ const ProductList = () => {
     <>
       <div>ProductList</div>
       <a href="product/add">thêm sản phẩm</a>
-      <table>
-        <thead>
+      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
-            <td>#</td>
-            <td>Tên Sản Phẩm</td>
-            <td>Giá Sản Phẩm</td>
-            <td>Ảnh Sản Phẩm</td>
-            <td>Số Lượng</td>
-            <td>action</td>
+            <td scope="col" className="px-6 py-3"></td>
+            <td scope="col" className="px-6 py-3">Ảnh Sản Phẩm</td>
+            <td scope="col" className="px-6 py-3" >Tên Sản Phẩm</td>
+            <td scope="col" className="px-6 py-3">Giá Sản Phẩm</td>
+            <td scope="col" className="px-6 py-3">Số Lượng</td>
+            <td scope="col" className="px-6 py-3">action</td>
           </tr>
         </thead>
         <tbody>
           {data?.map((product, index) => (
-            <tr key={product.id}>
-              <th>{index + 1}</th>
-              <th>{product.name}</th>
-              <th>{product.price}</th>
-              <th>
-                <img src={product.image} alt="" />
-              </th>
-              <th>{product.stock}</th>
-              <th>
+            <tr key={product.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+              <th className="px-6 py-4">{index + 1}</th>
+              <th className="px-6 py-4">
+              <img src={product.image} width={100} className=" rounded-lg" alt="" />
+            </th>
+              <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{product.name}</th>
+              <th className="px-6 py-4">{product.price}</th>
+             
+              <th className="px-6 py-4">{product.stock}</th>
+              <th className="px-6 py-4">
                 <button onClick={() => mutate(product.id)}>delete</button>
                 <a href={`/admin/product/edit/${product.id}`}>edit</a>
               </th>
@@ -84,6 +86,7 @@ const ProductList = () => {
           ))}
         </tbody>
       </table>
+      </div>
     </>
   );
 };
