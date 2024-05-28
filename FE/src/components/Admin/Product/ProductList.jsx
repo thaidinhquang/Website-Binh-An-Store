@@ -13,7 +13,7 @@ const ProductList = () => {
     },
   });
 
-  // Sử dụng hook useMutation để thực hiện mutation
+  // Sử dụng useMutation để thực hiện mutation
   const { mutate } = useMutation({
     // mutationFn là hàm bất đồng bộ thực hiện việc xóa sản phẩm
     mutationFn: async (id) => {
