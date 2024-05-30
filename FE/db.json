@@ -1,15 +1,6 @@
 {
   "products": [
     {
-      "id": "0f6c",
-      "name": "product 4 new",
-      "price": "2",
-      "image": "https://picsum.photos/200/300",
-      "description": "2",
-      "categoryID": "",
-      "stock": "2"
-    },
-    {
       "id": "22ef",
       "name": "sinh nhật tuổi mới ZABA",
       "price": "200",
@@ -33,6 +24,14 @@
       "image": "https://picsum.photos/200/300",
       "description": "sản phẩm mới",
       "stock": "30"
+    },
+    {
+      "id": "1a21",
+      "name": "sinh nhật tuổi mới ZABA",
+      "price": "100",
+      "image": "https://picsum.photos/200/300",
+      "description": "alo alo",
+      "stock": "20"
     }
   ]
 }
