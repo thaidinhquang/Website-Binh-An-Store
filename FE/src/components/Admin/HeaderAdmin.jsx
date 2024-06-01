@@ -10,7 +10,7 @@ import IcoPayment from "./icons_admin/IcoPayment";
 import IcoPeople from "./icons_admin/IcoPeople";
 import IcoReviewHand from "./icons_admin/IcoReviewHand";
 import IcoSupport from "./icons_admin/IcoSupport";
-import Dashboard from './Tabs/Dasbord';
+import Dashboard from './Tabs/Dasboard';
 
 const HeaderAdmin = () => {
     const location = useLocation();

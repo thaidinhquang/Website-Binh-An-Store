@@ -15,7 +15,7 @@ app.use(cors());
 connectDB(process.env.DB_URI);
 
 // routers
-app.use("/", consolelog("sv running on port:8080..."));
+app.use("/", console.log("sv running on port:8080..."));
 
 
 export const viteNodeApp = app;
