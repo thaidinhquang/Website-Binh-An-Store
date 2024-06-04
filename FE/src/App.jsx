@@ -9,6 +9,7 @@ import LayOutHome from "./components/layout/LayOutHome";
 import LayOutAdmin from "./components/layout/LayOutAdmin";
 import Login from "./components/Auth/Login";
 import CardPage from "./components/CartPage";
+import SingleProduct from "./components/SingleProduct/SingleProduct";
 function App() {
   return (
     <>
@@ -22,6 +23,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LayOutHome/>}>
           <Route index element={<Home />} />
+          <Route path="detail/:id" element={<SingleProduct/>}/>
           <Route path="about" element={<About />} />
           <Route path="cart" element={<CardPage />} />
           <Route path="login" element={<Login/>}/>

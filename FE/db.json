@@ -32,6 +32,14 @@
       "image": "https://picsum.photos/200/300",
       "description": "alo alo",
       "stock": "20"
+    },
+    {
+      "id": "7e74",
+      "name": "1",
+      "price": "200",
+      "image": "https://picsum.photos/200/300",
+      "description": "qwert",
+      "stock": "20"
     }
   ]
 }

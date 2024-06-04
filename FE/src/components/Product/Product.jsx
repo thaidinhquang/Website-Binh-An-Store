@@ -52,17 +52,18 @@ const Product = ({type}) => {
               </div>
             </button>
           </div>
-          <a href="/single-product">
+          <a href={`/detail/${product.id}`}>
             <p className="title mb-2 text-[15px] font-600 text-qblack leading-[24px] line-clamp-2 hover:text-blue-600">
               {product.name}
             </p>
           </a>
+       
           <p className="price">
             <span className="main-price text-qgray line-through font-600 text-[18px]">
               {product.price}
             </span>
             <span className="offer-price text-qred font-600 text-[18px] ml-2">
-              {product.description}
+              {product.price}
             </span>
           </p>
         </div>
