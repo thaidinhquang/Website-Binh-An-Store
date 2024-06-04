@@ -29,7 +29,7 @@ function App() {
           <Route path="login" element={<Login/>}/>
         </Route>
 
-        <Route path="admin" element={<LayOutAdmin/>}>
+        <Route path="/admin" element={<LayOutAdmin/>}>
           <Route path="product">
             <Route index element={<ProductList />} />
             <Route path="add" element={<ProductAdd />} />
