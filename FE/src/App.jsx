@@ -10,6 +10,10 @@ import LayOutAdmin from "./components/layout/LayOutAdmin";
 import Login from "./components/Auth/Login";
 import CardPage from "./components/CartPage";
 import SingleProduct from "./components/SingleProduct/SingleProduct";
+import CheckoutPage from "./components/CheckoutPage/CheckoutPage";
+import CategorytList from "./components/Admin/Category/CategoryList";
+import CategoryAdd from "./components/Admin/Category/CategoryAdd";
+import CategorytEdit from "./components/Admin/Category/CategoryEdit";
 function App() {
   return (
     <>
@@ -26,6 +30,7 @@ function App() {
           <Route path="detail/:id" element={<SingleProduct/>}/>
           <Route path="about" element={<About />} />
           <Route path="cart" element={<CardPage />} />
+          <Route path="check-out" element={<CheckoutPage />} />
           <Route path="login" element={<Login/>}/>
         </Route>
 
@@ -35,6 +40,11 @@ function App() {
             <Route path="add" element={<ProductAdd />} />
             <Route path="edit/:id" element={<ProductEdit />} />
           </Route>
+          <Route path="category">
+          <Route index element={<CategorytList />} />
+          <Route path="add" element={<CategoryAdd />} />
+          <Route path="edit/:id" element={<CategorytEdit />} />
+        </Route>
         </Route>
       </Routes>
     </>

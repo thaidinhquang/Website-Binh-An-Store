@@ -41,5 +41,15 @@
       "description": "qwert",
       "stock": "20"
     }
+  ],
+  "categories": [
+    {
+      "id": "b4be",
+      "name": "Máy Tính"
+    },
+    {
+      "id": "87f1",
+      "name": "Điện Thoại"
+    }
   ]
 }

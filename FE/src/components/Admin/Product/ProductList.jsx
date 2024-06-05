@@ -79,8 +79,15 @@ const ProductList = () => {
              
               <th className="px-6 py-4">{product.stock}</th>
               <th className="px-6 py-4">
-                <button onClick={() => mutate(product.id)}>delete</button>
-                <a href={`/admin/product/edit/${product.id}`}>edit</a>
+              <div className="dropdown dropdown-hover dropdown-bottom dropdown-end">
+              <div tabIndex={0} role="button" className="btn m-1"><svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
+              <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
+           </svg></div>
+              <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                <li><button className="" onClick={() => mutate(product.id)}>delete</button></li>
+                <li> <a href={`/admin/product/edit/${product.id}`}>edit</a></li>
+              </ul>
+            </div>
               </th>
             </tr>
           ))}
