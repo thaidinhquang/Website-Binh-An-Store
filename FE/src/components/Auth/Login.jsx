@@ -1,12 +1,53 @@
 import  { useState } from 'react'
 import Thumbnail from './Thumbnail'
-import InputCom from '../UI/InputCom';
+import { useForm } from 'react-hook-form';
+import { joiResolver } from '@hookform/resolvers/joi';
+import Joi from 'joi';
+import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+import { toast } from 'sonner';
 
+const userSchema = Joi.object({
+  email: Joi.string().email({  tlds: { allow: false } }).required().min(3),
+  password: Joi.string().required().min(6),
+})
 const Login = () => {
     const [checked, setValue] = useState(false);
     const rememberMe = () => {
       setValue(!checked);
     };
+
+    const {
+      register,
+      handleSubmit,
+      formState: {errors}
+  } = useForm({
+      resolver: joiResolver(userSchema),
+      defaultValues: {
+          email: "",
+          password: "",
+      }
+  })
+  const navigate = useNavigate()
+
+  const mutation = useMutation({
+      mutationFn: async (user) => {
+          const res = await axios.post(`http://localhost:3000/signin`, user)
+          localStorage.setItem('user', JSON.stringify(res.data))
+          return res.data
+      },
+      onSuccess: () => {
+          toast.success('Signin successfully')
+          navigate('/')
+      },
+      onError: (error) => {
+          toast.error('Failed ' + error.message)
+      }
+  })
+  const onSubmit = (user) => {
+      mutation.mutate(user)
+  }
   return (
     <div>
     
@@ -35,24 +76,28 @@ const Login = () => {
                 </div>
               </div>
               <div className="input-area">
+                <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="input-item mb-5">
-                  <InputCom
+                  <label className='block'>Email</label>
+                  <input
+                    className='w-full rounded border border-solid border-gray-200 p-1 focus:outline-none focus:ring focus:border-blue-500'
                     placeholder="abc@gmail.com"
-                    label="Email Address*"
-                    name="email"
                     type="email"
-                    inputClasses="h-[50px]"
+                    {...register('email', {required: true})}
                   />
+                  {errors?.email && <p className='text-red-600'>{errors.email.message}</p>}
                 </div>
                 <div className="input-item mb-5">
-                  <InputCom
-                    placeholder="● ● ● ● ● ●"
-                    label="Password*"
-                    name="password"
-                    type="password"
-                    inputClasses="h-[50px]"
-                  />
-                </div>
+                  <label className='block'>Password</label>
+                    <input
+                        className='w-full rounded border border-solid border-gray-200 p-1 focus:outline-none focus:ring focus:border-blue-500'
+                        placeholder="******"
+                        name="password"
+                        type="password"
+                        {...register('password', { required: true })}
+                    />
+                    {errors?.password && <p className='text-red-600'>{errors.password.message}</p>}
+                    </div>
                 <div className="forgot-password-area flex justify-between items-center mb-7">
                   <div className="remember-checkbox flex items-center space-x-2.5">
                     <button
@@ -92,10 +137,10 @@ const Login = () => {
                 <div className="signin-area mb-3.5">
                   <div className="flex justify-center">
                     <button
-                      type="button"
+                      type="submit"
                       className="black-btn mb-6 text-sm text-white w-full h-[50px] font-semibold flex justify-center bg-purple items-center"
                     >
-                      <span>Log In</span>
+                      Log In
                     </button>
                   </div>
                   <a
@@ -160,6 +205,7 @@ const Login = () => {
                     </a>
                   </p>
                 </div>
+                </form>
               </div>
             </div>
           </div>

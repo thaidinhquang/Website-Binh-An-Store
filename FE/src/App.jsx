@@ -10,6 +10,7 @@ import LayOutAdmin from "./components/layout/LayOutAdmin";
 import Login from "./components/Auth/Login";
 import CardPage from "./components/CartPage";
 import SingleProduct from "./components/SingleProduct/SingleProduct";
+import Signup from "./components/Auth/Signup";
 function App() {
   return (
     <>
@@ -27,6 +28,7 @@ function App() {
           <Route path="about" element={<About />} />
           <Route path="cart" element={<CardPage />} />
           <Route path="login" element={<Login/>}/>
+          <Route path="signup" element={<Signup/>}/>
         </Route>
 
         <Route path="/admin" element={<LayOutAdmin/>}>

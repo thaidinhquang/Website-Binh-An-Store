@@ -41,5 +41,61 @@
       "description": "qwert",
       "stock": "20"
     }
+  ],
+  "users": [
+    {
+      "email": "anhquan1@fpt.edu.vn",
+      "password": "$2a$10$K0sPHJqtjYpmMcYNgesorenBW8ei.FI09ZNctRKIEQDDy1Ip/1Bxi",
+      "confirmPassword": "123456",
+      "id": 3
+    },
+    {
+      "email": "quantmph30701@fpt.edu.vn",
+      "password": "$2a$10$xnWxzGAFufVDJvW0o.Etk.efkVOfdVpf8Mkv05r4qhWrG9n7OUgNC",
+      "confirmPassword": "123456",
+      "id": 4
+    },
+    {
+      "email": "anhquan2@fpt.edu.vn",
+      "password": "$2a$10$SDxhcMfYvhs4dp0bp66bzOglinokJ6r1axIYuyF5EqbeRK72uqaNK",
+      "confirmPassword": "123456",
+      "id": 5
+    },
+    {
+      "email": "quantmph@fpt.edu.vn",
+      "password": "$2a$10$AT56Snwd36AzDmUzEChYh.OWwrL07EGIu61nXUNQcLfuzQW4BGBKK",
+      "userName": "Minh Quân",
+      "confirmPassword": "123456",
+      "address": "Hà Nội",
+      "phone": 961649637,
+      "id": 6
+    },
+    {
+      "email": "ducm@gmail.com",
+      "password": "$2a$10$v.CeY/DaXJWcsrs7Sz4JQuwwaCfbTiKKMctVX.BUA85kYFJufgfnW",
+      "userName": "Đức Minh",
+      "confirmPassword": "1234567",
+      "address": "Đ. Vĩnh Quỳnh",
+      "phone": 346923109,
+      "id": 7
+    },
+    {
+      "email": "quantmph30703@fpt.edu.vn",
+      "password": "$2a$10$VZaD8YBYqVlbvB6vZC3T6eCAfhqP1O0SRPpZTj7TYwctsszgqjAZm",
+      "userName": "Đức Quân",
+      "confirmPassword": "123456",
+      "address": "",
+      "phone": 123456789,
+      "id": 8
+    },
+    {
+      "email": "anhquan@fpt.edu.vn",
+      "password": "$2a$10$.JOihno2LsELgfmVC7WyeOFYXGEWFUSmuxguuyL0V.3Qzb2Rkta/a",
+      "userName": "Minh Quân 2",
+      "confirmPassword": "123456",
+      "address": "Đ. Vĩnh Quỳnh",
+      "phone": 346923109,
+      "id": 9
+    }
   ]
 }
