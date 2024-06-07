@@ -2,16 +2,27 @@ import BreadcrumbCom from "../UI/BreadcrumbCom";
 import InputCom from "../UI/InputCom";
 import PageTitle from "../UI/PageTitle";
 import { useEffect, useState } from "react";
-// import ProductsTable from "./ProductsTable";
+
 
 const CartPage = ({ cart = true, className }) => {
   const [cartItems, setcartItems] = useState([]);
+  const [cartSubtotal, setCartSubtotal] = useState(0);
 
   useEffect(() => {
     // lay du lieu trong localStorage
     const storedCartItems = JSON.parse(localStorage.getItem("cart")) || [];
     setcartItems(storedCartItems);
   }, []);
+  
+  useEffect(() => {
+    const newSubtotal = cartItems.reduce((total, item) => {
+      return total + item.price * item.quantity;
+    }, 0);
+    setCartSubtotal(newSubtotal);
+    localStorage.setItem("cartSubtotal", newSubtotal.toFixed(2));
+    console.log(newSubtotal)
+  }, [cartItems]);
+  
 
   const calculateTotalPrice = (item) => {
     return item.price * item.quantity;
@@ -41,9 +52,11 @@ const CartPage = ({ cart = true, className }) => {
     localStorage.setItem("cart", JSON.stringify(cart));
   };
 
-  const cartSubtotal = cartItems.reduce((total, item) => {
-    return total + calculateTotalPrice(item);
-  }, 0);
+  // const cartSubtotal = cartItems.reduce((total, item) => {
+  //   return total + calculateTotalPrice(item);
+  // }, 0);
+   
+
 
   const oderTotal = cartSubtotal;
 
