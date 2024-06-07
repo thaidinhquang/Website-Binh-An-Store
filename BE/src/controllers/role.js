@@ -1,6 +1,4 @@
 import Role from "../models/Role.js";
-import { validBody } from "../utils/validBody.js";
-import { roleSchema } from "../validations/role.js";
 
 export const getAllRole = async (req, res, next) => {
     try {
@@ -13,13 +11,6 @@ export const getAllRole = async (req, res, next) => {
 
 export const createRole = async (req, res, next) => {
     try {
-        const errors = validBody(req.body, roleSchema);
-        if (errors) {
-            return res.status(400).json({
-                message: "Validation errors",
-                errors,
-            });
-        }
         const data = await Role.create(req.body);
         return !data ? res.status(500).json({ message: "Create role failed" }) : res.status(200).json({ data });
     } catch (error) {
@@ -47,13 +38,6 @@ export const removeRoleById = async (req, res, next) => {
 
 export const updateRole = async (req, res, next) => {
     try {
-        const errors = validBody(req.body, roleSchema);
-        if (errors) {
-            return res.status(400).json({
-                message: "Validation errors",
-                errors,
-            });
-        }
         const data = await Role.findByIdAndUpdate(req.params.id, req.body, { new: true });
         return !data ? res.status(500).json({ message: "Update role failed" }) : res.status(200).json({ data });
     } catch (error) {

@@ -1,19 +1,10 @@
 import User from "../models/User.js";
 import { token } from "../utils/jwt.js";
 import { comparePassword, hashPassword } from "../utils/password.js";
-import { validBody } from "../utils/validBody.js";
-import { loginSchema, registerSchema } from "../validations/auth.js";
 
 export const signUp = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        const errors = validBody(req.body, registerSchema);
-        if (errors) {
-            return res.status(400).json({
-                message: "Validation errors",
-                errors,
-            });
-        }
 
         const userExist = await User.findOne({ email });
         if (userExist) {
@@ -41,14 +32,6 @@ export const signUp = async (req, res, next) => {
 export const signIn = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        const errors = validBody(req.body, loginSchema);
-        if (errors) {
-            return res.status(400).json({
-                message: "Validation errors",
-                errors,
-            });
-        }
-
         const userExist = await User.findOne({ email });
         if (!userExist) {
             return res.status(400).json({
