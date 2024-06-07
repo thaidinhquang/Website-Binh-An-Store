@@ -14,6 +14,7 @@ import CheckoutPage from "./components/CheckoutPage/CheckoutPage";
 import CategorytList from "./components/Admin/Category/CategoryList";
 import CategoryAdd from "./components/Admin/Category/CategoryAdd";
 import CategorytEdit from "./components/Admin/Category/CategoryEdit";
+import Signup from "./components/Auth/Signup";
 function App() {
   return (
     <>
@@ -32,6 +33,7 @@ function App() {
           <Route path="cart" element={<CardPage />} />
           <Route path="check-out" element={<CheckoutPage />} />
           <Route path="login" element={<Login/>}/>
+          <Route path="signup" element={<Signup/>}/>
         </Route>
 
         <Route path="/admin" element={<LayOutAdmin/>}>

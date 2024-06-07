@@ -50,5 +50,16 @@
       "id": "87f1",
       "name": "Điện Thoại"
     }
+  ],
+  "users": [
+    {
+      "email": "admin@gmail.com",
+      "password": "$2a$10$f2n1NCZb2ffEBept4GLrrejsvWO3VgVIm7zntQ/2ul9N3pyeRuPV2",
+      "userName": "vietcuong",
+      "confirmPassword": "123456",
+      "address": "Thị xã Duy Tiên",
+      "phone": 387556608,
+      "id": 1
+    }
   ]
 }
