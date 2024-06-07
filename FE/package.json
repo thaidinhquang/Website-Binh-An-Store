@@ -1,5 +1,5 @@
 {
-  "name": "shopo",
+  "name": "datn",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,19 +10,25 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.37.1",
     "aos": "^2.3.4",
+    "axios": "^1.7.1",
+    "json-server": "^1.0.0-beta.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.51.4",
     "react-range": "^1.8.14",
-    "react-router-dom": "^6.20.0",
+    "react-router-dom": "^6.23.1",
     "react-slick": "^0.29.0",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
+    "sonner": "^1.4.41"
   },
   "devDependencies": {
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@vitejs/plugin-react": "^4.2.0",
     "autoprefixer": "^10.4.16",
+    "daisyui": "^4.12.2",
     "eslint": "^8.53.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
