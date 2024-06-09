@@ -8,7 +8,7 @@ import About from "./components/About/About";
 import LayOutHome from "./components/layout/LayOutHome";
 import LayOutAdmin from "./components/layout/LayOutAdmin";
 import Login from "./components/Auth/Login";
-import CardPage from "./components/CartPage";
+import CartPage from "./components/CartPage";
 import SingleProduct from "./components/SingleProduct/SingleProduct";
 import CheckoutPage from "./components/CheckoutPage/CheckoutPage";
 import CategorytList from "./components/Admin/Category/CategoryList";
@@ -32,7 +32,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="detail/:id" element={<SingleProduct />} />
           <Route path="about" element={<About />} />
-          <Route path="cart" element={<CardPage />} />
+          <Route path="cart" element={<CartPage />} />
           <Route path="check-out" element={<CheckoutPage />} />
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
