@@ -7,6 +7,7 @@ import Joi from "joi";
 import { joiResolver } from "@hookform/resolvers/joi";
 
 const userSchema = Joi.object({
+  id:Joi.string(),
   userName: Joi.string().required().min(6),
   email: Joi.string()
     .email({ tlds: { allow: false } })
