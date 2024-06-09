@@ -44,24 +44,6 @@
   ],
   "users": [
     {
-      "email": "anhquan1@fpt.edu.vn",
-      "password": "$2a$10$K0sPHJqtjYpmMcYNgesorenBW8ei.FI09ZNctRKIEQDDy1Ip/1Bxi",
-      "confirmPassword": "123456",
-      "id": 3
-    },
-    {
-      "email": "quantmph30701@fpt.edu.vn",
-      "password": "$2a$10$xnWxzGAFufVDJvW0o.Etk.efkVOfdVpf8Mkv05r4qhWrG9n7OUgNC",
-      "confirmPassword": "123456",
-      "id": 4
-    },
-    {
-      "email": "anhquan2@fpt.edu.vn",
-      "password": "$2a$10$SDxhcMfYvhs4dp0bp66bzOglinokJ6r1axIYuyF5EqbeRK72uqaNK",
-      "confirmPassword": "123456",
-      "id": 5
-    },
-    {
       "email": "quantmph@fpt.edu.vn",
       "password": "$2a$10$AT56Snwd36AzDmUzEChYh.OWwrL07EGIu61nXUNQcLfuzQW4BGBKK",
       "userName": "Minh Quân",
@@ -87,15 +69,6 @@
       "address": "",
       "phone": 123456789,
       "id": 8
-    },
-    {
-      "email": "anhquan@fpt.edu.vn",
-      "password": "$2a$10$.JOihno2LsELgfmVC7WyeOFYXGEWFUSmuxguuyL0V.3Qzb2Rkta/a",
-      "userName": "Minh Quân 2",
-      "confirmPassword": "123456",
-      "address": "Đ. Vĩnh Quỳnh",
-      "phone": 346923109,
-      "id": 9
     }
   ]
 }
