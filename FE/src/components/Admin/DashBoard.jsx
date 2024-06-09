@@ -50,7 +50,7 @@ const DashBoard = () => {
                       <Product />
                     </span>
                     <span className=" font-normal text-base">
-                      Product
+                      Sản phẩm
                     </span>
                   </div>
                 </Link>
@@ -64,20 +64,20 @@ const DashBoard = () => {
                     <IcoCategory />
                   </span>
                   <span className=" font-normal text-base">
-                    Categories
+                    Danh mục
                   </span>
                 </div>
               </Link>
             </div>
 
                 <div className="item group">
-                  <Link to="">
+                  <Link to="/admin/users">
                     <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
                       <span>
                         <IcoPeople />
                       </span>
                       <span className=" font-normal text-base">
-                        Parsonal Info
+                        Người dùng
                       </span>
                     </div>
                   </Link>
