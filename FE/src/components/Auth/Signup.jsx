@@ -1,4 +1,4 @@
-import  { useState } from 'react'
+// import  { useState } from 'react'
 import Thumbnail from './Thumbnail'
 
 import Joi from 'joi'
@@ -8,19 +8,21 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+
 const userSchema =  Joi.object({
     userName: Joi.string().required().min(6),
     email: Joi.string().email({  tlds: { allow: false } }).required().min(3),
     password: Joi.string().required().min(6),
     confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
     address: Joi.string().required().min(0),
-    phone: Joi.number().required().min(10)
+    phone: Joi.string().pattern(/^\d+$/).required().min(10),
+    role:Joi.string()
 })
 const Signup = () => {
-    const [checked, setValue] = useState(false);
-    const rememberMe = () => {
-      setValue(!checked);
-    };
+    // const [checked, setValue] = useState(false);
+    // const rememberMe = () => {
+    //   setValue(!checked);
+    // };
 
     const {
         register,
@@ -34,7 +36,8 @@ const Signup = () => {
             password: "",
             confirmPassword: "",
             address: "",
-            phone:""
+            phone:"",
+            role:"user"
         }
     })
     const navigate = useNavigate()
@@ -148,6 +151,7 @@ const Signup = () => {
                   />
                   {errors?.address && <p className='text-red-600'>{errors.address.message}</p>}
                 </div>
+                <input type="hidden" {...register('role')}/>
                
                 <div className="signin-area mb-3.5">
                   <div className="flex justify-center">

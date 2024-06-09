@@ -1,14 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
-const CategorytList = () => {
+const UserList = () => {
   const queryClient = useQueryClient();
 
   const { data } = useQuery({
-    queryKey: ["CATEGORY"], //từ khóa truy vấn để xác định loại dự liệu cần lấy
+    queryKey: ["Users"], //từ khóa truy vấn để xác định loại dự liệu cần lấy
     queryFn: async () => {
       //Hàm queryFn thực hiện yêu cầu GET để lấy dữ liệu từ URL cụ thể
-      const { data } = await axios.get(`http://localhost:3000/categories`);
+      const { data } = await axios.get(`http://localhost:3000/users`);
       return data;
     },
   });
@@ -23,12 +23,12 @@ const CategorytList = () => {
       );
       if (isConfirmed) {
         // Nếu người dùng xác nhận, gửi yêu cầu DELETE đến URL cụ thể bằng Axios
-        await axios.delete(`http://localhost:3000/categories/${id}`);
+        await axios.delete(`http://localhost:3000/users/${id}`);
         // Hiển thị toast thông báo thành công
-        toast.success("Sản phẩm đã được xóa thành công");
+        toast.success("Tài khoẳn đã được xóa thành công");
       } else {
         // Nếu người dùng hủy, hiển thị toast thông báo hủy bỏ và ném một lỗi để ngăn việc gọi onSuccess
-        toast.info("Hủy bỏ việc xóa sản phẩm");
+        toast.info("Hủy bỏ việc xóa tài khoản");
         throw new Error("Deletion cancelled");
       }
     },
@@ -36,7 +36,7 @@ const CategorytList = () => {
     onSuccess: () => {
       // Vô hiệu hóa truy vấn cụ thể trong cache để cập nhật lại dữ liệu
       queryClient.invalidateQueries({
-        queryKey: ["CATEGORY"],
+        queryKey: ["Users"],
       });
     },
     // Hành động được thực hiện khi có lỗi trong quá trình mutation
@@ -53,44 +53,52 @@ const CategorytList = () => {
   });
   return (
     <>
-      <div>Danh sách danh mục</div>
+      <div>Danh sách nguời dùng</div>
 
-      <div className="my-8">
-        <a
-          className="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-          href="category/add"
-        >
-          thêm danh mục
-        </a>
-      </div>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <td scope="col" className="px-6 py-3"></td>
-              <td scope="col" className="px-6 py-3">
-                Tên Danh Mục
-              </td>
 
+            
+              <td scope="col" className="px-6 py-3">
+                Tên đăng nhập
+              </td>
+              <td scope="col" className="px-6 py-3">
+                Email
+              </td>
+              <td scope="col" className="px-6 py-3">
+                Địa chỉ
+              </td>
+              <td scope="col" className="px-6 py-3">
+                Số điện thoại
+              </td>
+              <td scope="col" className="px-6 py-3">
+                Role
+              </td>
               <td scope="col" className="px-6 py-3">
                 action
               </td>
             </tr>
           </thead>
           <tbody>
-            {data?.map((category, index) => (
+            {data?.map((item, index) => (
               <tr
-                key={category.id}
+                key={item.id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
               >
                 <th className="px-6 py-4">{index + 1}</th>
-
+              
                 <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  {category.name}
+                  {item.userName}
                 </th>
-
+                <th className="px-6 py-4">{item.email}</th>
+                <th className="px-6 py-4">{item.address}</th>
+                <th className="px-6 py-4">{item.phone}</th>
+                <th className="px-6 py-4">{item.role}</th>
                 <th className="px-6 py-4">
-                  <div className="dropdown dropdown-hover">
+                  <div className="dropdown dropdown-hover dropdown-bottom dropdown-end">
                     <div tabIndex={0} role="button" className="btn m-1">
                       <svg
                         className="w-4 h-4 text-gray-500 dark:text-gray-400"
@@ -107,16 +115,13 @@ const CategorytList = () => {
                       className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
                     >
                       <li>
-                        <button
-                          className=""
-                          onClick={() => mutate(category.id)}
-                        >
+                        <button className="" onClick={() => mutate(item.id)}>
                           Xóa
                         </button>
                       </li>
                       <li>
-                    
-                        <a href={`/admin/category/edit/${category.id}`}>Sửa</a>
+                        {" "}
+                        <a href={`/admin/users/edit/${item.id}`}>Sửa</a>
                       </li>
                     </ul>
                   </div>
@@ -130,4 +135,4 @@ const CategorytList = () => {
   );
 };
 
-export default CategorytList;
+export default UserList;

@@ -58,8 +58,19 @@
       "userName": "vietcuong",
       "confirmPassword": "123456",
       "address": "Thị xã Duy Tiên",
+      "phone": "0387556608",
+      "id": 1,
+      "role": "admin"
+    },
+    {
+      "email": "cuonglvph30765@fpt.edu.vn",
+      "password": "$2a$10$FuOjTZAW3HLkxxcJliedPuwgvT9M7h.bLfdb/AT.6xiyaz0d9XKka",
+      "userName": "vietcuong1",
+      "confirmPassword": "123456",
+      "address": "Thị xã Duy Tiên",
       "phone": 387556608,
-      "id": 1
+      "role": "user",
+      "id": 2
     }
   ]
 }
