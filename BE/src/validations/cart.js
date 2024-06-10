@@ -6,7 +6,7 @@ export const cartSchema = Joi.object({
         "string.empty": "UserId không được để trống!",
     }),
     products: Joi.array().items(Joi.object({
-        productId: Joi.string().required().messages({
+        _id: Joi.string().required().messages({
             "string.base": "ProductId phải là một chuỗi!",
             "string.empty": "ProductId không được để trống!",
         }),

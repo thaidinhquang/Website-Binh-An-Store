@@ -57,3 +57,13 @@ export const signIn = async (req, res, next) => {
         next(error);
     }
 };
+
+export const getUserByToken = async (req, res, next) => {
+    try {
+        const data = req.user;
+        data.password = undefined;
+        return res.status(200).json({ data });
+    } catch (error) {
+        next(error);
+    }
+}

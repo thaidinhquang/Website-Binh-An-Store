@@ -1,18 +1,26 @@
 import Cart from "../models/Cart.js";
 
-export const getCartByUserId = async (req, res) => {
+export const getCartByUserId = async (req, res, next) => {
     try {
-        const userId = req.userId;
+        const userId = req.user._id;
         const data = await Cart.findOne({ userId }).populate("products.productId");
+        if (!data) {
+            const newCart = new Cart({
+                userId,
+                products: []
+            });
+            await newCart.save();
+            return res.status(200).json({ data: newCart });
+        }
         return !data ? res.status(500).json({ message: "Get cart by userId failed" }) : res.status(200).json({ data });
     } catch (error) {
         next(error);
     }
 }
 
-export const addItemToCart = async (req, res) => {
+export const addItemToCart = async (req, res, next) => {
     try {
-        const userId = req.userId;
+        const userId = req.user._id;
         const { productId, quantity } = req.body;
         const cart = await Cart.findOne({ userId });
         if (!cart) {
@@ -36,10 +44,11 @@ export const addItemToCart = async (req, res) => {
     }
 }
 
-export const removeItemFromCart = async (req, res) => {
+export const removeItemFromCart = async (req, res, next) => {
     try {
-        const userId = req.userId;
+        const userId = req.user._id;
         const { productId } = req.body;
+        console.log(productId);
         const cart = await Cart.findOne({ userId });
         if (!cart) {
             return res.status(404).json({ message: "Cart not found" });
@@ -56,9 +65,9 @@ export const removeItemFromCart = async (req, res) => {
     }
 }
 
-export const updateItemInCart = async (req, res) => {
+export const updateItemInCart = async (req, res, next) => {
     try {
-        const userId = req.userId;
+        const userId = req.user._id;
         const { productId, quantity } = req.body;
         const cart = await Cart.findOne({ userId });
         if (!cart) {
@@ -76,9 +85,9 @@ export const updateItemInCart = async (req, res) => {
     }
 }
 
-export const clearCart = async (req, res) => {
+export const clearCart = async (req, res, next) => {
     try {
-        const userId = req.userId;
+        const userId = req.user._id;
         const cart = await Cart.findOne({ userId });
         if (!cart) {
             return res.status(404).json({ message: "Cart not found" });
@@ -91,23 +100,9 @@ export const clearCart = async (req, res) => {
     }
 }
 
-export const deleteCart = async (req, res) => {
+export const getCartCount = async (req, res, next) => {
     try {
-        const userId = req.userId;
-        const cart = await Cart.findOne({ userId });
-        if (!cart) {
-            return res.status(404).json({ message: "Cart not found" });
-        }
-        await cart.remove();
-        return res.status(200).json({ message: "Cart deleted" });
-    } catch (error) {
-        next(error);
-    }
-}
-
-export const getCartCount = async (req, res) => {
-    try {
-        const userId = req.userId;
+        const userId = req.user._id;
         const cart = await Cart.findOne({ userId });
         if (!cart) {
             return res.status(404).json({ message: "Cart not found" });
@@ -119,9 +114,9 @@ export const getCartCount = async (req, res) => {
     }
 }
 
-export const getCartTotal = async (req, res) => {
+export const getCartTotal = async (req, res, next) => {
     try {
-        const userId = req.userId;
+        const userId = req.user._id;
         const cart = await Cart.findOne({ userId }).populate("products.productId");
         if (!cart) {
             return res.status(404).json({ message: "Cart not found" });
@@ -133,9 +128,9 @@ export const getCartTotal = async (req, res) => {
     }
 }
 
-export const increeaseItemQuantity = async (req, res) => {
+export const increeaseItemQuantity = async (req, res, next) => {
     try {
-        const userId = req.userId;
+        const userId = req.user._id;
         const { productId } = req.body;
         const cart = await Cart.findOne({ userId });
         if (!cart) {
@@ -153,9 +148,9 @@ export const increeaseItemQuantity = async (req, res) => {
     }
 }
 
-export const decreaseItemQuantity = async (req, res) => {
+export const decreaseItemQuantity = async (req, res, next) => {
     try {
-        const userId = req.userId;
+        const userId = req.user._id;
         const { productId } = req.body;
         const cart = await Cart.findOne({ userId });
         if (!cart) {

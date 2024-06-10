@@ -111,6 +111,7 @@ export const getOneCategoryBySlug = async (req, res) => {
 export const getOneCategoryByName = async (req, res) => {
   try {
     const data = await Category.findOne({ name: req.params.name });
+    console.log(data);
     if (!data) {
       return res.status(400).json({
         message: "Lay danh muc that bai!",
