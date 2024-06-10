@@ -15,6 +15,7 @@ import CategorytList from "./components/Admin/Category/CategoryList";
 import CategoryAdd from "./components/Admin/Category/CategoryAdd";
 import CategorytEdit from "./components/Admin/Category/CategoryEdit";
 import CartPage from "./components/CartPage/CartPage";
+import Signup from "./components/Auth/SignUp";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path="cart" element={<CartPage />} />
           <Route path="checkout" element={<CheckoutPage />} />
           <Route path="login" element={<Login/>}/>
+          <Route path="signup" element={<Signup />} />
         </Route>
 
         <Route path="/admin" element={<LayOutAdmin/>}>

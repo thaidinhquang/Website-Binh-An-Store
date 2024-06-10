@@ -42,8 +42,18 @@
       "stock": "20"
     }
   ],
-  "cart": [
-    
+  "cart": [],
+  "users": [
+    {
+      "email": "thai@gmail.com",
+      "password": "$2a$10$F3Q95uX0vLMQXovYE/Bu3.TjU9TvvqQMLRx0JAThGp/CdVl4Zb8aW",
+      "userName": "admin123",
+      "confirmPassword": "dinhquangthai",
+      "address": "Ha noi",
+      "phone": "0123456789",
+      "role": "user",
+      "id": 1
+    }
   ],
   "categories": [
     {
