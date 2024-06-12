@@ -1,8 +1,16 @@
 import { Router } from "express";
-import { signIn, signUp } from "../controllers/auth.js";
+import { checkOTP, getUserByToken, resetPassword, sendOTP, signIn, signUp } from "../controllers/auth.js";
+import { checkRequestBody } from "../middlewares/checkRequestBody.js";
+import { loginSchema, otpSchema, registerSchema, resetPasswordSchema } from "../validations/auth.js";
+import { getUser } from "../middlewares/getUser.js";
 
 const routerAuth = Router();
-routerAuth.post("/sign-up", signUp);
-routerAuth.post("/sign-in", signIn);
+routerAuth.post("/send-otp", checkRequestBody(otpSchema), sendOTP);
+routerAuth.post("/check-otp", checkRequestBody(otpSchema), checkOTP);
+routerAuth.post("/reset-password", checkRequestBody(resetPasswordSchema), resetPassword);
+routerAuth.post("/sign-up", checkRequestBody(registerSchema), signUp);
+routerAuth.post("/sign-in", checkRequestBody(loginSchema), signIn);
+routerAuth.use(getUser)
+routerAuth.get("/", getUserByToken);
 
 export default routerAuth;

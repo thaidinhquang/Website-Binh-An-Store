@@ -1,7 +1,5 @@
 import InputCom from "../UI/InputCom"
 
-
-
 const CheckoutPage = () => {
     return (
         <div>
