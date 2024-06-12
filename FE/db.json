@@ -25,20 +25,20 @@
       "stock": "20"
     },
     {
-      "id": "7e74",
-      "name": "proasndjandkj",
-      "price": 200,
-      "image": "https://picsum.photos/200/300",
-      "description": "qwert",
-      "stock": 20
-    },
-    {
       "id": "ff69",
       "name": "sinh nhật tuổi mới ZABA",
       "price": 100,
       "image": "https://picsum.photos/200/300",
       "description": "1",
       "stock": 30
+    },
+    {
+      "name": "Iphone 16 update",
+      "price": 10000,
+      "image": "https://picsum.photos/100/120",
+      "description": "iphone 16 chính háng quá đẹp",
+      "stock": 2,
+      "id": "WZw64HI"
     }
   ],
   "categories": [
@@ -71,7 +71,17 @@
       "phone": 387556608,
       "role": "user",
       "id": 2
+    },
+    {
+      "email": "quantmph30701@fpt.edu.vn",
+      "password": "$2a$10$x49zx.g5NUCfL2aga.tp3Otw5qN.r5PsJzs66scMUnRjdoWISJF2.",
+      "userName": "Minh Quân",
+      "confirmPassword": "123456",
+      "address": "Đ. Vĩnh Quỳnh",
+      "phone": "0123456789",
+      "role": "user",
+      "id": 3
     }
   ],
-  "cart":[]
+  "cart": []
 }
