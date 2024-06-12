@@ -1,21 +1,12 @@
 {
   "products": [
     {
-      "id": "22ef",
-      "name": "sinh nhật tuổi mới ZABA",
-      "price": "200",
-      "image": "https://picsum.photos/200/300",
-      "description": "ádnjasdkjadkajsd",
-      "categoryID": "",
-      "stock": "30"
-    },
-    {
       "id": "6ff9",
-      "name": "Product 3",
-      "price": "100",
+      "name": "Product 34",
+      "price": 1000,
       "image": "https://picsum.photos/200/300",
-      "description": "hay ",
-      "stock": "30"
+      "description": "?????",
+      "stock": 400
     },
     {
       "id": "2a48",
@@ -34,41 +25,63 @@
       "stock": "20"
     },
     {
-      "id": "7e74",
-      "name": "1",
-      "price": "200",
+      "id": "ff69",
+      "name": "sinh nhật tuổi mới ZABA",
+      "price": 100,
       "image": "https://picsum.photos/200/300",
-      "description": "qwert",
-      "stock": "20"
+      "description": "1",
+      "stock": 30
+    },
+    {
+      "name": "Iphone 16 update",
+      "price": 10000,
+      "image": "https://picsum.photos/100/120",
+      "description": "iphone 16 chính háng quá đẹp",
+      "stock": 2,
+      "id": "WZw64HI"
+    }
+  ],
+  "categories": [
+    {
+      "id": "b4be",
+      "name": "Máy Tính new"
+    },
+    {
+      "id": "87f1",
+      "name": "Điện Thoại"
     }
   ],
   "users": [
     {
-      "email": "quantmph@fpt.edu.vn",
-      "password": "$2a$10$AT56Snwd36AzDmUzEChYh.OWwrL07EGIu61nXUNQcLfuzQW4BGBKK",
+      "email": "admin@gmail.com",
+      "password": "$2a$10$f2n1NCZb2ffEBept4GLrrejsvWO3VgVIm7zntQ/2ul9N3pyeRuPV2",
+      "userName": "vietcuong",
+      "confirmPassword": "123456",
+      "address": "Thị xã Duy Tiên",
+      "phone": "0387556608",
+      "id": 1,
+      "role": "admin"
+    },
+    {
+      "email": "cuonglvph30765@fpt.edu.vn",
+      "password": "$2a$10$FuOjTZAW3HLkxxcJliedPuwgvT9M7h.bLfdb/AT.6xiyaz0d9XKka",
+      "userName": "vietcuong1",
+      "confirmPassword": "123456",
+      "address": "Thị xã Duy Tiên",
+      "phone": 387556608,
+      "role": "user",
+      "id": 2
+    },
+    {
+      "email": "quantmph30701@fpt.edu.vn",
+      "password": "$2a$10$x49zx.g5NUCfL2aga.tp3Otw5qN.r5PsJzs66scMUnRjdoWISJF2.",
       "userName": "Minh Quân",
       "confirmPassword": "123456",
-      "address": "Hà Nội",
-      "phone": 961649637,
-      "id": 6
-    },
-    {
-      "email": "ducm@gmail.com",
-      "password": "$2a$10$v.CeY/DaXJWcsrs7Sz4JQuwwaCfbTiKKMctVX.BUA85kYFJufgfnW",
-      "userName": "Đức Minh",
-      "confirmPassword": "1234567",
       "address": "Đ. Vĩnh Quỳnh",
-      "phone": 346923109,
-      "id": 7
-    },
-    {
-      "email": "quantmph30703@fpt.edu.vn",
-      "password": "$2a$10$VZaD8YBYqVlbvB6vZC3T6eCAfhqP1O0SRPpZTj7TYwctsszgqjAZm",
-      "userName": "Đức Quân",
-      "confirmPassword": "123456",
-      "address": "",
-      "phone": 123456789,
-      "id": 8
+      "phone": "0123456789",
+      "role": "user",
+      "id": 3
     }
-  ]
+  ],
+  "cart": []
 }

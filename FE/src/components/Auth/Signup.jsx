@@ -1,6 +1,6 @@
-import  { useState } from 'react'
+// import  { useState } from 'react'
 import Thumbnail from './Thumbnail'
-import InputCom from '../UI/InputCom';
+
 import Joi from 'joi'
 import { joiResolver} from '@hookform/resolvers/joi'
 import { useForm } from 'react-hook-form';
@@ -14,13 +14,14 @@ const userSchema =  Joi.object({
     password: Joi.string().required().min(6),
     confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
     address: Joi.string().required().min(0),
-    phone: Joi.number().required().min(10)
+    phone: Joi.string().pattern(/^\d+$/).required().min(10),
+    role:Joi.string()
 })
 const Signup = () => {
-    const [checked, setValue] = useState(false);
-    const rememberMe = () => {
-      setValue(!checked);
-    };
+    // const [checked, setValue] = useState(false);
+    // const rememberMe = () => {
+    //   setValue(!checked);
+    // };
 
     const {
         register,
@@ -34,7 +35,8 @@ const Signup = () => {
             password: "",
             confirmPassword: "",
             address: "",
-            phone:""
+            phone:"",
+            role:"user"
         }
     })
     const navigate = useNavigate()
@@ -148,6 +150,7 @@ const Signup = () => {
                   />
                   {errors?.address && <p className='text-red-600'>{errors.address.message}</p>}
                 </div>
+                <input type="hidden" {...register('role')}/>
                
                 <div className="signin-area mb-3.5">
                   <div className="flex justify-center">
