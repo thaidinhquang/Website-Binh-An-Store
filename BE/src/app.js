@@ -1,44 +1,36 @@
-import cors from "cors";
-import dotenv from "dotenv";
 import express from "express";
+import router from "./routes/index.js";
+import dotenv from "dotenv";
 import mongoose from "mongoose";
-import categoryRouter from "./routes/category";
+import cors from "cors";
 
-
-import { connectDB } from "./config/db";
-
-const app = express();
 dotenv.config();
+const app = express();
 
-// middleware
-app.use(express.json());
+const { DB_URI, PORT } = process.env;
+
 app.use(cors());
-app.use("/api", categoryRouter)
+app.use(express.json());
 
-// connect db
-connectDB(process.env.DB_URI);
-
-// routers
-app.use("/", consolelog("sv running on port:8080..."));
-
-mongoose.connect("mongodb://127.0.0.1:27017/DATN", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+await mongoose.connect(DB_URI).then(() => {
+  console.log("connect to database successfully");
 });
 
-// Sự kiện khi kết nối thành công
-mongoose.connection.on("connected", () => {
-    console.log("Kết nối đến MongoDB thành công");
+app.use("/api", router);
+
+app.use((req, res, next) => {
+  const error = new Error("Not found");
+  error.status = 404;
+  next(error);
 });
 
-// Sự kiện khi kết nối bị lỗi
-mongoose.connection.on("error", (err) => {
-    console.error("Kết nối đến MongoDB thất bại:", err);
+app.use((err, req, res, next) => {
+  return res.status(500).json({
+    name: err.name,
+    message: err.message,
+  });
 });
 
-// Sự kiện khi ngắt kết nối
-mongoose.connection.on("disconnected", () => {
-    console.log("Ngắt kết nối đến MongoDB");
+app.listen(PORT, () => {
+  console.log(`Server on port ${PORT}`);
 });
-
-export const viteNodeApp = app;
