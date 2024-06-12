@@ -1,11 +1,14 @@
-import DashBoard from "../Admin/DashBoard"
+import React from 'react'
+import { Outlet } from 'react-router-dom'
+import HeaderAdmin from '../Admin/HeaderAdmin'
 
 const LayOutAdmin = () => {
-  return (
-    <div>
-      <DashBoard/>
-    </div>
-  )
+    return (
+        <>
+            <HeaderAdmin />
+            <Outlet />
+        </>
+    )
 }
 
 export default LayOutAdmin

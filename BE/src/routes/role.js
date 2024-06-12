@@ -10,8 +10,6 @@ routerRole.get("/:id", getRoleById);
 routerRole.get("/name/:name", getRoleByName);
 routerRole.delete("/:id", checkPermission('delete_role'), removeRoleById);
 routerRole.use(checkRequestBody(roleSchema))
-// routerRole.post("/", createRole);
-// routerRole.put("/:id", updateRole);
 routerRole.post("/", checkPermission('create_role'), createRole);
 routerRole.put("/:id", checkPermission('update_role'), updateRole);
 
