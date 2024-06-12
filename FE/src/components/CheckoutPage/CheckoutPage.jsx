@@ -76,8 +76,7 @@ const CheckoutPage = () => {
                         inputClasses="w-full h-[50px]"
                       />
                     </div>
-                    <div className="flex-1">
-                      <InputCom
+                    <div className="flex-1">00:19/-strong/-heart:>:o:-((:-h<InputCom
                         label="Phone Number*"
                         placeholder="012 3  *******"
                         inputClasses="w-full h-[50px]"
@@ -144,8 +143,7 @@ const CheckoutPage = () => {
                     </div>
                     <div className="flex-1">
                       <InputCom
-                        label="Postcode / ZIP*"
-                        placeholder=""
+                        label="Postcode / ZIP*"/-strong/-heart:>:o:-((:-hplaceholder=""
                         inputClasses="w-full h-[50px]"
                       />
                     </div>
@@ -213,8 +211,7 @@ const CheckoutPage = () => {
                               64GB, Black, 44mm, Chain Belt
                             </p>
                           </div>
-                          <div>
-                            <span className="text-[15px] text-qblack font-medium">
+                          <div>/-strong/-heart:>:o:-((:-h<span className="text-[15px] text-qblack font-medium">
                              {item.price}
                             </span>
                           </div>
@@ -282,8 +279,7 @@ const CheckoutPage = () => {
                         Make your payment directly into our bank account. Please
                         use your Order ID as the payment reference.
                       </p>
-                    </li>
-                    <li>
+                    </li>/-strong/-heart:>:o:-((:-h<li>
                       <div className="flex space-x-2.5 items-center mb-5">
                         <div className="input-radio">
                           <input

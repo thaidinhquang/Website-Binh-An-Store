@@ -14,11 +14,9 @@ import CheckoutPage from "./components/CheckoutPage/CheckoutPage";
 import CategorytList from "./components/Admin/Category/CategoryList";
 import CategoryAdd from "./components/Admin/Category/CategoryAdd";
 import CategorytEdit from "./components/Admin/Category/CategoryEdit";
-import CartPage from "./components/CartPage/CartPage";
-import Signup from "./components/Auth/SignUp";
+import Signup from "./components/Auth/Signup";
 import UserList from "./components/Admin/Users/UserList";
 import UserEdit from "./components/Admin/Users/UserEdit";
-
 function App() {
   return (
     <>
@@ -35,7 +33,7 @@ function App() {
           <Route path="detail/:id" element={<SingleProduct />} />
           <Route path="about" element={<About />} />
           <Route path="cart" element={<CartPage />} />
-          <Route path="checkout" element={<CheckoutPage />} />
+          <Route path="check-out" element={<CheckoutPage />} />
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
         </Route>
@@ -53,6 +51,7 @@ function App() {
           </Route>
           <Route path="users">
             <Route index element={<UserList />} />
+            
             <Route path="edit/:id" element={<UserEdit />} />
           </Route>
         </Route>
