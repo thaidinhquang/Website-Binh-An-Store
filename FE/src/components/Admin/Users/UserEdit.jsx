@@ -20,7 +20,6 @@ const userSchema = Joi.object({
 const UserEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-
   const {
     register,
     handleSubmit,

@@ -3,7 +3,7 @@ import Star from "../icons/Star";
 import {  useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-
+import { toast } from "sonner";
 
 const ProductView = ({ className, reportHandler }) => {
 
@@ -53,8 +53,7 @@ const ProductView = ({ className, reportHandler }) => {
     }
 
     localStorage.setItem("cart", JSON.stringify(existCart));
-  
-
+ 
   };
 
   return (

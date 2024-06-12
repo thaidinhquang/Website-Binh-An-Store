@@ -3,11 +3,19 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import ComeBack from "../../icons/ComeBack";
+import Joi from "joi";
+import { joiResolver } from "@hookform/resolvers/joi";
+const productChema = Joi.object({
+  id:Joi.string(),
+  name: Joi.string().required().min(3),
+  price: Joi.number().required().min(0).positive(),
+  image: Joi.string(),
+  description: Joi.string(),
+  stock:Joi.number()
+});
 
 const ProductEdit = () => {
   const { id } = useParams();
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const {
     register,
@@ -15,6 +23,7 @@ const ProductEdit = () => {
     reset,
     formState: { errors },
   } = useForm({
+    resolver:joiResolver(productChema),
     defaultValues: {
       name: "",
       price: "",
@@ -41,17 +50,12 @@ const ProductEdit = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["PRODUCT"],
-      });
-      toast.success("Sản phẩm đã được thêm thành công!");
+      toast.success("Sản phẩm đã được sửa thành công!");
       navigate("/admin/product");
     },
     onError: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["PRODUCT"],
-      });
-      toast.error("Sản phẩm không được thêm");
+
+      toast.error("Sản phẩm không được sửa");
       navigate("/admin/product");
     },
   });
@@ -62,9 +66,9 @@ const ProductEdit = () => {
     <>
       <div>Sửa Sản Phẩm</div>
       <div className="flex justify-end">
-  <a href="/admin/product">
+  <a href="admin/product">
     <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
-      <ComeBack />
+     Quay lại
     </button>
   </a>
 </div>

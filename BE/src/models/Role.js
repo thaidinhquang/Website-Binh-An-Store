@@ -39,6 +39,10 @@ const roleSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        get_user: {
+            type: Boolean,
+            default: false,
+        },
         create_user: {
             type: Boolean,
             default: false,

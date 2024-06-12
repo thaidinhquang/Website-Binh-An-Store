@@ -8,7 +8,7 @@ import About from "./components/About/About";
 import LayOutHome from "./components/layout/LayOutHome";
 import LayOutAdmin from "./components/layout/LayOutAdmin";
 import Login from "./components/Auth/Login";
-
+import CartPage from "./components/CartPage";
 import SingleProduct from "./components/SingleProduct/SingleProduct";
 import CheckoutPage from "./components/CheckoutPage/CheckoutPage";
 import CategorytList from "./components/Admin/Category/CategoryList";
@@ -51,10 +51,8 @@ function App() {
             <Route path="add" element={<CategoryAdd />} />
             <Route path="edit/:id" element={<CategorytEdit />} />
           </Route>
-
           <Route path="users">
             <Route index element={<UserList />} />
-
             <Route path="edit/:id" element={<UserEdit />} />
           </Route>
         </Route>

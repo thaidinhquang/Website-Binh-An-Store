@@ -3,11 +3,15 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-
+import Joi from "joi";
+import { joiResolver } from "@hookform/resolvers/joi";
+const categoryChema = Joi.object({
+  id: Joi.string(),
+  name: Joi.string().required().min(3),
+});
 
 const CategorytEdit = () => {
   const { id } = useParams();
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const {
     register,
@@ -15,6 +19,7 @@ const CategorytEdit = () => {
     reset,
     formState: { errors },
   } = useForm({
+    resolver: joiResolver(categoryChema),
     defaultValues: {
       name: "",
     },
@@ -58,13 +63,12 @@ const CategorytEdit = () => {
     <>
       <div>Sửa Danh Mục</div>
       <div className="flex justify-end">
-  <a href="admin/category">
-    <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
-     Quay lại
-    </button>
-  </a>
-</div>
-
+        <a href="admin/category">
+          <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+            Quay lại
+          </button>
+        </a>
+      </div>
 
       <div>
         <div>
@@ -76,19 +80,16 @@ const CategorytEdit = () => {
                 </label>
                 <input
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                  {...register("name", { required: true })}
+                  {...register("name", { required: true, minLength: 3 })}
                   type="text"
                 />
 
-                {errors.name && <span>không được để trống</span>}
+                {errors?.name && <span>{errors?.name?.message}</span>}
               </div>
 
-             
-            
-
-            
-
-              <button>{isPending ? "Đang Sửa..." : "Sửa"}</button>
+              <button className="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900">
+                {isPending ? "Đang Sửa..." : "Sửa"}
+              </button>
             </form>
           </div>
         </div>

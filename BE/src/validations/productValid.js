@@ -20,12 +20,6 @@ export const productValid = Joi.object({
   _id: Joi.string().messages({
     "string.base": "_id phải là một chuỗi!",
   }),
-  createdAt: Joi.string().messages({
-    "string.base": "createdAt phải là một chuỗi!",
-  }),
-  updatedAt: Joi.string().messages({
-    "string.base": "updatedAt phải là một chuỗi!",
-  }),
   category: Joi.string().messages({
     "string.base": "Category phải là một chuỗi!",
   }),

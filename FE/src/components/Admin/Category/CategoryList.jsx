@@ -54,10 +54,15 @@ const CategorytList = () => {
   return (
     <>
       <div>Danh sách danh mục</div>
-    
-      <a href="category/add">thêm danh mục</a>
-      
-      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+
+      <div className="my-8">
+        <a
+          className="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+          href="category/add"
+        >
+          thêm danh mục
+        </a>
+      </div>      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
@@ -84,24 +89,41 @@ const CategorytList = () => {
                 </th>
 
                 <th className="px-6 py-4">
-                  
-                <div className="dropdown dropdown-hover">
-                <div tabIndex={0} role="button" className="btn m-1"><svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
-                <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
-             </svg></div>
-                <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                  <li><button className="" onClick={() => mutate(category.id)}>delete</button></li>
-                  <li> <a href={`/admin/category/edit/${category.id}`}>edit</a></li>
-                </ul>
-              </div>
+                  <div className="dropdown dropdown-hover">
+                    <div tabIndex={0} role="button" className="btn m-1">
+                      <svg
+                        className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 4 15"
+                      >
+                        <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
+                      </svg>
+                    </div>
+                    <ul
+                      tabIndex={0}
+                      className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+                    >
+                      <li>
+                        <button
+                          className=""
+                          onClick={() => mutate(category.id)}
+                        >
+                          Xóa
+                        </button>
+                      </li>
+                      <li>
+                    
+                        <a href={`/admin/category/edit/${category.id}`}>Sửa</a>
+                      </li>
+                    </ul>
+                  </div>
                 </th>
-               
               </tr>
             ))}
           </tbody>
-          
         </table>
-        
       </div>
     </>
   );
