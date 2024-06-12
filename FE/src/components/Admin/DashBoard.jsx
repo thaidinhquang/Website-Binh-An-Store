@@ -11,6 +11,7 @@ import IcoPassword from '../icons/IcoPassword'
 import IcoSupport from '../icons/IcoSupport'
 import IcoLogout from '../icons/IcoLogout'
 import Product from '../icons/Product'
+import IcoCategory from '../icons/IcoCategory'
 
 const DashBoard = () => {
   return (
@@ -49,20 +50,34 @@ const DashBoard = () => {
                       <Product />
                     </span>
                     <span className=" font-normal text-base">
-                      Product
+                      Sản phẩm
                     </span>
                   </div>
                 </Link>
               </div>
 
+              
+              <div className="item group">
+              <Link to="/admin/category">
+                <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
+                  <span>
+                    <IcoCategory />
+                  </span>
+                  <span className=" font-normal text-base">
+                    Danh mục
+                  </span>
+                </div>
+              </Link>
+            </div>
+
                 <div className="item group">
-                  <Link to="">
+                  <Link to="/admin/users">
                     <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
                       <span>
                         <IcoPeople />
                       </span>
                       <span className=" font-normal text-base">
-                        Parsonal Info
+                        Người dùng
                       </span>
                     </div>
                   </Link>

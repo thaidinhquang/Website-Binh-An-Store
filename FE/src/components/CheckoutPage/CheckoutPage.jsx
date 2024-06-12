@@ -1,5 +1,4 @@
-import React from 'react'
-import InputCom from '../Helpers/InputCom'
+import InputCom from "../UI/InputCom"
 
 const CheckoutPage = () => {
     return (

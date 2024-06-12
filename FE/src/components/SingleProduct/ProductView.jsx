@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Star from "../icons/Star";
-import { useParams } from "react-router-dom";
+import {  useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-
+import { toast } from "sonner";
 
 const ProductView = ({ className, reportHandler }) => {
 
@@ -27,7 +27,37 @@ const ProductView = ({ className, reportHandler }) => {
       return data;
     },
   });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    try {
+      const productDetails = {
+        id: id,
+        name: data?.name,
+        price: data?.price,
+        quantity: quantity,
+        image: data?.image,
+      };
+
+      const existCart = JSON.parse(localStorage.getItem("cart")) || [];
+      const existProductIndex = existCart.findIndex((item) => item.id === id);
+
+      if (existProductIndex !== -1) {
+        existCart[existProductIndex].quantity += quantity;
+      } else {
+        existCart.push(productDetails);
+      }
+
+      localStorage.setItem("cart", JSON.stringify(existCart));
+      toast.success("Thêm sản phẩm vào giỏ hàng thành công!");
+    } catch (err) {
+      toast.error("Không thêm được vào giỏ hàng!");
+    }
+  };
+
   return (
+    <form onSubmit={handleSubmit}>
     <div
       className={`product-view w-full lg:flex justify-between ${
         className || ""
@@ -143,12 +173,17 @@ const ProductView = ({ className, reportHandler }) => {
               </button>
             </div>
             <div className="flex-1 h-full">
+              
+              { /* bat dau lam phan Cart*/ }
               <button
-                type="button"
+                type="submit"
                 className="black-btn text-sm font-semibold w-full h-full"
               >
                 Add To Cart
               </button>
+
+
+
             </div>
           </div>
 
@@ -248,6 +283,7 @@ const ProductView = ({ className, reportHandler }) => {
         </div>
       </div>
     </div>
+    </form>
   );
 }
 
