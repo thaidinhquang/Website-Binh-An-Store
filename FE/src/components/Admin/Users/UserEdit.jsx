@@ -63,6 +63,7 @@ const UserEdit = () => {
   });
 
   const onSubmit = (data) => {
+    console.log("Form data:", data); // 
     mutate(data);
   };
 

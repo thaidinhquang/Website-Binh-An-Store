@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
@@ -25,29 +25,33 @@ const CategorytEdit = () => {
     },
   });
   useQuery({
-    queryKey: ["CAtEGORY_DETAIL", id],
+    queryKey: ["PRODUCT_DETAIL", id],
     queryFn: async () => {
-      const { data } = await axios.get(
-        `http://localhost:3000/categories/${id}`
-      );
+      const { data } = await axios.get(`http://localhost:3000/categories/${id}`);
       reset(data);
       return data;
     },
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async (category) => {
+    mutationFn: async (product) => {
       const { data } = await axios.put(
-        `http://localhost:3000/categories/${category.id}`,
-        category
+        `http://localhost:3000/categories/${product.id}`,
+        product
       );
       return data;
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["CATEGORY"],
+      });
       toast.success("Danh mục đã được thêm thành công!");
       navigate("/admin/category");
     },
     onError: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["CATEGORY"],
+      });
       toast.error("Danh mục không được thêm");
       navigate("/admin/category");
     },

@@ -91,8 +91,8 @@ const ProductList = () => {
               <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
            </svg></div>
               <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                <li><button className="" onClick={() => mutate(product.id)}>Xóa</button></li>
-                <li> <a href={`/admin/product/edit/${product.id}`}>Sửa</a></li>
+                <li><button className="" onClick={() => mutate(product.id)}>delete</button></li>
+                <li> <a href={`/admin/product/edit/${product.id}`}>edit</a></li>
               </ul>
             </div>
               </th>

@@ -1,4 +1,4 @@
-import { useMutation} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +9,7 @@ const categoryChema = Joi.object({
   name: Joi.string().required().min(3),
 });
 const CategoryAdd = () => {
-
+>>>>>>> dev
   const navigate = useNavigate();
   const {
     register,
@@ -31,16 +31,21 @@ const CategoryAdd = () => {
       return data;
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["CATEGORY"],
+      });
       toast.success("Danh mục đã được thêm thành công!");
       navigate("/admin/category");
     },
     onError: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["CATEGORY"],
+      });
       toast.error("Danh mục không được thêm");
       navigate("/admin/category");
     },
   });
   const onSubmit = (data) => {
-  
     mutate(data);
   };
   return (

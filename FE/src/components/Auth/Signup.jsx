@@ -8,6 +8,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+
 const userSchema =  Joi.object({
     userName: Joi.string().required().min(6),
     email: Joi.string().email({  tlds: { allow: false } }).required().min(3),

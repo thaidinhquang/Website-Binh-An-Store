@@ -31,29 +31,29 @@ const ProductView = ({ className, reportHandler }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    try {
-      const productDetails = {
-        id: id,
-        name: data?.name,
-        price: data?.price,
-        quantity: quantity,
-        image: data?.image,
-      };
+    const productDetails = {
+      id: id,
+      name: data?.name,
+      price: data?.price,
+      quantity: quantity,
+      image: data?.image,
+    };
+     
+    console.log(productDetails);
 
-      const existCart = JSON.parse(localStorage.getItem("cart")) || [];
-      const existProductIndex = existCart.findIndex((item) => item.id === id);
+    const existCart = JSON.parse(localStorage.getItem("cart")) || [];
+    const existProductIndex = existCart.findIndex((item) => item.id === id);
 
-      if (existProductIndex !== -1) {
-        existCart[existProductIndex].quantity += quantity;
-      } else {
-        existCart.push(productDetails);
-      }
-
-      localStorage.setItem("cart", JSON.stringify(existCart));
-      toast.success("Thêm sản phẩm vào giỏ hàng thành công!");
-    } catch (err) {
-      toast.error("Không thêm được vào giỏ hàng!");
+    if (existProductIndex !== -1) {
+     
+      existCart[existProductIndex].quantity += quantity;
+    } else {
+      
+      existCart.push(productDetails);
     }
+
+    localStorage.setItem("cart", JSON.stringify(existCart));
+ 
   };
 
   return (
