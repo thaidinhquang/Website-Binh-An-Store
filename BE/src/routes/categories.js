@@ -15,9 +15,7 @@ routerCategory.get("/", getAllCategory);
 routerCategory.get("/:id", getOneCategoryById);
 routerCategory.get("/slug/:slug", getOneCategoryBySlug);
 routerCategory.get("/name/:name", getOneCategoryByName);
-
 routerCategory.delete("/:id", removeCategory);
-
 routerCategory.use(checkRequestBodyCategory);
 routerCategory.post("/", createCategory);
 routerCategory.put("/:id", updateCategory);
