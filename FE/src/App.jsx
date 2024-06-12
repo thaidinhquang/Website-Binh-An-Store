@@ -21,10 +21,10 @@ function App() {
       <Routes>
         <Route path="/" element={<LayOutHome />}>
           <Route index element={<Home />} />
+          <Route path="detail/:id" element={<SingleProduct/>}/>
           <Route path="about" element={<About />} />
           <Route path="checkout" element={<CheckoutPage />} />
         </Route>
-
         <Route path="admin" element={<LayOutAdmin />}>
           <Route path="product">
             <Route index element={<ProductList />} />

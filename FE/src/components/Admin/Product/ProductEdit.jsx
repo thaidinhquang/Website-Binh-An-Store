@@ -3,9 +3,10 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import ComeBack from "../../icons/ComeBack";
 
 const ProductEdit = () => {
-  const{id} = useParams();
+  const { id } = useParams();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const {
@@ -22,14 +23,14 @@ const ProductEdit = () => {
       stock: "",
     },
   });
- useQuery({
-    queryKey:["PRODUCT_DETAIL",id],
+  useQuery({
+    queryKey: ["PRODUCT_DETAIL", id],
     queryFn: async () => {
       const { data } = await axios.get(`http://localhost:3000/products/${id}`);
-      reset (data);
+      reset(data);
       return data;
     },
-  })
+  });
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (product) => {
@@ -46,55 +47,90 @@ const ProductEdit = () => {
       toast.success("Sản phẩm đã được thêm thành công!");
       navigate("/admin/product");
     },
-    onError:()=>{
+    onError: () => {
       queryClient.invalidateQueries({
         queryKey: ["PRODUCT"],
       });
       toast.error("Sản phẩm không được thêm");
       navigate("/admin/product");
-    }
+    },
   });
   const onSubmit = (data) => {
     mutate(data);
   };
   return (
     <>
-      <div>ProductAdd</div>
-      <a href="/admin/product">Quay lại</a>
+      <div>Sửa Sản Phẩm</div>
+      <div className="flex justify-end">
+  <a href="/admin/product">
+    <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+      <ComeBack />
+    </button>
+  </a>
+</div>
+
+
       <div>
         <div>
           <div>
             <form onSubmit={handleSubmit(onSubmit)}>
               <div>
-                <label>Tên Sản Phẩm</label>
-                <input {...register("name", { required: true })} type="text" />
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Tên Sản Phẩm
+                </label>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                  {...register("name", { required: true })}
+                  type="text"
+                />
 
                 {errors.name && <span>không được để trống</span>}
               </div>
 
               <div>
-                <label>Giá Sản Phẩm</label>
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Giá Sản Phẩm
+                </label>
                 <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                   {...register("price", { required: true })}
                   type="number"
                 />
                 {errors.price && <span>Không được để trống</span>}
               </div>
               <div>
-                <label>Ảnh Sản Phẩm</label>
-                <input {...register("image", { required: true })} type="text" />
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Ảnh Sản Phẩm
+                </label>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                  {...register("image", { required: true })}
+                  type="text"
+                />
                 {errors.image && <span>Không được để trống</span>}
               </div>
 
               <div>
-                <label>Số Lượng </label>
-                <input {...register("stock", { required: true })} />
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Số Lượng{" "}
+                </label>
+                <input
+                  className="shadow appearance-none border  rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                  {...register("stock", { required: true })}
+                />
                 {errors.stock && <span>Không được để trống</span>}
               </div>
 
               <div>
-                <label>Mô tả Sản Phẩm</label>
-                <input {...register("description", { required: true })} />
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Mô tả Sản Phẩm
+                </label>
+                <textarea
+                  cols="30"
+                  rows="10"
+                  className="shadow appearance-none border  rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                  {...register("description", { required: true })}
+                ></textarea>
               </div>
 
               <button>{isPending ? "Đang Sửa..." : "Sửa"}</button>

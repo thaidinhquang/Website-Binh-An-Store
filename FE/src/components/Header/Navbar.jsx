@@ -26,7 +26,7 @@ const Navbar = ({className}) => {
   return (
     <div>
     <div
-    className={`nav-widget-wrapper w-full bg-qh4-pink h-[60px] relative z-30  ${
+    className={`nav-widget-wrapper w-full bg-orange-400 h-[60px] relative z-30  ${
       className || ""
     }`}
   >

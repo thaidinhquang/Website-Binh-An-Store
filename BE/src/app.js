@@ -1,21 +1,36 @@
-import cors from "cors";
-import dotenv from "dotenv";
 import express from "express";
+import router from "./routes/index.js";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import cors from "cors";
 
-import { connectDB } from "./config/db";
-
-const app = express();
 dotenv.config();
+const app = express();
 
-// middleware
-app.use(express.json());
+const { DB_URI, PORT } = process.env;
+
 app.use(cors());
+app.use(express.json());
 
-// connect db
-connectDB(process.env.DB_URI);
+await mongoose.connect(DB_URI).then(() => {
+  console.log("connect to database successfully");
+});
 
-// routers
-app.use("/", consolelog("sv running on port:8080..."));
+app.use("/api", router);
 
+app.use((req, res, next) => {
+  const error = new Error("Not found");
+  error.status = 404;
+  next(error);
+});
 
-export const viteNodeApp = app;
+app.use((err, req, res, next) => {
+  return res.status(500).json({
+    name: err.name,
+    message: err.message,
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server on port ${PORT}`);
+});
