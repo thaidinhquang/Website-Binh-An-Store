@@ -1,17 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
+import { useTanstackQuery } from "../../../common/hooks/useTanstackQuery";
 const CategorytList = () => {
   const queryClient = useQueryClient();
 
-  const { data } = useQuery({
-    queryKey: ["CATEGORY"], //từ khóa truy vấn để xác định loại dự liệu cần lấy
-    queryFn: async () => {
-      //Hàm queryFn thực hiện yêu cầu GET để lấy dữ liệu từ URL cụ thể
-      const { data } = await axios.get(`http://localhost:3000/categories`);
-      return data;
-    },
-  });
+  const { data } = useTanstackQuery("categories");
 
   // Sử dụng useMutation để thực hiện mutation
   const { mutate } = useMutation({
@@ -80,7 +74,7 @@ const CategorytList = () => {
           <tbody>
             {data?.map((category, index) => (
               <tr
-                key={category.id}
+                key={category._id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
               >
                 <th className="px-6 py-4">{index + 1}</th>
@@ -116,7 +110,7 @@ const CategorytList = () => {
                       </li>
                       <li>
                     
-                        <a href={`/admin/category/edit/${category.id}`}>Sửa</a>
+                        <a href={`/admin/category/edit/${category._id}`}>Sửa</a>
                       </li>
                     </ul>
                   </div>

@@ -18,4 +18,4 @@ export const categoryValid = Joi.object({
     "string.empty": "Desc không được để trống!",
     "string.min": "Desc phải có ít nhất 6 ký tự!",
   }),
-});
+}).unknown();

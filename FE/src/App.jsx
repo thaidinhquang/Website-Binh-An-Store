@@ -17,7 +17,12 @@ import CategorytEdit from "./components/Admin/Category/CategoryEdit";
 import Signup from "./components/Auth/Signup";
 import UserList from "./components/Admin/Users/UserList";
 import UserEdit from "./components/Admin/Users/UserEdit";
+import { useEffect } from "react";
+
 function App() {
+  useEffect(() => {
+    console.log(localStorage.getItem("token"))
+  }, [])
   return (
     <>
       <Toaster

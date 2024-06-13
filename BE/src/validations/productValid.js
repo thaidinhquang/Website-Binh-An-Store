@@ -23,4 +23,4 @@ export const productValid = Joi.object({
   category: Joi.string().messages({
     "string.base": "Category phải là một chuỗi!",
   }),
-});
+}).unknown();
