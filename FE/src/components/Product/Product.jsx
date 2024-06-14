@@ -1,8 +1,6 @@
 import QuickViewIco from '../icons/QuickViewIco'
 import ThinLove from '../icons/ThinLove'
 import Compair from '../icons/Compair'
-import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
 import { useTanstackQuery } from '../../common/hooks/useTanstackQuery'
 
 const Product = ({ type }) => {

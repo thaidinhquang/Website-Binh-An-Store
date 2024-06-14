@@ -1,50 +1,25 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import { toast } from "sonner";
 import { useTanstackQuery } from "../../../common/hooks/useTanstackQuery";
+import { useEffect, useState } from 'react';
+import socket from "/src/config/socket";
+
 const CategorytList = () => {
-  const queryClient = useQueryClient();
-
-  const { data } = useTanstackQuery("categories");
-
-  // Sử dụng useMutation để thực hiện mutation
-  const { mutate } = useMutation({
-    // mutationFn là hàm bất đồng bộ thực hiện việc xóa sản phẩm
-    mutationFn: async (id) => {
-      // Hiển thị hộp thoại xác nhận từ người dùng bằng cửa sổ confirm
-      const isConfirmed = window.confirm(
-        "Bạn có chắc chắn muốn xóa sản phẩm này không?"
-      );
-      if (isConfirmed) {
-        // Nếu người dùng xác nhận, gửi yêu cầu DELETE đến URL cụ thể bằng Axios
-        await axios.delete(`http://localhost:3000/categories/${id}`);
-        // Hiển thị toast thông báo thành công
-        toast.success("Sản phẩm đã được xóa thành công");
-      } else {
-        // Nếu người dùng hủy, hiển thị toast thông báo hủy bỏ và ném một lỗi để ngăn việc gọi onSuccess
-        toast.info("Hủy bỏ việc xóa sản phẩm");
-        throw new Error("Deletion cancelled");
-      }
-    },
-    // Hành động được thực hiện khi mutation thành công
-    onSuccess: () => {
-      // Vô hiệu hóa truy vấn cụ thể trong cache để cập nhật lại dữ liệu
-      queryClient.invalidateQueries({
-        queryKey: ["CATEGORY"],
-      });
-    },
-    // Hành động được thực hiện khi có lỗi trong quá trình mutation
-    onError: (error) => {
-      // Kiểm tra nếu lỗi không phải do việc hủy bỏ, hiển thị toast thông báo lỗi
-      if (error.message !== "Deletion cancelled") {
-        // Vô hiệu hóa truy vấn cụ thể trong cache và hiển thị toast thông báo lỗi
-        queryClient.invalidateQueries({
-          queryKey: ["PRODUCT"],
-        });
-        toast.error("Không thể xóa sản phẩm");
-      }
-    },
-  });
+  const { data, isLoading } = useTanstackQuery('categories')
+  const [listUserOnEditRoute, setListUserOnEditRoute] = useState(null);
+  const isUserEditing = (id) => {
+    const user = listUserOnEditRoute ? listUserOnEditRoute[id] : null;
+    return user ? <span className="inline-block px-2 py-1 text-xs font-semibold text-white bg-red-500 rounded-full ml-2">{user} đang chỉnh sửa</span> : '';
+  };
+  useEffect(() => {
+    const handleUserEditing = (data) => {
+      setListUserOnEditRoute(data);
+    };
+    socket.on('userEditing', handleUserEditing);
+    socket.emit('getUsersEditing');
+  }, []);
+  useEffect(() => {
+    console.log(listUserOnEditRoute);
+  }, [listUserOnEditRoute]);
+  if (isLoading) return <p>Loading...</p>
   return (
     <>
       <div>Danh sách danh mục</div>
@@ -80,7 +55,8 @@ const CategorytList = () => {
                 <th className="px-6 py-4">{index + 1}</th>
 
                 <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  {category.name}
+                  <p className="inline-block">{category.name}</p>
+                  {isUserEditing(category._id)}
                 </th>
 
                 <th className="px-6 py-4">
@@ -109,7 +85,7 @@ const CategorytList = () => {
                         </button>
                       </li>
                       <li>
-                    
+
                         <a href={`/admin/category/edit/${category._id}`}>Sửa</a>
                       </li>
                     </ul>

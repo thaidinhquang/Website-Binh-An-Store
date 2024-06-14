@@ -20,7 +20,6 @@ const CartPage = ({ cart = true, className }) => {
     }, 0);
     setCartSubtotal(newSubtotal);
     localStorage.setItem("cartSubtotal", newSubtotal.toFixed(2));
-    console.log(newSubtotal)
   }, [cartItems]);
   
 

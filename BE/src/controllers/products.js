@@ -4,115 +4,54 @@ import Product from "../models/Product.js";
 export const getAllProduct = async (req, res) => {
   try {
     const data = await Product.find().populate("category");
-    if (!data || data.length === 0) {
-      return res.status(400).json({
-        message: "Khong tim thay san pham nao!",
-      });
-    }
-
-    return res.status(200).json({
-      message: "Lay danh sach san pham thanh cong!",
-      data,
-    });
+    return !data ? res.status(400).json({ message: "Khong tim thay san pham nao!" }) : res.status(200).json({ data })
   } catch (error) {
-    return res.status(500).json({
-      name: error.name || "Loi server!",
-      message: error.message || "Loi server!",
-    });
+    next(error)
   }
 };
 
 export const getDetailProduct = async (req, res) => {
   try {
-    const id = req.params.id;
-    const data = await Product.findById(id).populate("category");
-    if (!data) {
-      return res.status(400).json({
-        message: "Khong tim thay san pham nao!",
-      });
-    }
-
-    return res.status(200).json({
-      message: "Lay san pham thanh cong!",
-      data,
-    });
+    const data = await Product.findById(req.params.id).populate("category");
+    return !data ? res.status(400).json({ message: "Khong tim thay san pham!" }) : res.status(200).json({ data })
   } catch (error) {
-    return res.status(500).json({
-      name: error.name || "Loi server!",
-      message: error.message || "Loi server!",
-    });
+    next(error)
   }
 };
 
 export const deleteProduct = async (req, res) => {
   try {
-    const id = req.params.id;
-    const data = await Product.findByIdAndDelete(id);
-    if (!data) {
-      return res.status(400).json({
-        message: "Xoa that bai!",
-      });
-    }
-
-    return res.status(200).json({
-      message: "Xoa thanh cong!",
-      data,
-    });
+    const data = await Product.findByIdAndUpdate(req.params.id, { active: false }, { new: true });
+    return !data ? res.status(400).json({ message: "Xoa that bai!" }) : res.status(200).json({ data })
   } catch (error) {
-    return res.status(500).json({
-      name: error.name || "Loi server!",
-      message: error.message || "Loi server!",
-    });
+    next(error)
   }
 };
+
+export const restoreProduct = async (req, res) => {
+  try {
+    const data = await Product.findByIdAndUpdate(req.params.id, { active: true }, { new: true });
+    return !data ? res.status(400).json({ message: "Khoi phuc that bai!" }) : res.status(200).json({ data })
+  } catch (error) {
+    next(error)
+  }
+}
 
 export const createProduct = async (req, res) => {
   try {
     const data = await Product.create(req.body);
-    console.log(data);
-    const updateCategory = await Category.findByIdAndUpdate(data.category, {
-      $push: { products: data._id },
-    });
-    console.log(updateCategory);
-    if (!data || !updateCategory) {
-      return res.status(400).json({
-        message: "Tao moi san pham that bai!",
-      });
-    }
-
-    return res.status(200).json({
-      message: "Tao moi san pham thanh cong!",
-      data,
-    });
+    await Category.findByIdAndUpdate(data.category, { $push: { products: data._id } });
+    return !data ? res.status(400).json({ message: "Create product failed!" }) : res.status(200).json({ data })
   } catch (error) {
-    return res.status(500).json({
-      name: error.name || "Loi server!",
-      message: error.message || "Loi server!",
-    });
+    next(error)
   }
 };
 
 export const updateProduct = async (req, res) => {
   try {
-    const data = await Product.findByIdAndUpdate(
-      req.params.id,
-      { ...req.body, updatedAt: new Date() },
-      {
-        new: true,
-      }
-    );
-    if (!data) {
-      return res.status(400).json({ message: "Cap nhat san pham that bai!" });
-    }
-
-    return res.status(200).json({
-      message: "Cap nhat san pham thanh cong!",
-      data,
-    });
+    const data = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    return !data ? res.status(400).json({ message: "Update product failed!" }) : res.status(200).json({ data })
   } catch (error) {
-    return res.status(500).json({
-      name: error.name || "Loi server!",
-      message: error.message || "Loi server!",
-    });
+    next(error)
   }
 };

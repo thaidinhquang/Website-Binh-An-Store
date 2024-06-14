@@ -143,7 +143,6 @@ export const checkOTP = async (req, res, next) => {
         const now = new Date();
         const diff = Math.abs(now - otpCreatedAt);
         const diffMinutes = Math.floor((diff / 1000) / 60);
-        console.log(diffMinutes);
         if (diffMinutes > 5) {
             return res.status(400).json({
                 message: "OTP het han!",

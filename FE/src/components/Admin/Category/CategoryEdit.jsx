@@ -1,13 +1,24 @@
 import { useParams } from "react-router-dom";
 import { useTanstackMutation, useTanstackQuery } from "../../../common/hooks/useTanstackQuery";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import socket from "/src/config/socket";
 
 const CategorytEdit = () => {
   const { id } = useParams();
   const { data } = useTanstackQuery(`categories/${id}`);
   const { form, onSubmit, isPending } = useTanstackMutation(`categories`, "UPDATE", "/admin/category");
+  const userEditingPost = { id: 1, post_id: id, fullname: "Nguyen Van A" };
+  const handleUnload = () => {
+    socket.emit('leaveEditPost', userEditingPost);
+  };
   useEffect(() => {
     form.reset(data);
+    window.addEventListener('unload', handleUnload);
+    socket.emit('joinEditPost', userEditingPost);
+    return () => {
+      socket.emit('leaveEditPost', userEditingPost);
+      window.removeEventListener('unload', handleUnload);
+    };
   }
     , [data]);
   return (
