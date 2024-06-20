@@ -1,17 +1,20 @@
 import axios from 'axios';
-const token = localStorage.getItem('token');
-
-const headers = {
-    'Content-Type': 'application/json'
-};
-
-if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-}
 
 const instance = axios.create({
     baseURL: 'http://localhost:8000/api',
-    headers: headers
+    headers: {
+        'Content-Type': 'application/json'
+    }
+});
+
+instance.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+}, (error) => {
+    return Promise.reject(error);
 });
 
 export const axiosGet = async (url) => {
@@ -50,4 +53,4 @@ export const axiosDelete = async (url) => {
     }
 }
 
-export default instance
+export default instance;
