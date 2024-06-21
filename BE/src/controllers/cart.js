@@ -121,7 +121,7 @@ export const getCartTotal = async (req, res, next) => {
             return res.status(404).json({ message: "Cart not found" });
         }
         const total = cart.products.reduce((acc, product) => acc + product.productId.price * product.quantity, 0);
-        return res.status(200).json({ total });
+        return res.status(200).json({ data: total });
     } catch (error) {
         next(error);
     }

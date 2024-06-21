@@ -1,3 +1,4 @@
+import { useTanstackQuery, useTanstackMutation } from "../../common/hooks/useTanstackQuery";
 import BreadcrumbCom from "../UI/BreadcrumbCom";
 import InputCom from "../UI/InputCom";
 import PageTitle from "../UI/PageTitle";
@@ -5,60 +6,28 @@ import { useEffect, useState } from "react";
 
 
 const CartPage = ({ cart = true, className }) => {
-  const [cartItems, setcartItems] = useState([]);
-  const [cartSubtotal, setCartSubtotal] = useState(0);
-
+  const { data, isLoading } = useTanstackQuery('cart')
+  const { data: cartTotal, isLoading: isLoadingCartTotal } = useTanstackQuery('cart/total')
+  const { mutate: increeseProduct } = useTanstackMutation(`cart/increase-quantity`, "CREATE");
+  const { mutate: decreaseProduct } = useTanstackMutation(`cart/decrease-quantity`, "CREATE");
   useEffect(() => {
-    // lay du lieu trong localStorage
-    const storedCartItems = JSON.parse(localStorage.getItem("cart")) || [];
-    setcartItems(storedCartItems);
-  }, []);
-  
-  useEffect(() => {
-    const newSubtotal = cartItems.reduce((total, item) => {
-      return total + item.price * item.quantity;
-    }, 0);
-    setCartSubtotal(newSubtotal);
-    localStorage.setItem("cartSubtotal", newSubtotal.toFixed(2));
-  }, [cartItems]);
-  
-
+    console.log(data);
+  }, [data]);
   const calculateTotalPrice = (item) => {
-    return item.price * item.quantity;
+    return item.productId.price * item.quantity;
   };
-  const handleIncrease = (item) => {
-    item.quantity += 1;
-    setcartItems([...cartItems]);
-    // update localStorgage
-    localStorage.setItem("cart", JSON.stringify(cartItems));
+  const updateProduct = (product, action) => {
+    if (action === 'increase') {
+      increeseProduct({ productId: product.productId._id })
+      data.products.find(item => item.productId._id === product.productId._id).quantity++
+    }
+    if (action === 'decrease') {
+      decreaseProduct({ productId: product.productId._id })
+      data.products.find(item => item.productId._id === product.productId._id).quantity--
+    }
+
   };
-
-  const handleDecrease = (item) => {
-    if (item.quantity > 1) item.quantity -= 1;
-    setcartItems([...cartItems]);
-    // update localStorgage
-    localStorage.setItem("cart", JSON.stringify(cartItems));
-  };
-  //  ........
-  const handleRemoveItems = (item) => {
-    const updateCart = cartItems.filter((cartItem) => cartItem.id !== item.id);
-
-    setcartItems(updateCart);
-    updateLocalStorgage(updateCart)
-  };
-
-  const updateLocalStorgage = (cart) => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  };
-
-  // const cartSubtotal = cartItems.reduce((total, item) => {
-  //   return total + calculateTotalPrice(item);
-  // }, 0);
-   
-
-
-  const oderTotal = cartSubtotal;
-
+  if (isLoading) return <p>Loading...</p>
   return (
     <div className={cart ? "pt-0 pb-0" : ""}>
       {cart === false ? (
@@ -108,101 +77,106 @@ const CartPage = ({ cart = true, className }) => {
                             Total
                           </th>
                           <th className="py-4 whitespace-nowrap text-center">
-                           
+
                           </th>
                         </tr>
                       </thead>
                       <tbody>
-                        {cartItems.map((item, index) => (
-                          <tr
-                            key={index}
-                            className="bg-white border-b hover:bg-gray-50"
-                          >
-                            <td className="text-center py-4 px-2">
-                              <div className="flex space-x-1 items-center justify-center">
-                                <span className="text-[15px] font-normal">
-                                  {index + 1}
-                                </span>
-                              </div>
-                            </td>
-
-                            <td className="pl-10 py-4 w-[380px]">
-                              <div className="flex space-x-6 items-center">
-                                <div className="w-[80px] h-[80px] overflow-hidden flex justify-center items-center border border-[#EDEDED]">
-                                  <img
-                                    src={item.image}
-                                    alt="product"
-                                    className="w-full h-full object-contain"
-                                  />
-                                </div>
-                                <div className="flex-1 flex flex-col">
-                                  <p className="font-medium text-[15px] text-qblack">
-                                    {item.name}
-                                  </p>
-                                </div>
-                              </div>
-                            </td>
-
-                            <td className="text-center py-4 px-2">
-                              <div className="flex space-x-1 items-center justify-center">
-                                <span className="text-[15px] font-normal">
-                                  {item.price}
-                                </span>
-                              </div>
-                            </td>
-
-                            <td className="py-4">
-                              <div className="flex justify-center items-center space-x-2">
-                                <button
-                                  onClick={() => handleDecrease(item)}
-                                  className="px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded"
-                                >
-                                  -
-                                </button>
-                                <input
-                                  type="text"
-                                  value={item.quantity}
-                                  readOnly
-                                  className="w-12 text-center border border-gray-300 rounded"
-                                />
-                                <button
-                                  onClick={() => handleIncrease(item)}
-                                  className="px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded"
-                                >
-                                  +
-                                </button>
-                              </div>
-                            </td>
-
-                            <td className="text-right py-4">
-                              <div className="flex space-x-1 items-center justify-center">
-                                <span className="text-[15px] font-normal">
-                                  ${calculateTotalPrice(item)}
-                                </span>
-                              </div>
-                            </td>
-
-                            <td className="text-right py-4">
-                              <div className="flex space-x-1 items-center justify-center">
-                                <span onClick={() => handleRemoveItems(item)}>
-                                  <svg
-                                    width="10"
-                                    height="10"
-                                    viewBox="0 0 10 10"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className="cursor-pointer"
-                                  >
-                                    <path
-                                      d="M9.7 0.3C9.3 -0.1 8.7 -0.1 8.3 0.3L5 3.6L1.7 0.3C1.3 -0.1 0.7 -0.1 0.3 0.3C-0.1 0.7 -0.1 1.3 0.3 1.7L3.6 5L0.3 8.3C-0.1 8.7 -0.1 9.3 0.3 9.7C0.7 10.1 1.3 10.1 1.7 9.7L5 6.4L8.3 9.7C8.7 10.1 9.3 10.1 9.7 9.7C10.1 9.3 10.1 8.7 9.7 8.3L6.4 5L9.7 1.7C10.1 1.3 10.1 0.7 9.7 0.3Z"
-                                      fill="#AAAAAA"
-                                    />
-                                  </svg>
-                                </span>
-                              </div>
-                            </td>
+                        {!data.products.length ?
+                          <tr>
+                            <td colSpan="6" className="text-center py-4">No product in cart</td>
                           </tr>
-                        ))}
+                          :
+                          data.products.map((item, index) => (
+                            <tr
+                              key={index}
+                              className="bg-white border-b hover:bg-gray-50"
+                            >
+                              <td className="text-center py-4 px-2">
+                                <div className="flex space-x-1 items-center justify-center">
+                                  <span className="text-[15px] font-normal">
+                                    {index + 1}
+                                  </span>
+                                </div>
+                              </td>
+
+                              <td className="pl-10 py-4 w-[380px]">
+                                <div className="flex space-x-6 items-center">
+                                  <div className="w-[80px] h-[80px] overflow-hidden flex justify-center items-center border border-[#EDEDED]">
+                                    <img
+                                      src={item.productId.image}
+                                      alt="product"
+                                      className="w-full h-full object-contain"
+                                    />
+                                  </div>
+                                  <div className="flex-1 flex flex-col">
+                                    <p className="font-medium text-[15px] text-qblack">
+                                      {item.productId.name}
+                                    </p>
+                                  </div>
+                                </div>
+                              </td>
+
+                              <td className="text-center py-4 px-2">
+                                <div className="flex space-x-1 items-center justify-center">
+                                  <span className="text-[15px] font-normal">
+                                    {item.productId.price}
+                                  </span>
+                                </div>
+                              </td>
+
+                              <td className="py-4">
+                                <div className="flex justify-center items-center space-x-2">
+                                  <button
+                                    onClick={() => updateProduct(item, 'decrease')}
+                                    className="px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded"
+                                  >
+                                    -
+                                  </button>
+                                  <input
+                                    type="text"
+                                    value={item.quantity}
+                                    readOnly
+                                    className="w-12 text-center border border-gray-300 rounded"
+                                  />
+                                  <button
+                                    onClick={() => updateProduct(item, 'increase')}
+                                    className="px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded"
+                                  >
+                                    +
+                                  </button>
+                                </div>
+                              </td>
+
+                              <td className="text-right py-4">
+                                <div className="flex space-x-1 items-center justify-center">
+                                  <span className="text-[15px] font-normal">
+                                    ${calculateTotalPrice(item)}
+                                  </span>
+                                </div>
+                              </td>
+
+                              <td className="text-right py-4">
+                                <div className="flex space-x-1 items-center justify-center">
+                                  <span onClick={() => handleRemoveItems(item)}>
+                                    <svg
+                                      width="10"
+                                      height="10"
+                                      viewBox="0 0 10 10"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="cursor-pointer"
+                                    >
+                                      <path
+                                        d="M9.7 0.3C9.3 -0.1 8.7 -0.1 8.3 0.3L5 3.6L1.7 0.3C1.3 -0.1 0.7 -0.1 0.3 0.3C-0.1 0.7 -0.1 1.3 0.3 1.7L3.6 5L0.3 8.3C-0.1 8.7 -0.1 9.3 0.3 9.7C0.7 10.1 1.3 10.1 1.7 9.7L5 6.4L8.3 9.7C8.7 10.1 9.3 10.1 9.7 9.7C10.1 9.3 10.1 8.7 9.7 8.3L6.4 5L9.7 1.7C10.1 1.3 10.1 0.7 9.7 0.3Z"
+                                        fill="#AAAAAA"
+                                      />
+                                    </svg>
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
                       </tbody>
                     </table>
                   </div>
@@ -241,7 +215,7 @@ const CartPage = ({ cart = true, className }) => {
                       <p className="text-[15px] font-medium text-qblack">
                         Subtotal
                       </p>
-                      <p className="text-[15px] font-medium text-qred">${cartSubtotal}</p>
+                      <p className="text-[15px] font-medium text-qred">$subtotal</p>
                     </div>
                     <div className="w-full h-[1px] bg-[#EDEDED]"></div>
                   </div>
@@ -352,7 +326,7 @@ const CartPage = ({ cart = true, className }) => {
                       <p className="text-[18px] font-medium text-qblack">
                         Total
                       </p>
-                      <p className="text-[18px] font-medium text-qred">${oderTotal.toFixed(2)}</p>
+                      <p className="text-[18px] font-medium text-qred">${!isLoadingCartTotal && cartTotal}</p>
                     </div>
                   </div>
                   <a href="/checkout">

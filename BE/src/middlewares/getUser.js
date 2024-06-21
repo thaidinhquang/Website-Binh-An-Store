@@ -28,7 +28,6 @@ export const getUser = async (req, res, next) => {
                 message: "User does not exist",
             });
         }
-        console.log(user);
         req.user = user
         next();
     } catch (error) {

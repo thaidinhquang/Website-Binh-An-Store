@@ -2,8 +2,6 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
 import { Toaster } from "sonner";
 import ProductList from "./components/Admin/Product/ProductList";
-import ProductAdd from "./components/Admin/Product/ProductAdd";
-import ProductEdit from "./components/Admin/Product/ProductEdit";
 import About from "./components/About/About";
 import LayOutHome from "./components/layout/LayOutHome";
 import LayOutAdmin from "./components/layout/LayOutAdmin";
@@ -12,11 +10,12 @@ import CartPage from "./components/CartPage";
 import SingleProduct from "./components/SingleProduct/SingleProduct";
 import CheckoutPage from "./components/CheckoutPage/CheckoutPage";
 import CategorytList from "./components/Admin/Category/CategoryList";
-import CategoryAdd from "./components/Admin/Category/CategoryAdd";
-import CategorytEdit from "./components/Admin/Category/CategoryEdit";
 import Signup from "./components/Auth/Signup";
 import UserList from "./components/Admin/Users/UserList";
 import UserEdit from "./components/Admin/Users/UserEdit";
+import MyComponent from "./components/MyComponent";
+import CategorytForm from "./components/Admin/Category/CategoryForm";
+import ProductForm from "./components/Admin/Product/ProductForm";
 
 function App() {
   return (
@@ -38,17 +37,17 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
         </Route>
-
+        <Route path="/test" element={<MyComponent />} />
         <Route path="/admin" element={<LayOutAdmin />}>
           <Route path="product">
             <Route index element={<ProductList />} />
-            <Route path="add" element={<ProductAdd />} />
-            <Route path="edit/:id" element={<ProductEdit />} />
+            <Route path="add" element={<ProductForm />} />
+            <Route path="edit/:id" element={<ProductForm />} />
           </Route>
           <Route path="category">
             <Route index element={<CategorytList />} />
-            <Route path="add" element={<CategoryAdd />} />
-            <Route path="edit/:id" element={<CategorytEdit />} />
+            <Route path="add" element={<CategorytForm />} />
+            <Route path="edit/:id" element={<CategorytForm />} />
           </Route>
           <Route path="users">
             <Route index element={<UserList />} />
