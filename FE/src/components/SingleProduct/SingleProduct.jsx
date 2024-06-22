@@ -1,11 +1,12 @@
 import { useRef, useState } from "react";
 import BreadcrumbCom from "../UI/BreadcrumbCom"
 import Reviews from "./Reviews";
-import Product from "../Product/Product";
+// import Product from "../Pages/Product/Product";
 import ProductView from "./ProductView";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import Product from "../icons/Product";
 
 const SingleProduct = () => {
   const [tab, setTab] = useState("des");

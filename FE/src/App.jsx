@@ -16,6 +16,8 @@ import UserEdit from "./components/Admin/Users/UserEdit";
 import MyComponent from "./components/MyComponent";
 import CategorytForm from "./components/Admin/Category/CategoryForm";
 import ProductForm from "./components/Admin/Product/ProductForm";
+import AllProductPage from "./components/Product/AllProductPage";
+
 
 function App() {
   return (
@@ -34,6 +36,7 @@ function App() {
           <Route path="about" element={<About />} />
           <Route path="cart" element={<CartPage />} />
           <Route path="checkout" element={<CheckoutPage />} />
+          <Route path="all-products" element={<AllProductPage />} />
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
         </Route>

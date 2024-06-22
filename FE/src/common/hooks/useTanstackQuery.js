@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { axiosGet, axiosPost, axiosPut } from "../../config/axios";
+import { axiosDelete, axiosGet, axiosPost, axiosPut } from "../../config/axios";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 export const addparamstoUrl = (url, params) => {
