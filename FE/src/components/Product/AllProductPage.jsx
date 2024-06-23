@@ -1,9 +1,11 @@
 
 import { useState } from "react";
 // import BreadcrumbCom from "../../UI/BreadcrumbCom";
-
+import Product from './Product';
 import ProductsFilter from "./ProductsFilter";
 import BreadcrumbCom from "../UI/BreadcrumbCom";
+import DataIteration from "../UI/DataIteration";
+import { useTanstackMutation, useTanstackQuery } from "../../common/hooks/useTanstackQuery";
 
 const AllProductPage = () => {
   const [filters, setFilter] = useState({});
@@ -22,6 +24,12 @@ const AllProductPage = () => {
     }));
   };
   const [volume, setVolume] = useState([200, 500]);
+
+
+
+  const { data, isLoading } = useTanstackQuery('products');
+  const { mutate, isPending } = useTanstackMutation(`cart/add-item`, 'CREATE');
+
   return (
     
         <div className="products-page-wrapper w-full">
@@ -99,7 +107,20 @@ const AllProductPage = () => {
                   </button>
                 </div>
                 <div className="grid xl:grid-cols-3 sm:grid-cols-2 grid-cols-1  xl:gap-[30px] gap-5 mb-[40px]">
-                {}
+                
+
+                <DataIteration data={data} startLength={0} endLength={6}>
+                {({ data: product }) => (
+                 <div data-aos="fade-up" key={product._id}>
+                 <Product  
+                 product={product}
+                 mutate={mutate}
+                 isPending={isPending}
+               />
+                 </div>
+                )}
+              </DataIteration>
+
                 </div>
 
                 <div className="w-full h-[164px] overflow-hidden mb-[40px]">

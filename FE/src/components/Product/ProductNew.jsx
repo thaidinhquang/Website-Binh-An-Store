@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { useTanstackMutation, useTanstackQuery } from '../../common/hooks/useTanstackQuery';
 import ViewMoreTitle from '../UI/ViewMoreTitle';
 import Product from './Product';
