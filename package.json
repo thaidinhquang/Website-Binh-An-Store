@@ -1,8 +1,5 @@
 {
-    "scripts": {
-        "dev": "concurrently \"cd be && npm run dev\" \"cd fe && npm run dev\""
-    },
-    "dependencies": {
-        "mongoose-paginate-v2": "^1.8.2"
-    }
+  "scripts": {
+    "dev": "concurrently \"cd be && npm run dev\" \"cd fe && npm run dev\""
+  }
 }
