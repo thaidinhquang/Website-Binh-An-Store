@@ -1,6 +1,5 @@
-export default function Checkbox(props) {
-  const { id, name, handleChange, checked, className } = props;
 
+const Checkbox = ({ id, name, handleChange, checked, className }) => {
   return (
     <div>
       <input
@@ -9,8 +8,10 @@ export default function Checkbox(props) {
         type="checkbox"
         name={name}
         onChange={handleChange}
-        checked={checked}
+        checked={checked} 
       />
     </div>
   );
-}
+};
+
+export default Checkbox;

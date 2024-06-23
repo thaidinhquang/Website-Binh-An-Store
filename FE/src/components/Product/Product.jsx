@@ -2,7 +2,7 @@ import QuickViewIco from '../icons/QuickViewIco';
 import Compair from '../icons/Compair';
 import ThinLove from '../icons/ThinLove';
 
-const ProductCard = ({ product, mutate, isPending }) => {
+const Product = ({ product, mutate, isPending }) => {
   return (
     <div key={product._id} className="product-card-one bg-white relative group overflow-hidden shadow-md">
       <div className="product-card-img h-80 overflow-hidden">
@@ -76,4 +76,4 @@ const ProductCard = ({ product, mutate, isPending }) => {
   );
 };
 
-export default ProductCard;
+export default Product;
