@@ -1,5 +1,6 @@
 
 import ProductNew from "../Product/ProductNew"
+import ProductWithCategory from "../Product/ProductWithCategory"
 // import ProductWithCategory from "../Product/ProductWithCategory"
 import Banner from "./Banner"
 import BrandSection from "./BrandSection"
@@ -10,7 +11,7 @@ const Home = () => {
     <div>
     <Banner className="mb-[60px]" />
     <ProductNew/>
-  
+  <ProductWithCategory/>
     <BrandSection className="brand-section-wrapper mb-[60px]"/>
     <CampaignCountDown  className="mb-[60px]"
     lastDate="20234-10-10 4:00:00"/>
