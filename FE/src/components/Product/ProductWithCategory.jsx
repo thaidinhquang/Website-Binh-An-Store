@@ -29,12 +29,13 @@ const ProductWithCategory = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 mb-8">
             <DataIteration data={category.products} startLength={0} endLength={category.products.length}>
               {({ data: product }) => (
-                <Product
-                  key={product._id}
-                  product={product}
-                  mutate={mutate}
-                  isPending={isPending}
-                />
+               <div  data-aos="fade-up">
+               <Product
+               key={product._id}
+               product={product}
+               mutate={mutate}
+               isPending={isPending}
+             /></div>
               )}
             </DataIteration>
           </div>
