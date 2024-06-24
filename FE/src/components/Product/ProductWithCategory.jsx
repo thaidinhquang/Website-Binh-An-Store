@@ -11,7 +11,7 @@ const ProductWithCategory = () => {
 
   // Filter categories with products
   const categoriesWithProducts = categoriesData.reduce((acc, category) => {
-    const products = productsData.filter(product => product.category._id === category._id);
+    const products = productsData.filter(product => product?.category?._id === category?._id);
     if (products.length > 0) {
       acc.push({
         ...category,
