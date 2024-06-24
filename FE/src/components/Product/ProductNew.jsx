@@ -24,9 +24,9 @@ const ProductNew = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 mb-40">
               <DataIteration  data={data} startLength={0} endLength={4}>
                 {({ data: product }) => (
-                <div   data-aos="fade-up"  >
+                <div  key={product._id}  data-aos="fade-up"  >
                 <Product
-                key={product._id}
+               
                 product={product}
                 mutate={mutate}
                 isPending={isPending}
