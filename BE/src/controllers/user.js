@@ -2,7 +2,18 @@ import User from "../models/User.js";
 
 export const getAllUser = async (req, res, next) => {
     try {
-        const data = await User.find();
+        const options = {
+            page: req.query.page ? +req.query.page : 1,
+            limit: req.query.limit ? +req.query.limit : 10,
+        };
+        let query = {};
+        if (req.query.name) {
+            query.name = { $regex: new RegExp(req.query.name, 'i') };
+        }
+        if (req.query.active) {
+            query.active = req.query.active;
+        }
+        const data = await User.paginate(query, options);
         return !data ? res.status(400).json({ message: "Get all user failed" }) : res.status(200).json({ data })
     } catch (error) {
         next(error);

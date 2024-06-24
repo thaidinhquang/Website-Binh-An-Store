@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useTanstackMutation, useTanstackQuery } from "../../../common/hooks/useTanstackQuery";
 import { useContext, useEffect } from "react";
 import socket from "/src/config/socket";
@@ -8,7 +8,7 @@ const CategorytForm = () => {
     const { id } = useParams();
     const { form, onSubmit, isPending } = useTanstackMutation(`categories`, id ? "UPDATE" : "CREATE", "/admin/category");
     const { currentUser } = useContext(AuthContext);
-    const { data } = id? useTanstackQuery(`categories/${id}`) : { data: null };
+    const { data, isLoading } = id? useTanstackQuery(`categories/${id}`) : { data: null };
     if (id) {
         const userEditingPost = { id: currentUser._id, post_id: id, fullname: currentUser.email };
         const handleUnload = () => {
@@ -27,15 +27,16 @@ const CategorytForm = () => {
             };
         }, [data]);
     }
+    if (isLoading) return <p>Loading...</p>
     return (
         <>
-            <div>Sửa Danh Mục</div>
+            <div>{id ? <div className="text-lg font-bold mb-4">Sửa thông tin danh mục</div> : <div className="text-lg font-bold mb-4">Thêm danh mục mới</div>}</div>
             <div className="flex justify-end">
-                <a href="admin/category">
+                <Link to="admin/category">
                     <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
                         Quay lại
                     </button>
-                </a>
+                </Link>
             </div>
 
             <div>

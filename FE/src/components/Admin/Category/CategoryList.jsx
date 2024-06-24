@@ -34,7 +34,6 @@ const CategorytList = () => {
   return (
     <>
       <div>Danh sách danh mục</div>
-
       <div className="my-8 flex justify-between">
         <Link to={`/admin/category/add`}
           className="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
@@ -92,10 +91,7 @@ const CategorytList = () => {
                       className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
                     >
                       <li>
-                        <button
-                          className=""
-                          onClick={() => mutate(category)}
-                        >
+                        <button onClick={() => mutate(category)}>
                           {isPending ? (isTrash ? 'Đang hồi sinh' : 'Đang xóa...') : (isTrash ? 'Khôi phục' : 'Xóa')}
                         </button>
                       </li>

@@ -12,11 +12,11 @@ import CheckoutPage from "./components/CheckoutPage/CheckoutPage";
 import CategorytList from "./components/Admin/Category/CategoryList";
 import Signup from "./components/Auth/Signup";
 import UserList from "./components/Admin/Users/UserList";
-import UserEdit from "./components/Admin/Users/UserEdit";
 import MyComponent from "./components/MyComponent";
 import CategorytForm from "./components/Admin/Category/CategoryForm";
 import ProductForm from "./components/Admin/Product/ProductForm";
 import AllProductPage from "./components/Product/AllProductPage";
+import UserForm from "./components/Admin/Users/UserForm";
 
 
 function App() {
@@ -44,6 +44,7 @@ function App() {
         <Route path="/admin" element={<LayOutAdmin />}>
           <Route path="product">
             <Route index element={<ProductList />} />
+            <Route path="trash" element={<ProductList />} />
             <Route path="add" element={<ProductForm />} />
             <Route path="edit/:id" element={<ProductForm />} />
           </Route>
@@ -55,8 +56,9 @@ function App() {
           </Route>
           <Route path="users">
             <Route index element={<UserList />} />
-
-            <Route path="edit/:id" element={<UserEdit />} />
+            <Route path="trash" element={<UserList />} />
+            <Route path="add" element={<UserForm />} />
+            <Route path="edit/:id" element={<UserForm />} />
           </Route>
         </Route>
       </Routes>

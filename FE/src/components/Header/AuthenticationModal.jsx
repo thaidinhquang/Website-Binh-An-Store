@@ -6,6 +6,7 @@ import { axiosPost } from '../../config/axios';
 import { getUserByToken } from '../Auth/core/_request';
 import {faFacebook, faGoogle, faTwitter} from '@fortawesome/free-brands-svg-icons'
 import { Link } from 'react-router-dom';
+import { toast } from "sonner";
 const AuthenticationModal = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [email, setEmail] = useState('');
@@ -23,10 +24,11 @@ const AuthenticationModal = () => {
                 const { data } = await getUserByToken();
                 setCurrentUser(data)
                 setAuth(data)
+                toast.success(data.message)
             }
         }
         catch (error) {
-            console.log(error)
+            toast.error(error.message)
         }
     };
     return (
