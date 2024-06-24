@@ -43,7 +43,7 @@ const ProductList = () => {
             </tr>
           </thead>
           <tbody>
-            {data?.map((product, index) => (
+            {data?.docs?.length > 0 ? data.docs.map((category, index) => (
               <tr key={product._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                 <th className="px-6 py-4">{index + 1}</th>
                 <th className="px-6 py-4">
@@ -68,7 +68,10 @@ const ProductList = () => {
                   </div>
                 </th>
               </tr>
-            ))}
+            )) :
+              <tr>
+                <td colSpan={6} className="text-center">Không có sản phẩm nào</td>
+              </tr>}
           </tbody>
         </table>
       </div>

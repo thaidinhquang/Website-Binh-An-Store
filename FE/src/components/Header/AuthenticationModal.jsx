@@ -3,6 +3,7 @@ import { AuthContext } from '../Auth/core/Auth';
 import { setAuth } from '../Auth/core/AuthHelper';
 import { axiosPost } from '../../config/axios';
 import { getUserByToken } from '../Auth/core/_request';
+import { toast } from "sonner";
 
 const AuthenticationModal = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -21,10 +22,11 @@ const AuthenticationModal = () => {
                 const { data } = await getUserByToken();
                 setCurrentUser(data)
                 setAuth(data)
+                toast.success(data.message)
             }
         }
         catch (error) {
-            console.log(error)
+            toast.error(error.message)
         }
     };
     return (

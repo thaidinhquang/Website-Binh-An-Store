@@ -59,7 +59,7 @@ export const useTanstackMutation = (path, action, navigatePage) => {
             }
         },
         onError: (error) => {
-            console.log(error)
+            toast.error(error.message)
         }
     })
     const onSubmit = (data) => {
