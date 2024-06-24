@@ -1,5 +1,6 @@
 {
     "scripts": {
-        "dev": "concurrently \"cd be && npm run dev\" \"cd fe && npm run dev\""
+        "dev": "concurrently \"cd be && npm run dev\" \"cd fe && npm run dev\"",
+        "i": "concurrently \"cd be && npm i\" \"cd fe && npm i\""
     }
 }
