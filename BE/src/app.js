@@ -1,31 +1,36 @@
-import http from 'http';
-import express from 'express';
-import { initializeSocketIO } from './middlewares/trackUserEditPost.js';
+import http from "http";
+import express from "express";
+import { initializeSocketIO } from "./middlewares/trackUserEditPost.js";
 import router from "./routes/index.js";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
-import { Server } from 'socket.io';
+import { Server } from "socket.io";
+import { listenEvent } from "./controllers/order.js";
 
-dotenv.config();
 const app = express();
+dotenv.config();
+app.use(cors());
+
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
     allowedHeaders: ["my-custom-header"],
-    credentials: true
-  }
+    credentials: true,
+  },
 });
 const { DB_URI, PORT } = process.env;
-
-app.use(cors());
-app.use(express.json());
 
 await mongoose.connect(DB_URI).then(() => {
   console.log("connect to database successfully");
 });
+
+app.post("/webhook", express.raw({ type: "application/json" }), listenEvent);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
 
