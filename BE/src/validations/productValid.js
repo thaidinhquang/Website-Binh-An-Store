@@ -7,19 +7,6 @@ export const productValid = Joi.object({
     "string.min": "Name phải có ít nhất 6 ký tự!",
     "string.max": "Name không được quá 255 ký tự!",
   }),
-  price: Joi.number().required().min(0).messages({
-    "number.base": "Price phải là một số!",
-    "number.empty": "Price không được để trống!",
-    "number.min": "Price phải lớn hơn 0!",
-  }),
-  desc: Joi.string().min(6).messages({
-    "string.base": "Desc phải là một chuỗi!",
-    "string.empty": "Desc không được để trống!",
-    "string.min": "Desc phải có ít nhất 6 ký tự!",
-  }),
-  _id: Joi.string().messages({
-    "string.base": "_id phải là một chuỗi!",
-  }),
   category: Joi.string().messages({
     "string.base": "Category phải là một chuỗi!",
   }),
