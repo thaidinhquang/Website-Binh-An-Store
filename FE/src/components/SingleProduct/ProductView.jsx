@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Star from "../icons/Star";
 import { useParams } from "react-router-dom";
-import { useTanstackQuery } from "../../common/hooks/useTanstackQuery";
+import { useTanstackMutation, useTanstackQuery } from "../../common/hooks/useTanstackQuery";
 
 const ProductView = ({ className, reportHandler }) => {
   const { id } = useParams();
@@ -10,6 +10,8 @@ const ProductView = ({ className, reportHandler }) => {
     isLoading,
     error,
   } = useTanstackQuery(`/products/${id}`);
+  const { mutate } = useTanstackMutation(`cart/add-item`, 'CREATE');
+  
   const [quantity, setQuantity] = useState(1);
 
   const handleIncrement = () => {
@@ -126,7 +128,7 @@ const ProductView = ({ className, reportHandler }) => {
                 </div>
               </div>
               <div className="w-[60px] h-full flex justify-center items-center border border-qgray-border">
-                <button type="button">
+                <button type="button" >
                   <span>
                     <svg
                       width="24"
@@ -150,6 +152,9 @@ const ProductView = ({ className, reportHandler }) => {
                 <button
                   type="submit"
                   className="black-btn text-sm font-semibold w-full h-full"
+                  onClick={() => {
+                    mutate({ productId: product._id, quantity: 1 });
+                  }}
                 >
                   Add To Cart
                 </button>

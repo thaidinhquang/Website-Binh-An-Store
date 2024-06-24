@@ -96,8 +96,8 @@ const SingleProduct = () => {
                 <BreadcrumbCom
                   paths={[
                     { name: "home", path: "/" },
-                    { name: "single product", path: `/detail/${product?.name}` },
-                    { name: product?.name, path: `/detail/${product?.name}` },
+                    // { name: "single product", path: `/detail/${product?.name}` },
+                    // { name: product?.name, path: `/detail/${product?.name}` },
                   ]}
                 />
               </div>
