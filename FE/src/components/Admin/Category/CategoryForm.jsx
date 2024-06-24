@@ -6,7 +6,7 @@ import { AuthContext } from "../../Auth/core/Auth";
 
 const CategorytForm = () => {
     const { id } = useParams();
-    const { form, onSubmit, isPending } = useTanstackMutation(`categories`, id ? "UPDATE" : "CREATE", "/admin/category");
+    const { form, onSubmit, isPending } = useTanstackMutation(`categories`, id ? "UPDATE" : "CREATE", "/admin/categories");
     const { currentUser } = useContext(AuthContext);
     const { data, isLoading } = id? useTanstackQuery(`categories/${id}`) : { data: null };
     if (id) {
@@ -52,7 +52,7 @@ const CategorytForm = () => {
                                     {...form.register("name", { required: 'Category name is required', minLength: { value: 6, message: 'Category name must be at least 6 characters' } })}
                                     type="text"
                                 />
-                                {form.formState.errors.name && <span>{form.formState.errors.name.message}</span>}
+                                {form.formState.errors.name && <span className="text-red-500">{form.formState.errors.name.message}</span>}
                             </div>
                             <div>
                                 <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -63,7 +63,7 @@ const CategorytForm = () => {
                                     {...form.register("slug", { required: 'Category slug is required', minLength: { value: 6, message: 'Category slug must be at least 6 characters' } })}
                                     type="text"
                                 />
-                                {form.formState.errors.slug && <span>{form.formState.errors.slug.message}</span>}
+                                {form.formState.errors.slug && <span className="text-red-500">{form.formState.errors.slug.message}</span>}
                             </div>
                             <button className="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900">
                                 {isPending ? id ? "Đang Sửa..." : "Đang Thêm..." : id ? "Sửa" : "Thêm"}

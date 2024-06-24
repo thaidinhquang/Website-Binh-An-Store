@@ -42,13 +42,13 @@ function App() {
         </Route>
         <Route path="/test" element={<MyComponent />} />
         <Route path="/admin" element={<LayOutAdmin />}>
-          <Route path="product">
+          <Route path="products">
             <Route index element={<ProductList />} />
             <Route path="trash" element={<ProductList />} />
             <Route path="add" element={<ProductForm />} />
             <Route path="edit/:id" element={<ProductForm />} />
           </Route>
-          <Route path="category">
+          <Route path="categories">
             <Route index element={<CategorytList />} />
             <Route path="trash" element={<CategorytList />} />
             <Route path="add" element={<CategorytForm />} />

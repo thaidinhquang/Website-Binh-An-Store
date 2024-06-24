@@ -50,7 +50,7 @@ const UserForm = () => {
               {...form.register("name", { required: 'Name is required', minLength: { value: 6, message: 'Name must be at least 6 characters' } })}
               type="text"
             />
-            {form.formState.errors.name && <span>{form.formState.errors.name.message}</span>}
+            {form.formState.errors.name && <span className="text-red-500">{form.formState.errors.name.message}</span>}
           </div>
 
           <div className="mb-4">
@@ -62,7 +62,7 @@ const UserForm = () => {
               {...form.register("email", { required: 'Email is required', pattern: { value: /^\S+@\S+$/i, message: 'Invalid email' } })}
               type="email"
             />
-            {form.formState.errors.email && <span>{form.formState.errors.email.message}</span>}
+            {form.formState.errors.email && <span className="text-red-500">{form.formState.errors.email.message}</span>}
           </div>
 
           <div className="mb-4">
@@ -74,7 +74,7 @@ const UserForm = () => {
               {...form.register("phone", { required: 'phone is required', pattern: { value: /^\d{10,11}$/, message: 'Invalid phone number' } })}
               type="text"
             />
-            {form.formState.errors.phone && <span>{form.formState.errors.phone.message}</span>}
+            {form.formState.errors.phone && <span className="text-red-500">{form.formState.errors.phone.message}</span>}
           </div>
 
           <div className="mb-4">
@@ -86,7 +86,7 @@ const UserForm = () => {
               {...form.register("address")}
               type="text"
             />
-            {form.formState.errors.address && <span>{form.formState.errors.address.message}</span>}
+            {form.formState.errors.address && <span className="text-red-500">{form.formState.errors.address.message}</span>}
           </div>
 
           <div className="mb-4">
@@ -98,7 +98,7 @@ const UserForm = () => {
               {...form.register("role", { required: 'Role is required' })}
               type="text"
             />
-            {form.formState.errors.role && <span>{form.formState.errors.role.message}</span>}
+            {form.formState.errors.role && <span className="text-red-500">{form.formState.errors.role.message}</span>}
           </div>
 
           <button

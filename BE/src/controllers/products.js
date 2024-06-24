@@ -6,6 +6,7 @@ export const getAllProduct = async (req, res, next) => {
     const options = {
       page: req.query.page ? +req.query.page : 1,
       limit: req.query.limit ? +req.query.limit : 10,
+      populate: 'category',
     };
     let query = {};
     if (req.query.name) {
@@ -17,10 +18,10 @@ export const getAllProduct = async (req, res, next) => {
     if (req.query.active) {
       query.active = req.query.active;
     }
-    const data = await Product.paginate(query, options).populate("category");
-    return !data ? res.status(400).json({ message: "Khong tim thay san pham nao!" }) : res.status(200).json({ data })
+    const data = await Product.paginate(query, options);
+    return !data ? res.status(400).json({ message: "Khong tim thay san pham nao!" }) : res.status(200).json({ data });
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 

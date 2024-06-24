@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import { hashPassword } from "../utils/password.js";
 
 export const getAllUser = async (req, res, next) => {
     try {
@@ -32,6 +33,7 @@ export const getUserById = async (req, res, next) => {
 
 export const createUser = async (req, res, next) => {
     try {
+        req.body.password = await hashPassword(req.body.password);
         const data = await User.create(req.body);
         return !data ? res.status(500).json({ message: "Create user failed" }) : res.status(201).json({ data });
     } catch (error) {

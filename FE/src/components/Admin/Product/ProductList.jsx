@@ -1,10 +1,17 @@
-import { useEffect, useState } from "react";
-import { useTanstackQuery } from "../../../common/hooks/useTanstackQuery";
-import { Link } from "react-router-dom";
+import { useTanstackMutation, useTanstackQuery } from "../../../common/hooks/useTanstackQuery";
+import { useEffect, useState } from 'react';
 import socket from "/src/config/socket";
+import { Link, useLocation } from "react-router-dom";
+import Pageination from "../../UI/Pagination";
 
 const ProductList = () => {
-  const { data, isLoading } = useTanstackQuery('products')
+  const page = new URLSearchParams(useLocation().search).get('page') || 1;
+  const isTrash = useLocation().pathname.includes('trash');
+  const { data, isLoading, refetch } = useTanstackQuery('products', {
+    active: isTrash ? false : true,
+    page
+  })
+  const { mutate, isPending } = useTanstackMutation(`products`, isTrash ? "RESTORE" : "DELETE");
   const [listUserOnEditRoute, setListUserOnEditRoute] = useState(null);
   const isUserEditing = (id) => {
     const user = listUserOnEditRoute ? listUserOnEditRoute[id] : null;
@@ -18,16 +25,25 @@ const ProductList = () => {
     socket.emit('getUsersEditing');
   }, []);
   useEffect(() => {
-  }, [listUserOnEditRoute]);
+    refetch()
+  }, [isTrash]);
+  useEffect(() => {
+    refetch()
+  }, [page]);
   if (isLoading) return <p>Loading...</p>
   return (
     <>
       <div>Danh sách sản phẩm</div>
-      <div className="my-8">
-        <Link to={`/admin/product/add`}
+      <div className="my-8 flex justify-between">
+        <Link to={`/admin/products/add`}
           className="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
         >
           thêm sản phẩm
+        </Link>
+        <Link to={isTrash ? '/admin/products' : '/admin/products/trash'}
+          className="text-white  bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
+        >
+          {isTrash ? 'Danh sách' : 'Thùng rác'}
         </Link>
       </div>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -43,7 +59,7 @@ const ProductList = () => {
             </tr>
           </thead>
           <tbody>
-            {data?.docs?.length > 0 ? data.docs.map((category, index) => (
+            {data?.docs?.length > 0 ? data.docs.map((product, index) => (
               <tr key={product._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                 <th className="px-6 py-4">{index + 1}</th>
                 <th className="px-6 py-4">
@@ -62,8 +78,10 @@ const ProductList = () => {
                       <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
                     </svg></div>
                     <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                      <li><button className="" onClick={() => mutate(product.id)}>Xóa</button></li>
-                      <li> <Link to={`/admin/product/edit/${product._id}`}>Sửa</Link></li>
+                      <li><button onClick={() => mutate(product)}>
+                        {isPending ? (isTrash ? 'Đang hồi sinh' : 'Đang xóa...') : (isTrash ? 'Khôi phục' : 'Xóa')}
+                      </button></li>
+                      <li> <Link to={`/admin/products/edit/${product._id}`}>Sửa</Link></li>
                     </ul>
                   </div>
                 </th>
@@ -74,6 +92,7 @@ const ProductList = () => {
               </tr>}
           </tbody>
         </table>
+        <Pageination data={data} />
       </div>
     </>
   );
