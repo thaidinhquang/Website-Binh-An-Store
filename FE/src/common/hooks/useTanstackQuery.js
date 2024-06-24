@@ -44,6 +44,9 @@ export const useTanstackMutation = (path, action, navigatePage) => {
             } else if (action === "DELETE") {
                 return await axiosDelete(`${path}/${data._id}`)
             }
+            else if (action === "RESTORE") {
+                return await axiosDelete(`${path}/restore/${data._id}`)
+            }
             return null
         },
         onSuccess: (data) => {

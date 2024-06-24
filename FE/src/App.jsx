@@ -49,6 +49,7 @@ function App() {
           </Route>
           <Route path="category">
             <Route index element={<CategorytList />} />
+            <Route path="trash" element={<CategorytList />} />
             <Route path="add" element={<CategorytForm />} />
             <Route path="edit/:id" element={<CategorytForm />} />
           </Route>

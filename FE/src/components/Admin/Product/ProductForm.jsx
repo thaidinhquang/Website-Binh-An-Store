@@ -11,7 +11,7 @@ const ProductForm = () => {
     const { data } = id ? useTanstackQuery(`products/${id}`) : { data: null };
     const { data: category } = useTanstackQuery(`categories`);
     if (id) {
-        const userEditingPost = { id: currentUser?._id, post_id: id, fullname: currentUser?.email };
+        const userEditingPost = { id: currentUser._id, post_id: id, fullname: currentUser.email };
         const handleUnload = () => {
             socket.emit('leaveEditPost', userEditingPost);
         };

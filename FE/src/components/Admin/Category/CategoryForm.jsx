@@ -9,9 +9,8 @@ const CategorytForm = () => {
     const { form, onSubmit, isPending } = useTanstackMutation(`categories`, id ? "UPDATE" : "CREATE", "/admin/category");
     const { currentUser } = useContext(AuthContext);
     const { data } = id? useTanstackQuery(`categories/${id}`) : { data: null };
-    console.log(data)
     if (id) {
-        const userEditingPost = { id: currentUser?._id, post_id: id, fullname: currentUser?.email };
+        const userEditingPost = { id: currentUser._id, post_id: id, fullname: currentUser.email };
         const handleUnload = () => {
             socket.emit('leaveEditPost', userEditingPost);
         };
