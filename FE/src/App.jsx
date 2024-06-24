@@ -12,7 +12,6 @@ import CheckoutPage from "./components/CheckoutPage/CheckoutPage";
 import CategorytList from "./components/Admin/Category/CategoryList";
 import Signup from "./components/Auth/Signup";
 import UserList from "./components/Admin/Users/UserList";
-import MyComponent from "./components/MyComponent";
 import CategorytForm from "./components/Admin/Category/CategoryForm";
 import ProductForm from "./components/Admin/Product/ProductForm";
 import AllProductPage from "./components/Product/AllProductPage";
@@ -40,7 +39,6 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
         </Route>
-        <Route path="/test" element={<MyComponent />} />
         <Route path="/admin" element={<LayOutAdmin />}>
           <Route path="products">
             <Route index element={<ProductList />} />

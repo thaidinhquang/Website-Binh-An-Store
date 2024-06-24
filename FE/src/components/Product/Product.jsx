@@ -1,6 +1,7 @@
 import QuickViewIco from '../icons/QuickViewIco';
 import Compair from '../icons/Compair';
 import ThinLove from '../icons/ThinLove';
+import { useEffect } from 'react';
 
 const ProductCard = ({ product, mutate, isPending }) => {
   return (

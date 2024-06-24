@@ -6,6 +6,7 @@ export const getAllUser = async (req, res, next) => {
         const options = {
             page: req.query.page ? +req.query.page : 1,
             limit: req.query.limit ? +req.query.limit : 10,
+            sort: req.query.sort ? req.query.sort : { createdAt: -1 },
         };
         let query = {};
         if (req.query.name) {

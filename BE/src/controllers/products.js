@@ -6,6 +6,7 @@ export const getAllProduct = async (req, res, next) => {
     const options = {
       page: req.query.page ? +req.query.page : 1,
       limit: req.query.limit ? +req.query.limit : 10,
+      sort: req.query.sort ? req.query.sort : { createdAt: -1 },
       populate: 'category',
     };
     let query = {};
@@ -14,6 +15,10 @@ export const getAllProduct = async (req, res, next) => {
     }
     if (req.query.slug) {
       query.slug = { $regex: new RegExp(req.query.slug, 'i') };
+    }
+    if (req.query.category) {
+      const categoryIds = req.query.category.split(',');
+      query.category = { $in: categoryIds };
     }
     if (req.query.active) {
       query.active = req.query.active;
