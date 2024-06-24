@@ -5,20 +5,22 @@ import { setAuth } from '../Auth/core/AuthHelper';
 import { axiosPost } from '../../config/axios';
 import { getUserByToken } from '../Auth/core/_request';
 import { faFacebook, faGoogle, faTwitter } from '@fortawesome/free-brands-svg-icons'
-import { Link } from 'react-router-dom';
 import { toast } from "sonner";
 const AuthenticationModal = () => {
+  const [isRegister, setIsRegister] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [cPassword, setCPassword] = useState('');
   const { setCurrentUser } = useContext(AuthContext);
   const toggleModal = () => {
     setIsOpen(!isOpen);
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (isRegister && password !== cPassword) return toast.error('Mật khẩu không khớp')
     try {
-      const res = await axiosPost('/auth/sign-in', { email, password })
+      const res = await axiosPost(isRegister ? "auth/sign-up" : "auth/sign-in", { email, password })
       if (res.accessToken) {
         localStorage.setItem('token', res.accessToken)
         const { data } = await getUserByToken();
@@ -46,7 +48,7 @@ const AuthenticationModal = () => {
             {/* Modal header */}
             <div className="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
               <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
-                Đăng Nhập
+                {isRegister ? 'Đăng ký' : 'Đăng nhập'}
               </h3>
               <button
                 type="button"
@@ -119,6 +121,33 @@ const AuthenticationModal = () => {
                   </div>
 
                 </div>
+
+                {isRegister && (
+                  <>
+                    <div>
+                      <label
+                        htmlFor="cPassword"
+                        className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
+                      >
+                        Mật khẩu
+                      </label>
+                      <div className="relative">
+                        <svg className='absolute top-1/2 left-2 transform -translate-y-1/2 w-[16px]' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z" /></svg>
+                        <input
+                          type="password"
+                          name="cPassword"
+                          id="cPassword"
+                          placeholder="••••••••"
+                          className="pl-8 bg-white border-b-2 border-gray-300 text-gray-900 text-sm focus:outline-none focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                          required
+                          value={cPassword}
+                          onChange={(e) => setCPassword(e.target.value)}
+                          autoComplete="current-password"
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
                 <div className="flex justify-between items-center">
                   <div className="flex items-center my-2">
                     <input
@@ -144,16 +173,15 @@ const AuthenticationModal = () => {
                   type="submit"
                   className="w-full text-white bg-[#5a00b0] hover:opacity-80 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mt-4"
                 >
-                  Đăng nhập
+                  {isRegister ? 'Đăng ký' : 'Đăng nhập'}
                 </button>
                 <div className="text-sm text-center font-medium text-gray-500 dark:text-gray-300 mt-2">
-                  Chưa có tài khoản?{' '}
-                  <Link
-                    to={'/signup'}
+                  {isRegister ? 'Đã có tài khoản' : 'Chưa có tài khoản'}?{' '}
+                  <button onClick={() => setIsRegister(!isRegister)}
                     className="text-blue-700 hover:underline dark:text-blue-500"
                   >
-                    Đăng ký
-                  </Link>
+                    {isRegister ? 'Đăng nhập' : 'Đăng ký'}
+                  </button>
                 </div>
                 <div className="text-center mt-2">
                   <FontAwesomeIcon icon={faFacebook} className='text-blue-800 text-[35px] hover:opacity-80 cursor-pointer' />

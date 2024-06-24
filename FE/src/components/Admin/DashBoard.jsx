@@ -37,7 +37,7 @@ const DashBoard = () => {
                         <IcoDashboard />
                       </span>
                       <span className=" font-normal text-base">
-                        Dashbaord
+                        Dashboard
                       </span>
                     </div>
                   </Link>
