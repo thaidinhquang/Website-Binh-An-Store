@@ -1,18 +1,20 @@
+import { Link } from "react-router-dom";
 import { useTanstackQuery, useTanstackMutation } from "../../common/hooks/useTanstackQuery";
 import BreadcrumbCom from "../UI/BreadcrumbCom";
-import InputCom from "../UI/InputCom";
 import PageTitle from "../UI/PageTitle";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../Auth/core/Auth";
 
 
 const CartPage = ({ cart = true, className }) => {
+  const [isLoadingItem, setIsLoadingItem] = useState(false)
+  const [items, setItems] = useState([])
   const { data, isLoading } = useTanstackQuery('cart')
   const { data: cartTotal, isLoading: isLoadingCartTotal } = useTanstackQuery('cart/total')
   const { mutate: increeseProduct } = useTanstackMutation(`cart/increase-quantity`, "CREATE");
   const { mutate: decreaseProduct } = useTanstackMutation(`cart/decrease-quantity`, "CREATE");
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
+  const { mutate: order, isPending, data: response } = useTanstackMutation(`orders/create-checkout-session`, "CREATE");
+  const { currentUser } = useContext(AuthContext);
   const calculateTotalPrice = (item) => {
     return item.productId.price * item.quantity;
   };
@@ -27,6 +29,35 @@ const CartPage = ({ cart = true, className }) => {
     }
 
   };
+  const onSubmit = async () => {
+    const data = {
+      userId: currentUser._id,
+      items: items,
+      "currency": "usd",
+    }
+    order(data)
+  }
+  useEffect(() => {
+    if (response) {
+      window.location.replace(response.sessionUrl)
+    }
+  }, [response])
+  useEffect(() => {
+    if (data?.products?.length > 0) {
+      setIsLoadingItem(true)
+      let listItem = []
+      data.products.forEach(item => {
+        listItem.push({
+          name: item.productId._id,
+          image: item.productId.image,
+          price: item.productId.price,
+          quantity: item.quantity
+        })
+      })
+      setItems(listItem)
+      setIsLoadingItem(false)
+    }
+  }, [data])
   if (isLoading) return <p>Loading...</p>
   return (
     <div className={cart ? "pt-0 pb-0" : ""}>
@@ -183,34 +214,9 @@ const CartPage = ({ cart = true, className }) => {
                 </div>
               </div>
               {/* ke thuc Chinh sua */}
-
-              <div className="w-full sm:flex justify-between">
-                <div className="discount-code sm:w-[270px] w-full mb-5 sm:mb-0 h-[50px] flex">
-                  <div className="flex-1 h-full">
-                    <InputCom type="text" placeholder="Discount Code" />
-                  </div>
-                  <button type="button" className="w-[90px] h-[50px] black-btn">
-                    <span className="text-sm font-semibold">Apply</span>
-                  </button>
-                </div>
-                <div className="flex space-x-2.5 items-center">
-                  <a href="#">
-                    <div className="w-[220px] h-[50px] bg-[#F6F6F6] flex justify-center items-center">
-                      <span className="text-sm font-semibold">
-                        Continue Shopping
-                      </span>
-                    </div>
-                  </a>
-                  <a href="#">
-                    <div className="w-[140px] h-[50px] bg-[#F6F6F6] flex justify-center items-center">
-                      <span className="text-sm font-semibold">Update Cart</span>
-                    </div>
-                  </a>
-                </div>
-              </div>
               <div className="w-full mt-[30px] flex sm:justify-end">
                 <div className="sm:w-[370px] w-full border border-[#EDEDED] px-[30px] py-[26px]">
-                  <div className="sub-total mb-6">
+                  {/* <div className="sub-total mb-6">
                     <div className=" flex justify-between mb-6">
                       <p className="text-[15px] font-medium text-qblack">
                         Subtotal
@@ -320,7 +326,7 @@ const CartPage = ({ cart = true, className }) => {
                     <div className="w-full h-[50px] bg-[#F6F6F6] flex justify-center items-center">
                       <span className="text-sm font-semibold">Update Cart</span>
                     </div>
-                  </button>
+                  </button> */}
                   <div className="total mb-6">
                     <div className=" flex justify-between">
                       <p className="text-[18px] font-medium text-qblack">
@@ -329,13 +335,16 @@ const CartPage = ({ cart = true, className }) => {
                       <p className="text-[18px] font-medium text-qred">${!isLoadingCartTotal && cartTotal}</p>
                     </div>
                   </div>
-                  <a href="/checkout">
-                    <div className="w-full h-[50px] black-btn flex justify-center items-center">
+                  <button onClick={() => onSubmit()} disabled={isLoadingItem} className="w-full h-[50px] black-btn flex justify-center items-center text-sm font-semibold">
+                    {isPending ? "Processing..." : "Thanh Toán online"}
+                  </button>
+                  <Link to="/checkout">
+                    <div className="mt-4 w-full h-[50px] black-btn flex justify-center items-center">
                       <span className="text-sm font-semibold">
-                        Proceed to Checkout
+                        Trả tiền khi nhận hàng
                       </span>
                     </div>
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

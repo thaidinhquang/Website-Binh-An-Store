@@ -1,29 +1,62 @@
-import InputCom from "../UI/InputCom";
+import { useTanstackMutation, useTanstackQuery } from "../../common/hooks/useTanstackQuery";
+import { AuthContext } from "../Auth/core/Auth";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 const CheckoutPage = () => {
-    const [cartSubtotal, setCartSubtotal] = useState(0);
-    const [cartItems, setcartItems] = useState([]);
-
+    const { data: cartItems, isLoading } = useTanstackQuery('cart')
+    const { data: cartTotal, isLoading: isLoadingTotal } = useTanstackQuery('cart/total')
+    const [isLoadingItem, setIsLoadingItem] = useState(false)
+    const [items, setItems] = useState([])
+    const { currentUser } = useContext(AuthContext);
+    const { form, isPending, mutate } = useTanstackMutation(`orders`, "CREATE", '/checkoutsuccess');
     useEffect(() => {
-        // lay du lieu trong localStorage
-        const storedCartItems = JSON.parse(localStorage.getItem("cart")) || [];
-        setcartItems(storedCartItems);
-    }, []);
-
-    useEffect(() => {
-        const storedSubtotal = localStorage.getItem("cartSubtotal");
-        if (storedSubtotal) {
-            setCartSubtotal(parseFloat(storedSubtotal));
+        if (cartItems?.products?.length > 0) {
+            setIsLoadingItem(true)
+            let listItem = []
+            cartItems.products.forEach(item => {
+                listItem.push({
+                    name: item.productId._id,
+                    image: item.productId.image,
+                    price: item.productId.price,
+                    quantity: item.quantity
+                })
+            })
+            setItems(listItem)
+            setIsLoadingItem(false)
         }
-    }, []);
-
+    }, [cartItems])
+    useEffect(() => {
+        if (currentUser) {
+            form.reset(currentUser)
+        }
+    }, [currentUser])
+    const onSubmit = (formData) => {
+        const data = {
+            userId: currentUser._id,
+            items: items,
+            customerInfo: {
+                name: formData.name,
+                phone: formData.phone,
+                email: formData.email,
+            },
+            shippingAddress: {
+                line1: formData.line1,
+                line2: formData.line2,
+                state: formData.state,
+                city: formData.city,
+                country: formData.country,
+                postal_code: formData.postal_code,
+            },
+        }
+        mutate(data)
+    }
+    if (isLoading || isLoadingTotal) return <div>Loading...</div>
     return (
         <div>
-            <div className="checkout-main-content w-full">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="checkout-main-content w-full">
                 <div className="container-x mx-auto">
-                    <div className="w-full sm:mb-10 mb-5">
+                    {/* <div className="w-full sm:mb-10 mb-5">
                         <div className="sm:flex sm:space-x-[18px] s">
                             <div className="sm:w-1/2 w-full mb-5 h-[70px]">
                                 <a href="#">
@@ -44,113 +77,105 @@ const CheckoutPage = () => {
                                 </a>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                     <div className="w-full lg:flex lg:space-x-[30px]">
                         <div className="lg:w-1/2 w-full">
                             <h1 className="sm:text-2xl text-xl text-qblack font-medium mb-5">
                                 Billing Details
                             </h1>
                             <div className="form-area">
-                                <form>
+                                <div>
                                     <div className="sm:flex sm:space-x-5 items-center mb-6">
                                         <div className="sm:w-1/2  mb-5 sm:mb-0">
-                                            <InputCom
-                                                label="First Name*"
-                                                placeholder="Demo Name"
-                                                inputClasses="w-full h-[50px]"
+                                            <input
+                                                {...form.register("name", { required: 'Name is required' })}
+                                                label="Name*"
+                                                placeholder="Name"
+                                                className="w-full py-2 px-[12px] bg-white"
                                             />
+                                            {form.formState.errors.name && <span className="text-red-500">{form.formState.errors.name.message}</span>}
                                         </div>
                                         <div className="flex-1">
-                                            <InputCom
-                                                label="Last Name*"
-                                                placeholder="Demo Name"
-                                                inputClasses="w-full h-[50px]"
+                                            <input
+                                                {...form.register("phone", { required: 'Phone is required' })}
+                                                label="Phone*"
+                                                placeholder="Phone"
+                                                className="w-full py-2 px-[12px] bg-white"
                                             />
-                                        </div>
-                                    </div>
-                                    <div className="flex space-x-5 items-center mb-6">
-                                        <div className="w-1/2">
-                                            <InputCom
-                                                label="Email Address*"
-                                                placeholder="demoemial@gmail.com"
-                                                inputClasses="w-full h-[50px]"
-                                            />
-                                        </div>
-                                        <div className="flex-1">
-                                            <InputCom
-                                                label="Phone Number*"
-                                                placeholder="012 3  *******"
-                                                inputClasses="w-full h-[50px]"
-                                            />
+                                            {form.formState.errors.phone && <span className="text-red-500">{form.formState.errors.phone.message}</span>}
                                         </div>
                                     </div>
                                     <div className="mb-6">
-                                        <h1 className="input-label capitalize block  mb-2 text-qgray text-[13px] font-normal">
-                                            Country*
-                                        </h1>
-                                        <div className="w-full h-[50px] border border-[#EDEDED] px-5 flex justify-between items-center mb-2">
-                                            <span className="text-[13px] text-qgraytwo">
-                                                Select Country
-                                            </span>
-                                            <span>
-                                                <svg
-                                                    width="11"
-                                                    height="7"
-                                                    viewBox="0 0 11 7"
-                                                    fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                >
-                                                    <path
-                                                        d="M5.4 6.8L0 1.4L1.4 0L5.4 4L9.4 0L10.8 1.4L5.4 6.8Z"
-                                                        fill="#222222"
-                                                    ></path>
-                                                </svg>
-                                            </span>
+                                        <input
+                                            {...form.register("email", { required: 'Email is required' })}
+                                            label="Email Address*"
+                                            placeholder="demoemial@gmail.com"
+                                            className="w-full py-2 px-[12px] bg-white"
+                                        />
+                                        {form.formState.errors.email && <span className="text-red-500">{form.formState.errors.email.message}</span>}
+                                    </div>
+                                    <div className=" mb-6">
+                                        <div className="w-full">
+                                            <input
+                                                {...form.register("line1", { required: 'Address is required' })}
+                                                label="Địa chỉ 1*"
+                                                placeholder="your address here"
+                                                className="w-full py-2 px-[12px] bg-white"
+                                            />
+                                            {form.formState.errors.line1 && <span className="text-red-500">{form.formState.errors.line1.message}</span>}
                                         </div>
                                     </div>
                                     <div className=" mb-6">
                                         <div className="w-full">
-                                            <InputCom
-                                                label="Address*"
+                                            <input
+                                                {...form.register("line2")}
+                                                label="Địa chỉ 2"
                                                 placeholder="your address here"
-                                                inputClasses="w-full h-[50px]"
+                                                className="w-full py-2 px-[12px] bg-white"
                                             />
                                         </div>
                                     </div>
-                                    <div className="flex space-x-5 items-center mb-6">
-                                        <div className="w-1/2">
-                                            <h1 className="input-label capitalize block  mb-2 text-qgray text-[13px] font-normal">
-                                                Town / City*
-                                            </h1>
-                                            <div className="w-full h-[50px] border border-[#EDEDED] px-5 flex justify-between items-center">
-                                                <span className="text-[13px] text-qgraytwo">
-                                                    Miyami Town
-                                                </span>
-                                                <span>
-                                                    <svg
-                                                        width="11"
-                                                        height="7"
-                                                        viewBox="0 0 11 7"
-                                                        fill="none"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                    >
-                                                        <path
-                                                            d="M5.4 6.8L0 1.4L1.4 0L5.4 4L9.4 0L10.8 1.4L5.4 6.8Z"
-                                                            fill="#222222"
-                                                        ></path>
-                                                    </svg>
-                                                </span>
-                                            </div>
+                                    <div className="sm:flex sm:space-x-5 items-center mb-6">
+                                        <div className="sm:w-1/2  mb-5 sm:mb-0">
+                                            <input
+                                                {...form.register("country", { required: 'Country is required' })}
+                                                label="Quốc gia*"
+                                                placeholder="enter your country"
+                                                className="w-full py-2 px-[12px] bg-white"
+                                            />
+                                            {form.formState.errors.country && <span className="text-red-500">{form.formState.errors.country.message}</span>}
                                         </div>
                                         <div className="flex-1">
-                                            <InputCom
-                                                label="Postcode / ZIP*"
-                                                placeholder=""
-                                                inputClasses="w-full h-[50px]"
+                                            <input
+                                                {...form.register("city", { required: 'City is required' })}
+                                                label="Thành phố*"
+                                                placeholder="enter your city"
+                                                className="w-full py-2 px-[12px] bg-white"
                                             />
+                                            {form.formState.errors.city && <span className="text-red-500">{form.formState.errors.city.message}</span>}
                                         </div>
                                     </div>
-                                    <div className="flex space-x-2 items-center mb-10">
+                                    <div className="sm:flex sm:space-x-5 items-center mb-6">
+                                        <div className="sm:w-1/2  mb-5 sm:mb-0">
+                                            <input
+                                                {...form.register("state", { required: 'State is required' })}
+                                                label="Phường/Xã*"
+                                                placeholder="enter your district"
+                                                className="w-full py-2 px-[12px] bg-white"
+                                            />
+                                            {form.formState.errors.state && <span className="text-red-500">{form.formState.errors.state.message}</span>}
+                                        </div>
+                                        <div className="flex-1">
+                                            <input
+                                                {...form.register("postal_code", { required: 'Postal code is required' })}
+                                                label="Mã bưu điện*"
+                                                placeholder="enter your postal code"
+                                                className="w-full py-2 px-[12px] bg-white"
+                                            />
+                                            {form.formState.errors.postal_code && <span className="text-red-500">{form.formState.errors.postal_code.message}</span>}
+                                        </div>
+                                    </div>
+                                    {/* <div className="flex space-x-2 items-center mb-10">
                                         <div>
                                             <input type="checkbox" name="" id="create" />
                                         </div>
@@ -160,8 +185,8 @@ const CheckoutPage = () => {
                                         >
                                             Create an account?
                                         </label>
-                                    </div>
-                                    <div>
+                                    </div> */}
+                                    {/* <div>
                                         <h1 className="text-2xl text-qblack font-medium mb-3">
                                             Billing Details
                                         </h1>
@@ -176,8 +201,8 @@ const CheckoutPage = () => {
                                                 Ship to a different address
                                             </label>
                                         </div>
-                                    </div>
-                                </form>
+                                    </div> */}
+                                </div>
                             </div>
                         </div>
                         <div className="flex-1">
@@ -199,23 +224,24 @@ const CheckoutPage = () => {
                                 </div>
                                 <div className="product-list w-full mb-[30px]">
                                     <ul className="flex flex-col space-y-5">
-                                        {cartItems.map((item, index) => (
+                                        {cartItems?.products?.map((item, index) => (
                                             <li key={index}>
                                                 <div className="flex justify-between items-center">
                                                     <div>
                                                         <h4 className="text-[15px] text-qblack mb-2.5">
-                                                            {item.name}
+                                                            {item.productId.name}
                                                             <sup className="text-[13px] text-qgray ml-2 mt-2">
                                                                 {item.quantity}
                                                             </sup>
                                                         </h4>
+                                                        <img src={item.productId.image} alt="" className="w-24" />
                                                         <p className="text-[13px] text-qgray">
                                                             64GB, Black, 44mm, Chain Belt
                                                         </p>
                                                     </div>
                                                     <div>
                                                         <span className="text-[15px] text-qblack font-medium">
-                                                            {item.price}
+                                                            {item.productId.price * item.quantity}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -224,14 +250,13 @@ const CheckoutPage = () => {
                                     </ul>
                                 </div>
                                 <div className="w-full h-[1px] bg-[#EDEDED]"></div>
-
                                 <div className="mt-[30px]">
                                     <div className=" flex justify-between mb-5">
                                         <p className="text-[13px] font-medium text-qblack uppercase">
                                             SUBTOTAL
                                         </p>
                                         <p className="text-[15px] font-medium text-qblack uppercase">
-                                            ${cartSubtotal.toFixed(2)}
+                                            ${cartTotal}
                                         </p>
                                     </div>
                                 </div>
@@ -256,12 +281,12 @@ const CheckoutPage = () => {
                                 <div className="mt-[30px]">
                                     <div className=" flex justify-between mb-5">
                                         <p className="text-2xl font-medium text-qblack">Total</p>
-                                        <p className="text-2xl font-medium text-qred">${cartSubtotal.toFixed(2)}</p>
+                                        <p className="text-2xl font-medium text-qred">${cartTotal}</p>
                                     </div>
                                 </div>
                                 <div className="shipping mt-[30px]">
                                     <ul className="flex flex-col space-y-1">
-                                        <li className=" mb-5">
+                                        {/* <li className=" mb-5">
                                             <div className="flex space-x-2.5 items-center mb-4">
                                                 <div className="input-radio">
                                                     <input
@@ -282,8 +307,8 @@ const CheckoutPage = () => {
                                                 Make your payment directly into our bank account. Please
                                                 use your Order ID as the payment reference.
                                             </p>
-                                        </li>
-                                        <li>
+                                        </li> */}
+                                        {/* <li>
                                             <div className="flex space-x-2.5 items-center mb-5">
                                                 <div className="input-radio">
                                                     <input
@@ -291,6 +316,7 @@ const CheckoutPage = () => {
                                                         name="price"
                                                         className="accent-pink-500"
                                                         id="delivery"
+                                                        checked
                                                     />
                                                 </div>
                                                 <label
@@ -300,39 +326,19 @@ const CheckoutPage = () => {
                                                     Cash on Delivery
                                                 </label>
                                             </div>
-                                        </li>
-                                        <li>
-                                            <div className="flex space-x-2.5 items-center mb-5">
-                                                <div className="input-radio">
-                                                    <input
-                                                        type="radio"
-                                                        name="price"
-                                                        className="accent-pink-500"
-                                                        id="bank"
-                                                    />
-                                                </div>
-                                                <label
-                                                    htmlFor="bank"
-                                                    className="text-[18px] text-normal text-qblack"
-                                                >
-                                                    Credit/Debit Cards or Paypal
-                                                </label>
-                                            </div>
-                                        </li>
+                                        </li> */}
                                     </ul>
                                 </div>
-                                <a href="#">
-                                    <div className="w-full h-[50px] black-btn flex justify-center items-center">
-                                        <span className="text-sm font-semibold">
-                                            Place Order Now
-                                        </span>
-                                    </div>
-                                </a>
+                                <button type="submit" disabled={isLoadingItem}
+                                    className="px-8 z-30 py-2 w-full bg-black text-white relative font-semibold font-sans after:-z-20 after:absolute after:h-1 after:w-1 after:bg-gray-800 after:left-5 overflow-hidden after:bottom-0 after:translate-y-full after:rounded-md after:hover:scale-[300] after:hover:transition-all after:hover:duration-700 after:transition-all after:duration-700 transition-all duration-700 hover:[text-shadow:2px_2px_2px_#fda4af] text-2xl"
+                                >
+                                    {isPending ? "Đang Đặt Hàng..." : "Đặt Hàng"}
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
     );
 };
