@@ -5,7 +5,7 @@ import { comparePassword, hashPassword } from "../utils/password.js";
 export const signUp = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-
+        console.log(email, password);
         const userExist = await User.findOne({ email });
         if (userExist) {
             return res.status(400).json({
@@ -19,10 +19,10 @@ export const signUp = async (req, res, next) => {
             password: hashPasswordUser,
         });
 
-        user.password = undefined;
+        const accessToken = token({ _id: user._id }, "365d");
         return res.status(201).json({
             message: "Register successfully",
-            data: user,
+            accessToken,
         });
     } catch (error) {
         next(error);

@@ -1,16 +1,36 @@
 import Category from "../models/Category.js";
 import Product from "../models/Product.js";
 
-export const getAllProduct = async (req, res) => {
+export const getAllProduct = async (req, res, next) => {
   try {
-    const data = await Product.find().populate("category");
-    return !data ? res.status(400).json({ message: "Khong tim thay san pham nao!" }) : res.status(200).json({ data })
+    const options = {
+      page: req.query.page ? +req.query.page : 1,
+      limit: req.query.limit ? +req.query.limit : 10,
+      sort: req.query.sort ? req.query.sort : { createdAt: -1 },
+      populate: 'category',
+    };
+    let query = {};
+    if (req.query.name) {
+      query.name = { $regex: new RegExp(req.query.name, 'i') };
+    }
+    if (req.query.slug) {
+      query.slug = { $regex: new RegExp(req.query.slug, 'i') };
+    }
+    if (req.query.category) {
+      const categoryIds = req.query.category.split(',');
+      query.category = { $in: categoryIds };
+    }
+    if (req.query.active) {
+      query.active = req.query.active;
+    }
+    const data = await Product.paginate(query, options);
+    return !data ? res.status(400).json({ message: "Khong tim thay san pham nao!" }) : res.status(200).json({ data, message: "Get all product successfully"});
   } catch (error) {
-    next(error)
+    next(error);
   }
 };
 
-export const getDetailProduct = async (req, res) => {
+export const getDetailProduct = async (req, res, next) => {
   try {
     const data = await Product.findById(req.params.id).populate("category");
     return !data ? res.status(400).json({ message: "Khong tim thay san pham!" }) : res.status(200).json({ data })
@@ -19,38 +39,38 @@ export const getDetailProduct = async (req, res) => {
   }
 };
 
-export const deleteProduct = async (req, res) => {
+export const deleteProduct = async (req, res, next) => {
   try {
     const data = await Product.findByIdAndUpdate(req.params.id, { active: false }, { new: true });
-    return !data ? res.status(400).json({ message: "Xoa that bai!" }) : res.status(200).json({ data })
+    return !data ? res.status(400).json({ message: "Xoa that bai!" }) : res.status(200).json({ data, message: "Xoa thanh cong!"})
   } catch (error) {
     next(error)
   }
 };
 
-export const restoreProduct = async (req, res) => {
+export const restoreProduct = async (req, res, next) => {
   try {
     const data = await Product.findByIdAndUpdate(req.params.id, { active: true }, { new: true });
-    return !data ? res.status(400).json({ message: "Khoi phuc that bai!" }) : res.status(200).json({ data })
+    return !data ? res.status(400).json({ message: "Khoi phuc that bai!" }) : res.status(200).json({ data, message: "Khoi phuc thanh cong!"})
   } catch (error) {
     next(error)
   }
 }
 
-export const createProduct = async (req, res) => {
+export const createProduct = async (req, res, next) => {
   try {
     const data = await Product.create(req.body);
     await Category.findByIdAndUpdate(data.category, { $push: { products: data._id } });
-    return !data ? res.status(400).json({ message: "Create product failed!" }) : res.status(200).json({ data })
+    return !data ? res.status(400).json({ message: "Create product failed!" }) : res.status(200).json({ data, message: "Create product successfully"})
   } catch (error) {
     next(error)
   }
 };
 
-export const updateProduct = async (req, res) => {
+export const updateProduct = async (req, res, next) => {
   try {
     const data = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    return !data ? res.status(400).json({ message: "Update product failed!" }) : res.status(200).json({ data })
+    return !data ? res.status(400).json({ message: "Update product failed!" }) : res.status(200).json({ data, message: "Update product successfully"})
   } catch (error) {
     next(error)
   }

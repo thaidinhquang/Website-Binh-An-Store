@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-// Phác thảo Product do chưa có database
+import mongoosePaginate from 'mongoose-paginate-v2';
+
 const productSchema = new mongoose.Schema(
   {
     name: {
@@ -45,6 +46,10 @@ const productSchema = new mongoose.Schema(
     //     },
     // ],
     // 
+    active: {
+      type: Boolean,
+      default: true,
+    },
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
@@ -56,5 +61,7 @@ const productSchema = new mongoose.Schema(
     versionKey: false,
   }
 );
+
+productSchema.plugin(mongoosePaginate);
 
 export default mongoose.model("Product", productSchema);

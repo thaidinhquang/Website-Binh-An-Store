@@ -9,67 +9,67 @@ const roleSchema = new mongoose.Schema(
         },
         create_category: {
             type: Boolean,
-            default: false,
+            default: true,
         },
         update_category: {
             type: Boolean,
-            default: false,
+            default: true,
         },
         delete_category: {
             type: Boolean,
-            default: false,
+            default: true,
         },
         restore_category: {
             type: Boolean,
-            default: false,
+            default: true,
         },
         create_product: {
             type: Boolean,
-            default: false,
+            default: true,
         },
         update_product: {
             type: Boolean,
-            default: false,
+            default: true,
         },
         delete_product: {
             type: Boolean,
-            default: false,
+            default: true,
         },
         restore_product: {
             type: Boolean,
-            default: false,
+            default: true,
         },
         get_user: {
             type: Boolean,
-            default: false,
+            default: true,
         },
         create_user: {
             type: Boolean,
-            default: false,
+            default: true,
         },
         update_user: {
             type: Boolean,
-            default: false,
+            default: true,
         },
         delete_user: {
             type: Boolean,
-            default: false,
+            default: true,
         },
         restore_user: {
             type: Boolean,
-            default: false,
+            default: true,
         },
         create_role: {
             type: Boolean,
-            default: false,
+            default: true,
         },
         update_role: {
             type: Boolean,
-            default: false,
+            default: true,
         },
         delete_role: {
             type: Boolean,
-            default: false,
+            default: true,
         },
     },
     { timestamps: true, versionKey: false }

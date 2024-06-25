@@ -1,7 +1,10 @@
 import { useState } from "react";
 import Star from "../icons/Star";
-import { useParams } from "react-router-dom";
 import { useTanstackMutation, useTanstackQuery } from "../../common/hooks/useTanstackQuery";
+import {  useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const ProductView = ({ className, reportHandler }) => {
   const { id } = useParams();
