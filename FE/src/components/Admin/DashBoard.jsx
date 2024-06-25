@@ -37,14 +37,14 @@ const DashBoard = () => {
                         <IcoDashboard />
                       </span>
                       <span className=" font-normal text-base">
-                        Dashbaord
+                        Dashboard
                       </span>
                     </div>
                   </Link>
                 </div>
 
                 <div className="item group">
-                <Link to="/admin/product">
+                <Link to="/admin/products">
                   <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
                     <span>
                       <Product />
@@ -58,7 +58,7 @@ const DashBoard = () => {
 
               
               <div className="item group">
-              <Link to="/admin/category">
+              <Link to="/admin/categories">
                 <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
                   <span>
                     <IcoCategory />

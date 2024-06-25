@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
-import { Toaster } from "sonner";
 import ProductList from "./components/Admin/Product/ProductList";
 import About from "./components/About/About";
 import LayOutHome from "./components/layout/LayOutHome";
@@ -12,21 +11,17 @@ import CheckoutPage from "./components/CheckoutPage/CheckoutPage";
 import CategorytList from "./components/Admin/Category/CategoryList";
 import Signup from "./components/Auth/Signup";
 import UserList from "./components/Admin/Users/UserList";
-import UserEdit from "./components/Admin/Users/UserEdit";
-import MyComponent from "./components/MyComponent";
 import CategorytForm from "./components/Admin/Category/CategoryForm";
 import ProductForm from "./components/Admin/Product/ProductForm";
+import AllProductPage from "./components/Product/AllProductPage";
+import UserForm from "./components/Admin/Users/UserForm";
+import { ToastContainer } from 'react-toastify'
+import SuccessMessage from "./components/CheckoutPage/SuccessMessage";
 
 function App() {
   return (
     <>
-      <Toaster
-        richColors
-        position="top-right"
-        duration={2000}
-        visibleToasts={3}
-        expand={true}
-      />
+      <ToastContainer limit={3} newestOnTop={true} position="top-right" autoClose={3000} hideProgressBar={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
       <Routes>
         <Route path="/" element={<LayOutHome />}>
           <Route index element={<Home />} />
@@ -34,25 +29,29 @@ function App() {
           <Route path="about" element={<About />} />
           <Route path="cart" element={<CartPage />} />
           <Route path="checkout" element={<CheckoutPage />} />
+          <Route path="all-products" element={<AllProductPage />} />
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
         </Route>
-        <Route path="/test" element={<MyComponent />} />
+        <Route path="checkoutsuccess" element={<SuccessMessage />} />
         <Route path="/admin" element={<LayOutAdmin />}>
-          <Route path="product">
+          <Route path="products">
             <Route index element={<ProductList />} />
+            <Route path="trash" element={<ProductList />} />
             <Route path="add" element={<ProductForm />} />
             <Route path="edit/:id" element={<ProductForm />} />
           </Route>
-          <Route path="category">
+          <Route path="categories">
             <Route index element={<CategorytList />} />
+            <Route path="trash" element={<CategorytList />} />
             <Route path="add" element={<CategorytForm />} />
             <Route path="edit/:id" element={<CategorytForm />} />
           </Route>
           <Route path="users">
             <Route index element={<UserList />} />
-
-            <Route path="edit/:id" element={<UserEdit />} />
+            <Route path="trash" element={<UserList />} />
+            <Route path="add" element={<UserForm />} />
+            <Route path="edit/:id" element={<UserForm />} />
           </Route>
         </Route>
       </Routes>

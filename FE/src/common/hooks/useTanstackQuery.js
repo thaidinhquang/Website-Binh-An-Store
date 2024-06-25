@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { axiosGet, axiosPost, axiosPut } from "../../config/axios";
-import { toast } from "sonner";
+import { axiosDelete, axiosGet, axiosPost, axiosPut } from "../../config/axios";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 export const addparamstoUrl = (url, params) => {
     let newUrl = url;
     if (params) {
@@ -44,6 +44,9 @@ export const useTanstackMutation = (path, action, navigatePage) => {
             } else if (action === "DELETE") {
                 return await axiosDelete(`${path}/${data._id}`)
             }
+            else if (action === "RESTORE") {
+                return await axiosDelete(`${path}/restore/${data._id}`)
+            }
             return null
         },
         onSuccess: (data) => {
@@ -56,7 +59,7 @@ export const useTanstackMutation = (path, action, navigatePage) => {
             }
         },
         onError: (error) => {
-            console.log(error)
+            toast.error(error.message)
         }
     })
     const onSubmit = (data) => {
