@@ -5,7 +5,7 @@ import { setAuth } from '../Auth/core/AuthHelper';
 import { axiosPost } from '../../config/axios';
 import { getUserByToken } from '../Auth/core/_request';
 import { faFacebook, faGoogle, faTwitter } from '@fortawesome/free-brands-svg-icons'
-import { toast } from "sonner";
+import { toast } from 'react-toastify';
 const AuthenticationModal = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [isOpen, setIsOpen] = useState(false);

@@ -3,7 +3,7 @@ import Star from "../icons/Star";
 import {  useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 
 const ProductView = ({ className, reportHandler }) => {
 

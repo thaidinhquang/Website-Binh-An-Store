@@ -3,7 +3,7 @@ import Category from "../models/Category.js";
 export const createCategory = async (req, res, next) => {
   try {
     const data = await Category.create(req.body);
-    return !data ? res.status(400).json({ message: "Create category failed!" }) : res.status(200).json({ data })
+    return !data ? res.status(400).json({ message: "Create category failed!" }) : res.status(200).json({ data, message: "Create category successfully"})
   } catch (error) {
     next(error)
   }
@@ -12,7 +12,7 @@ export const createCategory = async (req, res, next) => {
 export const updateCategory = async (req, res, next) => {
   try {
     const data = await Category.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    return !data ? res.status(400).json({ message: "Update category failed!" }) : res.status(200).json({ data })
+    return !data ? res.status(400).json({ message: "Update category failed!" }) : res.status(200).json({ data, message: "Update category successfully"})
   } catch (error) {
     next(error)
   }
@@ -72,7 +72,7 @@ export const getOneCategoryByName = async (req, res, next) => {
 export const removeCategory = async (req, res, next) => {
   try {
     const data = await Category.findByIdAndUpdate(req.params.id, { active: false }, { new: true });
-    return !data ? res.status(400).json({ message: "Delete category failed!" }) : res.status(200).json({ data })
+    return !data ? res.status(400).json({ message: "Delete category failed!" }) : res.status(200).json({ data, message: "Delete category successfully"})
   } catch (error) {
     next(error)
   }
@@ -81,7 +81,7 @@ export const removeCategory = async (req, res, next) => {
 export const restoreCategory = async (req, res, next) => {
   try {
     const data = await Category.findByIdAndUpdate(req.params.id, { active: true }, { new: true });
-    return !data ? res.status(400).json({ message: "Restore category failed!" }) : res.status(200).json({ data })
+    return !data ? res.status(400).json({ message: "Restore category failed!" }) : res.status(200).json({ data, message: "Restore category successfully"})
   }
   catch (error) {
     next(error)

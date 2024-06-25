@@ -6,7 +6,7 @@ import Joi from 'joi';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { toast } from 'sonner';
+import { toast } from 'react-toastify';
 
 const userSchema = Joi.object({
   email: Joi.string().email({  tlds: { allow: false } }).required().min(3),

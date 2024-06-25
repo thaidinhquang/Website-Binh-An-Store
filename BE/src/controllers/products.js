@@ -24,7 +24,7 @@ export const getAllProduct = async (req, res, next) => {
       query.active = req.query.active;
     }
     const data = await Product.paginate(query, options);
-    return !data ? res.status(400).json({ message: "Khong tim thay san pham nao!" }) : res.status(200).json({ data });
+    return !data ? res.status(400).json({ message: "Khong tim thay san pham nao!" }) : res.status(200).json({ data, message: "Get all product successfully"});
   } catch (error) {
     next(error);
   }
@@ -42,7 +42,7 @@ export const getDetailProduct = async (req, res, next) => {
 export const deleteProduct = async (req, res, next) => {
   try {
     const data = await Product.findByIdAndUpdate(req.params.id, { active: false }, { new: true });
-    return !data ? res.status(400).json({ message: "Xoa that bai!" }) : res.status(200).json({ data })
+    return !data ? res.status(400).json({ message: "Xoa that bai!" }) : res.status(200).json({ data, message: "Xoa thanh cong!"})
   } catch (error) {
     next(error)
   }
@@ -51,7 +51,7 @@ export const deleteProduct = async (req, res, next) => {
 export const restoreProduct = async (req, res, next) => {
   try {
     const data = await Product.findByIdAndUpdate(req.params.id, { active: true }, { new: true });
-    return !data ? res.status(400).json({ message: "Khoi phuc that bai!" }) : res.status(200).json({ data })
+    return !data ? res.status(400).json({ message: "Khoi phuc that bai!" }) : res.status(200).json({ data, message: "Khoi phuc thanh cong!"})
   } catch (error) {
     next(error)
   }
@@ -61,7 +61,7 @@ export const createProduct = async (req, res, next) => {
   try {
     const data = await Product.create(req.body);
     await Category.findByIdAndUpdate(data.category, { $push: { products: data._id } });
-    return !data ? res.status(400).json({ message: "Create product failed!" }) : res.status(200).json({ data })
+    return !data ? res.status(400).json({ message: "Create product failed!" }) : res.status(200).json({ data, message: "Create product successfully"})
   } catch (error) {
     next(error)
   }
@@ -70,7 +70,7 @@ export const createProduct = async (req, res, next) => {
 export const updateProduct = async (req, res, next) => {
   try {
     const data = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    return !data ? res.status(400).json({ message: "Update product failed!" }) : res.status(200).json({ data })
+    return !data ? res.status(400).json({ message: "Update product failed!" }) : res.status(200).json({ data, message: "Update product successfully"})
   } catch (error) {
     next(error)
   }

@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
-import { Toaster } from "sonner";
 import ProductList from "./components/Admin/Product/ProductList";
 import About from "./components/About/About";
 import LayOutHome from "./components/layout/LayOutHome";
@@ -16,18 +15,12 @@ import CategorytForm from "./components/Admin/Category/CategoryForm";
 import ProductForm from "./components/Admin/Product/ProductForm";
 import AllProductPage from "./components/Product/AllProductPage";
 import UserForm from "./components/Admin/Users/UserForm";
-
+import { ToastContainer } from 'react-toastify'
 
 function App() {
   return (
     <>
-      <Toaster
-        richColors
-        position="top-right"
-        duration={2000}
-        visibleToasts={3}
-        expand={true}
-      />
+      <ToastContainer limit={3} newestOnTop={true} position="top-right" autoClose={3000} hideProgressBar={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
       <Routes>
         <Route path="/" element={<LayOutHome />}>
           <Route index element={<Home />} />
