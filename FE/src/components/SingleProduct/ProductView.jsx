@@ -13,28 +13,33 @@ const ProductView = ({ className, reportHandler }) => {
   const { mutate } = useTanstackMutation(`cart/add-item`, 'CREATE');
   
   const [quantity, setQuantity] = useState(1);
-
+ 
   const handleIncrement = () => {
     setQuantity(prevQuantity => {
       const newQuantity = prevQuantity + 1;
-      console.log('Số lượng Tăng 1:', newQuantity);
+      console.log('Số lượng tăng:', newQuantity);
       return newQuantity;
     });
   };
 
   const handleDecrement = () => {
     setQuantity(prevQuantity => {
-      const newQuantity = prevQuantity > 1 ? prevQuantity - 1 : 1;
-      console.log('Số lượng giảm 1:', newQuantity);
+      const newQuantity = Math.max(prevQuantity - 1, 1);
+      console.log('Số lượng giảm:', newQuantity);
       return newQuantity;
     });
+  };
+
+  const handleAddToCart = (event) => {
+    event.preventDefault();
+    mutate({ productId: product._id, quantity });
   };
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading product details</p>;
 
   return (
-    <form>
+    <form onSubmit={handleAddToCart}>
       <div
         className={`product-view w-full lg:flex justify-between ${
           className || ""
@@ -152,9 +157,6 @@ const ProductView = ({ className, reportHandler }) => {
                 <button
                   type="submit"
                   className="black-btn text-sm font-semibold w-full h-full"
-                  onClick={() => {
-                    mutate({ productId: product._id, quantity: 1 });
-                  }}
                 >
                   Add To Cart
                 </button>
