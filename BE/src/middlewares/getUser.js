@@ -28,6 +28,11 @@ export const getUser = async (req, res, next) => {
                 message: "User does not exist",
             });
         }
+        if (user.active == false) {
+            return res.status(403).json({
+                message: "User is not active",
+            });
+        }
         req.user = user
         next();
     } catch (error) {
