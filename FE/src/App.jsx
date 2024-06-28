@@ -17,6 +17,11 @@ import MyComponent from "./components/MyComponent";
 import CategorytForm from "./components/Admin/Category/CategoryForm";
 import ProductForm from "./components/Admin/Product/ProductForm";
 import AllProductPage from "./components/Product/AllProductPage";
+import { Profile } from "./components/Profile/Profile";
+import UserProfile from "./components/Profile/User/UserProfile";
+import Address from "./components/Profile/Address/Address";
+import Orders from "./components/Profile/Order/Orders";
+import ChangePassword from "./components/Profile/ChangePassword/ChangePassword";
 
 
 function App() {
@@ -39,9 +44,18 @@ function App() {
           <Route path="all-products" element={<AllProductPage />} />
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
+          <Route path="/profile" element={<Profile />}>
+            <Route path="user-profile" element={<UserProfile />} />
+            <Route path="address" element={<Address />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="change-password" element={<ChangePassword />} />
+          </Route>
         </Route>
+
+
         <Route path="/test" element={<MyComponent />} />
         <Route path="/admin" element={<LayOutAdmin />}>
+
           <Route path="product">
             <Route index element={<ProductList />} />
             <Route path="add" element={<ProductForm />} />
