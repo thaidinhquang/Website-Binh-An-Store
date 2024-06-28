@@ -17,6 +17,7 @@ import AllProductPage from "./components/Product/AllProductPage";
 import UserForm from "./components/Admin/Users/UserForm";
 import { ToastContainer } from 'react-toastify'
 import SuccessMessage from "./components/CheckoutPage/SuccessMessage";
+import ProductDetail from "./components/Admin/Product/ProductDetail";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
             <Route path="trash" element={<ProductList />} />
             <Route path="add" element={<ProductForm />} />
             <Route path="edit/:id" element={<ProductForm />} />
+            <Route path=":id" element={<ProductDetail />} />
           </Route>
           <Route path="categories">
             <Route index element={<CategorytList />} />
