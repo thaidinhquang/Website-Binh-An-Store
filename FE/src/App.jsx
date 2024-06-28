@@ -18,6 +18,7 @@ import SuccessMessage from "./components/CheckoutPage/SuccessMessage";
 import NotfoundPage from "./components/layout/Notfound";
 import LayoutHome from "./components/layout/LayoutHome";
 import LayoutAdmin from "./components/layout/LayoutAdmin";
+import ProductDetail from "./components/Admin/Product/ProductDetail";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
             <Route index element={<ProductList />} />
             <Route path="add" element={<ProductForm />} />
             <Route path="edit/:id" element={<ProductForm />} />
+            <Route path=":id" element={<ProductDetail />} />
           </Route>
           <Route path="categories">
             <Route index element={<CategorytList />} />
