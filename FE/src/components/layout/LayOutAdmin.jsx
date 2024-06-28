@@ -1,6 +1,6 @@
 import DashBoard from "../Admin/DashBoard"
 
-const LayOutAdmin = () => {
+const LayoutAdmin = () => {
   return (
     <div>
       <DashBoard/>
@@ -8,4 +8,4 @@ const LayOutAdmin = () => {
   )
 }
 
-export default LayOutAdmin
+export default LayoutAdmin

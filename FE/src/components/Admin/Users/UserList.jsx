@@ -3,22 +3,30 @@ import { useEffect, useState } from 'react';
 import socket from "/src/config/socket";
 import { Link, useLocation } from "react-router-dom";
 import Pageination from "../../UI/Pagination";
+import { useForm } from "react-hook-form";
+import { useHookSearch } from "../../../common/hooks/useSearch";
 
 const UserList = () => {
-  const page = new URLSearchParams(useLocation().search).get('page') || 1;
-  const isTrash = useLocation().pathname.includes('trash');
-  const { data, isLoading, refetch } = useTanstackQuery('users', {
-    active: isTrash ? false : true,
-    page
-  })
-  console.log(data);
-  const { mutate, isPending } = useTanstackMutation(`users`, isTrash ? "RESTORE" : "DELETE");
+  const search = new URLSearchParams(useLocation().search);
+  const page = search.get('page') || 1;
+  const sort = search.get('sort') || '';
+  const name = search.get('name') || '';
+  const email = search.get('email') || '';
+  const phone = search.get('phone') || '';
+  const role = search.get('role') || '';
+  const active = search.get('active') || '';
+  const form = useForm();
+  const useSearch = useHookSearch();
+  const { data: dataRole, isLoading: isLoadingRole } = useTanstackQuery('role')
+  const { data, isLoading, refetch } = useTanstackQuery('users', { active, page, sort, name, email, phone, role })
+  const { mutate, isPending } = useTanstackMutation(`users`, "DELETE");
   const [listUserOnEditRoute, setListUserOnEditRoute] = useState(null);
   const isUserEditing = (id) => {
     const user = listUserOnEditRoute ? listUserOnEditRoute[id] : null;
     return user ? <span className="inline-block px-2 py-1 text-xs font-semibold text-white bg-red-500 rounded-full ml-2">{user} đang chỉnh sửa</span> : '';
   };
   useEffect(() => {
+    form.reset({ active, page, sort, name, email, phone, role });
     const handleUserEditing = (data) => {
       setListUserOnEditRoute(data);
     };
@@ -27,11 +35,12 @@ const UserList = () => {
   }, []);
   useEffect(() => {
     refetch()
-  }, [isTrash]);
-  useEffect(() => {
-    refetch()
-  }, [page]);
-  if (isLoading) return <p>Loading...</p>
+  }, [active, page, sort, name, email, phone, role]);
+
+  const searchForm = (data) => {
+    useSearch(data, '/admin/users')
+  }
+  if (isLoading || isLoadingRole) return <p>Loading...</p>
   return (
     <>
       <div>Danh sách nguời dùng</div>
@@ -41,12 +50,42 @@ const UserList = () => {
         >
           thêm người dùng
         </Link>
-        <Link to={isTrash ? '/admin/users' : '/admin/users/trash'}
-          className="text-white  bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
-        >
-          {isTrash ? 'Danh sách' : 'Thùng rác'}
-        </Link>
       </div>
+      <form onSubmit={form.handleSubmit(searchForm)} className="flex justify-between gap-3">
+        <input
+          {...form.register('name')}
+          type="text" placeholder="Tìm kiếm theo tên" className="border border-gray-300 dark:border-gray-700 p-2 h-[50px] w-full outline-none focus:border-pink-500" />
+        <input
+          {...form.register('email')}
+          type="text" placeholder="Tìm kiếm theo email" className="border border-gray-300 dark:border-gray-700 p-2 h-[50px] w-full outline-none focus:border-pink-500" />
+        <input
+          {...form.register('phone')}
+          type="text" placeholder="Tìm kiếm theo sdt" className="border border-gray-300 dark:border-gray-700 p-2 h-[50px] w-full outline-none focus:border-pink-500" />
+        <select
+          {...form.register('role')}
+          className="border border-gray-300 dark:border-gray-700 p-2 h-[50px] w-[200px]">
+          <option value="">Tất cả</option>
+          {dataRole?.map((item) => (
+            <option key={item._id} value={item.name}>{item.name}</option>
+          ))}
+        </select>
+        <select
+          {...form.register('sort')}
+          className="border border-gray-300 dark:border-gray-700 p-2 h-[50px] w-[200px]">
+          <option value="">Mới {'->'} cũ</option>
+          <option value="createdAt:1">Cũ {'->'} mới</option>
+        </select>
+        <select
+          {...form.register('active')}
+          className="border border-gray-300 dark:border-gray-700 p-2 h-[50px] w-[200px]">
+          <option value="">Tất cả</option>
+          <option value={true}>Đang hoạt động</option>
+          <option value={false}>Không hoạt động</option>
+        </select>
+        <button type="submit" className="text-white  bg-blue-700 hover:bg-blue-800 font-medium text-sm px-5 py-2.5 me-2 mb-2  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-[50px] w-[400px]">
+          Tìm kiếm
+        </button>
+      </form>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -70,6 +109,7 @@ const UserList = () => {
               <td scope="col" className="px-6 py-3">
                 action
               </td>
+              <td scope="col" className="px-6 py-3">active</td>
             </tr>
           </thead>
           <tbody>
@@ -106,7 +146,7 @@ const UserList = () => {
                     >
                       <li>
                         <button onClick={() => mutate(item)}>
-                          {isPending ? (isTrash ? 'Đang hồi sinh' : 'Đang xóa...') : (isTrash ? 'Khôi phục' : 'Xóa')}
+                          {isPending ? 'Đang xử lý...' : 'Xóa'}
                         </button>
                       </li>
                       <li>
@@ -115,6 +155,12 @@ const UserList = () => {
                       </li>
                     </ul>
                   </div>
+                </th>
+                <th>
+                  <label className="inline-flex items-center me-5 cursor-pointer">
+                    <input type="checkbox" value="" className="sr-only peer" checked={item.active} onChange={() => mutate(item)} />
+                    <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                  </label>
                 </th>
               </tr>
             ))

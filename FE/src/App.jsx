@@ -2,8 +2,6 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
 import ProductList from "./components/Admin/Product/ProductList";
 import About from "./components/About/About";
-import LayOutHome from "./components/layout/LayOutHome";
-import LayOutAdmin from "./components/layout/LayOutAdmin";
 import Login from "./components/Auth/Login";
 import CartPage from "./components/CartPage";
 import SingleProduct from "./components/SingleProduct/SingleProduct";
@@ -17,13 +15,16 @@ import AllProductPage from "./components/Product/AllProductPage";
 import UserForm from "./components/Admin/Users/UserForm";
 import { ToastContainer } from 'react-toastify'
 import SuccessMessage from "./components/CheckoutPage/SuccessMessage";
+import NotfoundPage from "./components/layout/Notfound";
+import LayoutHome from "./components/layout/LayoutHome";
+import LayoutAdmin from "./components/layout/LayoutAdmin";
 
 function App() {
   return (
     <>
       <ToastContainer limit={3} newestOnTop={true} position="top-right" autoClose={3000} hideProgressBar={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
       <Routes>
-        <Route path="/" element={<LayOutHome />}>
+        <Route path="/" element={<LayoutHome />}>
           <Route index element={<Home />} />
           <Route path="detail/:id" element={<SingleProduct />} />
           <Route path="about" element={<About />} />
@@ -34,26 +35,24 @@ function App() {
           <Route path="signup" element={<Signup />} />
         </Route>
         <Route path="checkoutsuccess" element={<SuccessMessage />} />
-        <Route path="/admin" element={<LayOutAdmin />}>
+        <Route path="/admin" element={<LayoutAdmin />}>
           <Route path="products">
             <Route index element={<ProductList />} />
-            <Route path="trash" element={<ProductList />} />
             <Route path="add" element={<ProductForm />} />
             <Route path="edit/:id" element={<ProductForm />} />
           </Route>
           <Route path="categories">
             <Route index element={<CategorytList />} />
-            <Route path="trash" element={<CategorytList />} />
             <Route path="add" element={<CategorytForm />} />
             <Route path="edit/:id" element={<CategorytForm />} />
           </Route>
           <Route path="users">
             <Route index element={<UserList />} />
-            <Route path="trash" element={<UserList />} />
             <Route path="add" element={<UserForm />} />
             <Route path="edit/:id" element={<UserForm />} />
           </Route>
         </Route>
+        <Route path="*" element={<NotfoundPage />} />
       </Routes>
     </>
   );
