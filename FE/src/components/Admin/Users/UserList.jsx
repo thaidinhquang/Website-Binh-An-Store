@@ -1,10 +1,11 @@
 import { useTanstackMutation, useTanstackQuery } from "../../../common/hooks/useTanstackQuery";
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import socket from "/src/config/socket";
 import { Link, useLocation } from "react-router-dom";
 import Pageination from "../../UI/Pagination";
 import { useForm } from "react-hook-form";
 import { useHookSearch } from "../../../common/hooks/useSearch";
+import { AuthContext } from "../../Auth/core/Auth";
 
 const UserList = () => {
   const search = new URLSearchParams(useLocation().search);
@@ -17,6 +18,7 @@ const UserList = () => {
   const active = search.get('active') || '';
   const form = useForm();
   const useSearch = useHookSearch();
+  const { currentUser } = useContext(AuthContext)
   const { data: dataRole, isLoading: isLoadingRole } = useTanstackQuery('role')
   const { data, isLoading, refetch } = useTanstackQuery('users', { active, page, sort, name, email, phone, role })
   const { mutate, isPending } = useTanstackMutation(`users`, "DELETE");
@@ -36,6 +38,21 @@ const UserList = () => {
   useEffect(() => {
     refetch()
   }, [active, page, sort, name, email, phone, role]);
+  const activeDisable = (item) => {
+    let isDisable = false
+    if (currentUser?._id === item._id) {
+      isDisable = true
+    }
+    if (item.role == 'admin') {
+      isDisable = true
+    }
+    return (
+      <label className={"inline-flex items-center me-5 " + (isDisable ? "cursor-not-allowed" : "cursor-pointer")}>
+        <input disabled={isDisable} type="checkbox" value="" className="sr-only peer" checked={item.active} onChange={() => mutate(item)} />
+        <div className={"relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 " + (isDisable ? "peer-checked:bg-red-600" : "peer-checked:bg-green-600")}></div>
+      </label>
+    );
+  };
 
   const searchForm = (data) => {
     useSearch(data, '/admin/users')
@@ -157,10 +174,7 @@ const UserList = () => {
                   </div>
                 </th>
                 <th>
-                  <label className="inline-flex items-center me-5 cursor-pointer">
-                    <input type="checkbox" value="" className="sr-only peer" checked={item.active} onChange={() => mutate(item)} />
-                    <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
-                  </label>
+                  {activeDisable(item)}
                 </th>
               </tr>
             ))
