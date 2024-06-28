@@ -38,7 +38,11 @@ export const signIn = async (req, res, next) => {
                 message: "Email is not found",
             });
         }
-
+        if (userExist.active == false) {
+            return res.status(400).json({
+                message: "User is not active",
+            });
+        }
         const checkPassword = await comparePassword(password, userExist.password);
         if (!checkPassword) {
             return res.status(400).json({

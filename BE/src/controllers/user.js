@@ -12,6 +12,18 @@ export const getAllUser = async (req, res, next) => {
         if (req.query.name) {
             query.name = { $regex: new RegExp(req.query.name, 'i') };
         }
+        if (req.query.email) {
+            query.email = { $regex: new RegExp(req.query.email, 'i') };
+        }
+        if (req.query.role) {
+            query.role = req.query.role;
+        }
+        if (req.query.address) {
+            query.address = { $regex: new RegExp(req.query.address, 'i') };
+        }
+        if (req.query.phone) {
+            query.phone = { $regex: new RegExp(req.query.phone, 'i') };
+        }
         if (req.query.active) {
             query.active = req.query.active;
         }
@@ -45,7 +57,7 @@ export const createUser = async (req, res, next) => {
 export const removeUserById = async (req, res, next) => {
     try {
         const data = await User.findByIdAndUpdate(req.params.id, { active: false }, { new: true });
-        return !data ? res.status(500).json({ message: "Remove user failed" }) : res.status(200).json({ data });
+        return !data ? res.status(500).json({ message: "Remove user failed" }) : res.status(200).json({ data, message: "Remove user successfully"});
     } catch (error) {
         next(error);
     }
@@ -54,7 +66,7 @@ export const removeUserById = async (req, res, next) => {
 export const updateUser = async (req, res, next) => {
     try {
         const data = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        return !data ? res.status(500).json({ message: "Update user failed" }) : res.status(200).json({ data });
+        return !data ? res.status(500).json({ message: "Update user failed" }) : res.status(200).json({ data, message: "Update user successfully"});
     } catch (error) {
         next(error);
     }
@@ -63,7 +75,7 @@ export const updateUser = async (req, res, next) => {
 export const restoreUserById = async (req, res, next) => {
     try {
         const data = await User.findByIdAndUpdate(req.params.id, { active: true }, { new: true });
-        return !data ? res.status(500).json({ message: "Restore user failed" }) : res.status(200).json({ data });
+        return !data ? res.status(500).json({ message: "Restore user failed" }) : res.status(200).json({ data, message: "Restore user successfully"});
     } catch (error) {
         next(error);
     }
