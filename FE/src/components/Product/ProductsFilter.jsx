@@ -33,7 +33,7 @@ export default function ProductsFilter({
                       id="mobileLaptop"
                       name="mobileLaptop"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.mobileLaptop}
+                      checked={filters?.mobileLaptop}
                     />
                   </div>
                   <div>
@@ -73,7 +73,7 @@ export default function ProductsFilter({
                       id="gaming"
                       name="gaming"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.gaming}
+                      checked={filters?.gaming}
                     />
                   </div>
                   <div>
@@ -113,7 +113,7 @@ export default function ProductsFilter({
                       id="imageVideo"
                       name="imageVideo"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.imageVideo}
+                      checked={filters?.imageVideo}
                     />
                   </div>
                   <div>
@@ -153,7 +153,7 @@ export default function ProductsFilter({
                       id="vehicles"
                       name="vehicles"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.vehicles}
+                      checked={filters?.vehicles}
                     />
                   </div>
                   <div>
@@ -193,7 +193,7 @@ export default function ProductsFilter({
                       id="furnitures"
                       name="furnitures"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.furnitures}
+                      checked={filters?.furnitures}
                     />
                   </div>
                   <div>
@@ -233,7 +233,7 @@ export default function ProductsFilter({
                       id="sport"
                       name="sport"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.sport}
+                      checked={filters?.sport}
                     />
                   </div>
                   <div>
@@ -273,7 +273,7 @@ export default function ProductsFilter({
                       id="foodDrinks"
                       name="foodDrinks"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.foodDrinks}
+                      checked={filters?.foodDrinks}
                     />
                   </div>
                   <div>
@@ -313,7 +313,7 @@ export default function ProductsFilter({
                       id="fashion"
                       name="fashion"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.fashion}
+                      checked={filters?.fashion}
                     />
                   </div>
                   <div>
@@ -353,7 +353,7 @@ export default function ProductsFilter({
                       id="toilet"
                       name="toilet"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.toilet}
+                      checked={filters?.toilet}
                     />
                   </div>
                   <div>
@@ -393,7 +393,7 @@ export default function ProductsFilter({
                       id="makeupCorner"
                       name="makeupCorner"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.makeupCorner}
+                      checked={filters?.makeupCorner}
                     />
                   </div>
                   <div>
@@ -433,7 +433,7 @@ export default function ProductsFilter({
                       id="babyItem"
                       name="babyItem"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.babyItem}
+                      checked={filters?.babyItem}
                     />
                   </div>
                   <div>
@@ -511,7 +511,7 @@ export default function ProductsFilter({
                       id="apple"
                       name="apple"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.apple}
+                      checked={filters?.apple}
                     />
                   </div>
                   <div>
@@ -531,7 +531,7 @@ export default function ProductsFilter({
                       id="samsung"
                       name="samsung"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.samsung}
+                      checked={filters?.samsung}
                     />
                   </div>
                   <div>
@@ -551,7 +551,7 @@ export default function ProductsFilter({
                       id="walton"
                       name="walton"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.walton}
+                      checked={filters?.walton}
                     />
                   </div>
                   <div>
@@ -571,7 +571,7 @@ export default function ProductsFilter({
                       id="oneplus"
                       name="oneplus"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.oneplus}
+                      checked={filters?.oneplus}
                     />
                   </div>
                   <div>
@@ -591,7 +591,7 @@ export default function ProductsFilter({
                       id="vivo"
                       name="vivo"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.vivo}
+                      checked={filters?.vivo}
                     />
                   </div>
                   <div>
@@ -611,7 +611,7 @@ export default function ProductsFilter({
                       id="oppo"
                       name="oppo"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.oppo}
+                      checked={filters?.oppo}
                     />
                   </div>
                   <div>
@@ -631,7 +631,7 @@ export default function ProductsFilter({
                       id="xiomi"
                       name="xiomi"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.xiomi}
+                      checked={filters?.xiomi}
                     />
                   </div>
                   <div>
@@ -651,7 +651,7 @@ export default function ProductsFilter({
                       id="others"
                       name="others"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.others}
+                      checked={filters?.others}
                     />
                   </div>
                   <div>
@@ -739,7 +739,7 @@ export default function ProductsFilter({
                       id="sizeS"
                       name="sizeS"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.sizeS}
+                      checked={filters?.sizeS}
                     />
                   </div>
                   <div>
@@ -759,7 +759,7 @@ export default function ProductsFilter({
                       id="sizeM"
                       name="sizeM"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.sizeM}
+                      checked={filters?.sizeM}
                     />
                   </div>
                   <div>
@@ -779,7 +779,7 @@ export default function ProductsFilter({
                       id="sizeXL"
                       name="sizeXL"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.sizeXL}
+                      checked={filters?.sizeXL}
                     />
                   </div>
                   <div>
@@ -799,7 +799,7 @@ export default function ProductsFilter({
                       id="sizeXXL"
                       name="sizeXXL"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.sizeXXL}
+                      checked={filters?.sizeXXL}
                     />
                   </div>
                   <div>
@@ -819,7 +819,7 @@ export default function ProductsFilter({
                       id="sizeFit"
                       name="sizeFit"
                       handleChange={(e) => checkboxHandler(e)}
-                      checked={filters.sizeFit}
+                      checked={filters?.sizeFit}
                     />
                   </div>
                   <div>

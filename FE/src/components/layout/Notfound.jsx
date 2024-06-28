@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import './notfound.css'
+import '../UI/style.css'
 
 const NotfoundPage = () => {
     return (
@@ -17,8 +17,8 @@ const NotfoundPage = () => {
                     </p>
                     {/* <Link to={'/'} className="bg-white p-2 text-blue-500 font-bold text-3xl hover:underline">Go back to HomePage</Link> */}
                     <Link to={'/'}>
-                        <button data-text="Awesome" class="buttonpma">
-                            <span class="actual-text">&nbsp;go back to homepage&nbsp;</span>
+                        <button data-text="Awesome" className="buttonpma">
+                            <span className="actual-text">&nbsp;go back to homepage&nbsp;</span>
                         </button>
                     </Link>
                 </div>

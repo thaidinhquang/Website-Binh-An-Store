@@ -36,19 +36,19 @@ function App() {
           <Route path="about" element={<About />} />
           <Route path="cart" element={<CartPage />} />
           <Route path="checkout" element={<CheckoutPage />} />
-          <Route path="all-products" element={<AllProductPage />} />
+          <Route path="shop" element={<AllProductPage />} />
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
           <Route path="/profile" element={<Profile />}>
-            <Route path="user-profile" element={<UserProfile />} />
+            <Route path="" element={<UserProfile />} />
             <Route path="address" element={<Address />} />
             <Route path="orders" element={<Orders />} />
             <Route path="change-password" element={<ChangePassword />} />
           </Route>
         </Route>
         <Route path="checkoutsuccess" element={<SuccessMessage />} />
-        <Route path="/admin" element={<LayOutAdmin />}>
-          <Route path="product">
+        <Route path="/admin" element={<LayoutAdmin />}>
+          <Route path="products">
             <Route index element={<ProductList />} />
             <Route path="add" element={<ProductForm />} />
             <Route path="edit/:id" element={<ProductForm />} />

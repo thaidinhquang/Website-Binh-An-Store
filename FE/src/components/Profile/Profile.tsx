@@ -1,13 +1,29 @@
-import React from "react";
-import { Link, Outlet } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import IcoDashboard from "../icons/IcoDashboard";
 import IcoPeople from "../icons/IcoPeople";
 import IcoCart from "../icons/IcoCart";
 import IcoAdress from "../icons/IcoAdress";
 import IcoPassword from "../icons/IcoPassword";
 import IcoSupport from "../icons/IcoSupport";
-
+import { AuthContext } from "../Auth/core/Auth";
+import '../UI/style.css'
 export const Profile = () => {
+  const navigate = useNavigate();
+  const { currentUser, removeCurrentUser } = useContext(AuthContext);
+  const [confirmLogout, setConfirmLogout] = useState(false)
+  const handleLogout = () => {
+    if(confirmLogout) {
+      removeCurrentUser();
+      navigate("/?openform=true");
+    }
+    else {
+      setConfirmLogout(true)
+      setTimeout(() => {
+        setConfirmLogout(false)
+      }, 5000);
+    }
+  }
   return (
     <div>
       <div className="profile-page-wrapper w-full">
@@ -22,9 +38,9 @@ export const Profile = () => {
               <div className="profile-wrapper w-full mt-8 flex space-x-10">
                 <div className="w-[236px] min-h-[600px] border-r border-[rgba(0, 0, 0, 0.1)]">
                   <div className="flex flex-col space-y-10">
-                    <div className="item group">
-                      <Link to="/profile#dashboard">
-                        <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
+                    {currentUser?.role === "admin" && (<div className="item group">
+                      <Link to="/admin">
+                        <div className="flex space-x-3 items-center text-qgray hover:text-black">
                           <span>
                             <IcoDashboard />
                           </span>
@@ -33,11 +49,10 @@ export const Profile = () => {
                           </span>
                         </div>
                       </Link>
-                    </div>
-
+                    </div>)}
                     <div className="item group">
-                      <Link to="/profile/user-profile">
-                        <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
+                      <Link to="/profile">
+                        <div className="flex space-x-3 items-center text-qgray hover:text-black">
                           <span>
                             <IcoPeople />
                           </span>
@@ -50,7 +65,7 @@ export const Profile = () => {
 
                     <div className="item group">
                       <Link to="/profile/orders">
-                        <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
+                        <div className="flex space-x-3 items-center text-qgray hover:text-black">
                           <span>
                             <IcoCart />
                           </span>
@@ -63,7 +78,7 @@ export const Profile = () => {
 
                     <div className="item group">
                       <Link to="/profile/address">
-                        <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
+                        <div className="flex space-x-3 items-center text-qgray hover:text-black">
                           <span>
                             <IcoAdress />
                           </span>
@@ -76,7 +91,7 @@ export const Profile = () => {
 
                     <div className="item group">
                       <Link to="/profile/change-password">
-                        <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
+                        <div className="flex space-x-3 items-center text-qgray hover:text-black">
                           <span>
                             <IcoPassword />
                           </span>
@@ -88,7 +103,7 @@ export const Profile = () => {
                     </div>
                     <div className="item group">
                       <Link to="/profile#support">
-                        <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
+                        <div className="flex space-x-3 items-center text-qgray hover:text-black">
                           <span>
                             <IcoSupport />
                           </span>
@@ -97,6 +112,13 @@ export const Profile = () => {
                           </span>
                         </div>
                       </Link>
+                    </div>
+                    <div className="item group">
+                      <button onClick={() => handleLogout()}
+                        className="button-logout"
+                      >
+                        {confirmLogout ? "Xác nhận" : "Đăng xuất"}
+                      </button>
                     </div>
                   </div>
                 </div>

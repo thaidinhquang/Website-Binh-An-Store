@@ -1,0 +1,104 @@
+.button-logout {
+    --color1: #e100ff;
+    --color2: #ff1cb3;
+    perspective: 1000px;
+    padding: 1em 1em;
+    background: linear-gradient(var(--color1), var(--color2));
+    border: none;
+    outline: none;
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: #fff;
+    text-shadow: 0 10px 10px #000;
+    cursor: pointer;
+    transform: rotateX(70deg) rotateZ(30deg);
+    transform-style: preserve-3d;
+    transition: transform 0.5s;
+}
+
+.button-logout::before {
+    content: "";
+    width: 100%;
+    height: 15px;
+    background-color: var(--color2);
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transform: rotateX(90deg);
+    transform-origin: bottom;
+}
+
+.button-logout::after {
+    content: "";
+    width: 15px;
+    height: 100%;
+    background-color: var(--color1);
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: rotateY(-90deg);
+    transform-origin: right;
+}
+
+.button-logout:hover {
+    transform: rotateX(30deg) rotateZ(0);
+}
+
+/* === removing default button style ===*/
+.buttonpma {
+    margin: 0;
+    height: auto;
+    background: transparent;
+    padding: 0;
+    border: none;
+    animation: r1 3s ease-in-out infinite;
+    /*linear*/
+    border: 7px rgba(5, 250, 62, 0.129) solid;
+    border-radius: 14px;
+}
+
+/* button styling */
+.buttonpma {
+    --border-right: 6px;
+    --text-stroke-color: rgb(195, 255, 0);
+    /* Pink */
+    --animation-color: #f7f7f7;
+    /* Cyan */
+    --fs-size: 2em;
+    letter-spacing: 3px;
+    text-decoration: none;
+    font-size: var(--fs-size);
+    font-family: "Arial";
+    position: relative;
+    text-transform: uppercase;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--text-stroke-color);
+}
+
+/* this is the text, when you hover on button */
+.hover-text {
+    position: absolute;
+    box-sizing: border-box;
+    content: attr(data-text);
+    color: var(--animation-color);
+    width: 0%;
+    inset: 0;
+    border-right: var(--border-right) solid var(--animation-color);
+    overflow: hidden;
+    transition: 1.5s;
+    -webkit-text-stroke: 1px var(--animation-color);
+    animation: r2 2s ease-in-out infinite;
+}
+
+@keyframes r1 {
+    50% {
+        transform: rotate(-1deg) rotateZ(-10deg);
+    }
+}
+
+@keyframes r2 {
+    50% {
+        transform: rotateX(-65deg);
+    }
+}

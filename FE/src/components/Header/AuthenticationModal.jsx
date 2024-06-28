@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { AuthContext } from '../Auth/core/Auth';
 import { setAuth } from '../Auth/core/AuthHelper';
@@ -6,9 +6,12 @@ import { axiosPost } from '../../config/axios';
 import { getUserByToken } from '../Auth/core/_request';
 import { faFacebook, faGoogle, faTwitter } from '@fortawesome/free-brands-svg-icons'
 import { toast } from 'react-toastify';
+import { useLocation } from 'react-router-dom';
 const AuthenticationModal = () => {
+  const search = new URLSearchParams(useLocation().search);
+  const openform = search.get('openform') || false;
   const [isRegister, setIsRegister] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(openform);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [cPassword, setCPassword] = useState('');
@@ -16,6 +19,9 @@ const AuthenticationModal = () => {
   const toggleModal = () => {
     setIsOpen(!isOpen);
   };
+  useEffect(() => {
+    setIsOpen(openform);
+  }, [openform]);
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (isRegister && password !== cPassword) return toast.error('Mật khẩu không khớp')

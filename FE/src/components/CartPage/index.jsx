@@ -10,24 +10,35 @@ const CartPage = ({ cart = true, className }) => {
   const [isLoadingItem, setIsLoadingItem] = useState(false)
   const [items, setItems] = useState([])
   const { data, isLoading } = useTanstackQuery('cart')
-  const { data: cartTotal, isLoading: isLoadingCartTotal } = useTanstackQuery('cart/total')
+  const { data: cartTotal, isLoading: isLoadingCartTotal, refetch} = useTanstackQuery('cart/total')
   const { mutate: increeseProduct } = useTanstackMutation(`cart/increase-quantity`, "CREATE");
   const { mutate: decreaseProduct } = useTanstackMutation(`cart/decrease-quantity`, "CREATE");
+  const { mutate: removeProduct } = useTanstackMutation(`cart/remove-item`, "CREATE");
   const { mutate: order, isPending, data: response } = useTanstackMutation(`orders/create-checkout-session`, "CREATE");
   const { currentUser } = useContext(AuthContext);
   const calculateTotalPrice = (item) => {
     return item.productId.price * item.quantity;
   };
   const updateProduct = (product, action) => {
+    const productId = product.productId._id
+    const quantity = data.products.find(item => item.productId._id === productId).quantity
     if (action === 'increase') {
-      increeseProduct({ productId: product.productId._id })
-      data.products.find(item => item.productId._id === product.productId._id).quantity++
+      increeseProduct({ productId })
+      data.products.find(item => item.productId._id === productId).quantity++
     }
     if (action === 'decrease') {
-      decreaseProduct({ productId: product.productId._id })
-      data.products.find(item => item.productId._id === product.productId._id).quantity--
+      if (quantity > 1) {
+        decreaseProduct({ productId })
+        data.products.find(item => item.productId._id === productId).quantity--
+      }
     }
-
+    if (action === 'remove') {
+      removeProduct({ productId })
+      data.products = data.products.filter(item => item.productId._id !== productId)
+    }
+    setTimeout(() => {
+      refetch()
+    }, 1000)
   };
   const onSubmit = async () => {
     const data = {
@@ -159,6 +170,7 @@ const CartPage = ({ cart = true, className }) => {
                               <td className="py-4">
                                 <div className="flex justify-center items-center space-x-2">
                                   <button
+                                    disabled={item.quantity === 1}
                                     onClick={() => updateProduct(item, 'decrease')}
                                     className="px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded"
                                   >
@@ -189,7 +201,7 @@ const CartPage = ({ cart = true, className }) => {
 
                               <td className="text-right py-4">
                                 <div className="flex space-x-1 items-center justify-center">
-                                  <span onClick={() => handleRemoveItems(item)}>
+                                  <span onClick={() => updateProduct(item, 'remove')}>
                                     <svg
                                       width="10"
                                       height="10"

@@ -1,9 +1,9 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { getUserByToken } from './_request'; // adjust the path according to your project structure
 import { getAuth, removeAuth, setAuth } from './AuthHelper';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
-
 const fetchUser = async (setCurrentUser) => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -28,7 +28,6 @@ const fetchUser = async (setCurrentUser) => {
 
 const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(getAuth());
-
     useEffect(() => {
         fetchUser(setCurrentUser);
     }, []);
