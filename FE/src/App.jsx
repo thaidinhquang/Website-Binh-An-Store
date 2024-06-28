@@ -19,6 +19,11 @@ import NotfoundPage from "./components/layout/Notfound";
 import LayoutHome from "./components/layout/LayoutHome";
 import LayoutAdmin from "./components/layout/LayoutAdmin";
 import ProductDetail from "./components/Admin/Product/ProductDetail";
+import { Profile } from "./components/Profile/Profile";
+import UserProfile from "./components/Profile/User/UserProfile";
+import Address from "./components/Profile/Address/Address";
+import Orders from "./components/Profile/Order/Orders";
+import ChangePassword from "./components/Profile/ChangePassword/ChangePassword";
 
 function App() {
   return (
@@ -34,10 +39,16 @@ function App() {
           <Route path="all-products" element={<AllProductPage />} />
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
+          <Route path="/profile" element={<Profile />}>
+            <Route path="user-profile" element={<UserProfile />} />
+            <Route path="address" element={<Address />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="change-password" element={<ChangePassword />} />
+          </Route>
         </Route>
         <Route path="checkoutsuccess" element={<SuccessMessage />} />
-        <Route path="/admin" element={<LayoutAdmin />}>
-          <Route path="products">
+        <Route path="/admin" element={<LayOutAdmin />}>
+          <Route path="product">
             <Route index element={<ProductList />} />
             <Route path="add" element={<ProductForm />} />
             <Route path="edit/:id" element={<ProductForm />} />

@@ -1,4 +1,3 @@
-
 import { Link, Outlet } from 'react-router-dom'
 import IcoDashboard from '../icons/IcoDashboard'
 import IcoPeople from '../icons/IcoPeople'
