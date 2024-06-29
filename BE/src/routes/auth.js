@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { checkOTP, getUserByToken, resetPassword, sendOTP, signIn, signUp } from "../controllers/auth.js";
+import { changePassword, checkOTP, getUserByToken, resetPassword, sendOTP, signIn, signUp } from "../controllers/auth.js";
 import { checkRequestBody } from "../middlewares/checkRequestBody.js";
 import { otpSchema, registerSchema, resetPasswordSchema } from "../validations/auth.js";
 import { getUser } from "../middlewares/getUser.js";
@@ -12,5 +12,6 @@ routerAuth.post("/sign-up", checkRequestBody(registerSchema), signUp);
 routerAuth.post("/sign-in", signIn);
 routerAuth.use(getUser)
 routerAuth.get("/", getUserByToken);
+routerAuth.post("/change-password", changePassword);
 
 export default routerAuth;

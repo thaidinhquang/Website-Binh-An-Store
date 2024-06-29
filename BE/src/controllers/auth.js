@@ -214,3 +214,31 @@ export const resetPassword = async (req, res, next) => {
         next(error);
     }
 }
+
+export const changePassword = async (req, res, next) => {
+    try {
+        const data = req.user;
+        const { oldPassword, newPassword } = req.body;
+        const checkPassword = await comparePassword(oldPassword, data.password);
+        if (!checkPassword) {
+            return res.status(400).json({
+                message: "Password cu khong dung!",
+            });
+        }
+        const hashPasswordUser = await hashPassword(newPassword);
+        const updatePassword = await User.findByIdAndUpdate(data.id, {
+            password: hashPasswordUser,
+        });
+        if (!updatePassword) {
+            return res.status(400).json({
+                message: "Co loi xay ra!",
+            });
+        }
+        return res.status(200).json({
+            message: "Change password thanh cong!",
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+}
