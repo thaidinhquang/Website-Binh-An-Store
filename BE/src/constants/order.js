@@ -1,9 +1,10 @@
 export const ORDER_STATUS = {
-  PENDING: "PENDING",
-  CONFIRMED: "CONFIRMED",
-  SHIPPING: "SHIPPING",
-  DELIVERED: "DELIVERED",
-  DONE: "DONE",
+  PENDING: "pending",
+  CONFIRMED: "confirmed",
+  SHIPPING: "shipping",
+  DELIVERED: "delivered",
+  DONE: "done",
+  CANCELED: "canceled",
 };
 
 export const PAYMENT_METHOD = {

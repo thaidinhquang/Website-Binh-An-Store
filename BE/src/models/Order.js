@@ -84,9 +84,8 @@ const orderSchema = new mongoose.Schema(
       type: String,
       enum: [ROLES.ADMIN, ROLES.USER],
     },
-    isCanceled: {
-      type: Boolean,
-      default: false,
+    canceledReason: {
+      type: String,
     },
     isPaid: {
       type: Boolean,
