@@ -225,7 +225,7 @@ const AuthenticationModal = () => {
                 </button>
                 <div className="text-sm text-center font-medium text-gray-500 dark:text-gray-300 mt-2">
                   {status == 'login' ? 'Chưa có tài khoản?' : 'Đã có tài khoản?'} {' '}
-                  <button onClick={() => setStatus(status == 'login' ? 'register' : 'login')}
+                  <button type='button' onClick={() => setStatus(status == 'login' ? 'register' : 'login')}
                     className="text-blue-700 hover:underline dark:text-blue-500 capitalize"
                   >
                     {status == 'login' ? 'Đăng ký' : 'Đăng nhập'}
