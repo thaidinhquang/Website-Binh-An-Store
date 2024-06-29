@@ -51,7 +51,6 @@ export const signIn = async (req, res, next) => {
         }
 
         const accessToken = token({ _id: userExist._id }, "365d");
-        userExist.password = undefined;
         return res.status(200).json({
             message: "Login successfully!",
             accessToken,
@@ -128,38 +127,6 @@ export const sendOTP = async (req, res, next) => {
     }
 };
 
-export const checkOTP = async (req, res, next) => {
-    try {
-        const { email, otp } = req.body;
-        const checkUser = await User.findOne({ email });
-        if (!checkUser) {
-            return res.status(400).json({
-                message: "User khong ton tai!",
-            });
-        }
-        if (checkUser.otp !== otp) {
-            return res.status(400).json({
-                message: "OTP khong dung!",
-            });
-        }
-        const otpCreatedAt = new Date(checkUser.otpCreatedAt);
-        const now = new Date();
-        const diff = Math.abs(now - otpCreatedAt);
-        const diffMinutes = Math.floor((diff / 1000) / 60);
-        if (diffMinutes > 5) {
-            return res.status(400).json({
-                message: "OTP het han!",
-            });
-        }
-        return res.status(200).json({
-            message: "OTP chinh xac!",
-        });
-    }
-    catch (error) {
-        next(error);
-    }
-}
-
 export const resetPassword = async (req, res, next) => {
     try {
         const { email, password, otp } = req.body;
@@ -206,8 +173,10 @@ export const resetPassword = async (req, res, next) => {
                 message: "Co loi xay ra!",
             });
         }
-        return res.status(200).json({
+        const accessToken = token({ _id: checkUser.id }, "365d");
+        return res.status(201).json({
             message: "Reset password thanh cong!",
+            accessToken,
         });
     }
     catch (error) {

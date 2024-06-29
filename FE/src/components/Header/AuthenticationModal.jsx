@@ -7,32 +7,55 @@ import { getUserByToken } from '../Auth/core/_request';
 import { faFacebook, faGoogle, faTwitter } from '@fortawesome/free-brands-svg-icons'
 import { toast } from 'react-toastify';
 import { useLocation } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { useTanstackMutation } from '../../common/hooks/useTanstackQuery';
 const AuthenticationModal = () => {
   const search = new URLSearchParams(useLocation().search);
   const openform = search.get('openform') || false;
-  const [isRegister, setIsRegister] = useState(false);
+  const [status, setStatus] = useState('login');
+  const [path, setPath] = useState('sign-in');
   const [isOpen, setIsOpen] = useState(openform);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [cPassword, setCPassword] = useState('');
   const { setCurrentUser } = useContext(AuthContext);
+  const { mutate: sendOTP } = useTanstackMutation(`auth/send-otp`, "CREATE");
+  const [countDown, setCountDown] = useState(0);
+  const form = useForm();
   const toggleModal = () => {
     setIsOpen(!isOpen);
   };
   useEffect(() => {
     setIsOpen(openform);
   }, [openform]);
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (isRegister && password !== cPassword) return toast.error('Mật khẩu không khớp')
+  useEffect(() => {
+    if (countDown > 0) {
+      setTimeout(() => {
+        setCountDown(countDown - 1)
+      }, 1000)
+    }
+  }, [countDown])
+  useEffect(() => {
+    if (status == 'login') {
+      setPath('sign-in')
+    }
+    else if (status == 'register') {
+      setPath('sign-up')
+    }
+    else {
+      setPath('reset-password')
+    }
+  }, [status])
+  const onSendOTP = async () => {
+    setCountDown(60)
+    sendOTP({ email: form.getValues('email') })
+  }
+  const onSubmit = async (data) => {
     try {
-      const res = await axiosPost(isRegister ? "auth/sign-up" : "auth/sign-in", { email, password })
+      const res = await axiosPost(`auth/${path}`, data)
       if (res.accessToken) {
         localStorage.setItem('token', res.accessToken)
         const { data } = await getUserByToken();
         setCurrentUser(data)
         setAuth(data)
-        toast.success(data.message)
+        toast.success(`${status} successfully`)
       }
     }
     catch (error) {
@@ -53,8 +76,8 @@ const AuthenticationModal = () => {
           <div className="relative h-[600px] bg-white rounded-lg shadow dark:bg-gray-700">
             {/* Modal header */}
             <div className="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
-              <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
-                {isRegister ? 'Đăng ký' : 'Đăng nhập'}
+              <h3 className="text-2xl font-semibold text-gray-900 dark:text-white capitalize">
+                {status}
               </h3>
               <button
                 type="button"
@@ -81,7 +104,7 @@ const AuthenticationModal = () => {
             </div>
             {/* Modal body */}
             <div className="p-4 md:p-5">
-              <form className="space-y-4" onSubmit={handleSubmit}>
+              <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
                 <div>
                   <label
                     htmlFor="email"
@@ -91,65 +114,81 @@ const AuthenticationModal = () => {
                   </label>
                   <div className=" relative">
                     <svg className='absolute top-1/2 left-2 transform -translate-y-1/2 w-[16px] bg-white' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M64 112c-8.8 0-16 7.2-16 16v22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1V128c0-8.8-7.2-16-16-16H64zM48 212.2V384c0 8.8 7.2 16 16 16H448c8.8 0 16-7.2 16-16V212.2L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64H448c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z" /></svg>
-                    <input
-                      type="email"
-                      name="email"
-                      id="email"
-                      className="pl-8 bg-white border-b-2 border-gray-300 text-gray-900 text-sm focus:outline-none focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                      placeholder="name@company.com"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      autoComplete="username"
-                    />
+                    <div className='flex justify-between'>
+                      <input
+                        type="email"
+                        {...form.register('email', { required: 'Email khong duoc de trong', pattern: { value: /^\S+@\S+$/i, message: 'Email khong dung dinh dang' } })}
+                        className="pl-8 bg-white border-b-2 border-gray-300 text-gray-900 text-sm focus:outline-none focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                        placeholder="name@company.com"
+                        autoComplete="username"
+                      />
+                      {status == 'recover password' && (
+                        <button type='button' onClick={() => onSendOTP()} className={`my-auto bg-white border-b-2 text-gray-900 text-sm focus:outline-none focus:ring-blue-500 block p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 w-12 ${countDown > 0 ? "text-red-500" : "text-blue-400"}`}>
+                          {countDown > 0 ? countDown : 'Gửi'}
+                        </button>
+                      )}
+                    </div>
+                    {form.formState.errors.email && <p className="text-red-500 text-sm">{form.formState.errors.email.message}</p>}
                   </div>
                 </div>
+                {status == 'recover password' && (
+                  <div>
+                    <label
+                      htmlFor="otp"
+                      className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
+                    >
+                      OTP
+                    </label>
+                    <div className=" relative">
+                      <img src="https://www.svgrepo.com/show/368868/otp.svg" alt="" className='absolute top-1/2 left-2 transform -translate-y-1/2 w-[16px]' />
+                      <input
+                        type="otp"
+                        {...form.register('otp', { required: 'OTP khong duoc de trong' })}
+                        className="pl-8 bg-white border-b-2 border-gray-300 text-gray-900 text-sm focus:outline-none focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                        placeholder="12345"
+                        autoComplete="otp"
+                      />
+                      {form.formState.errors.otp && <p className="text-red-500 text-sm">{form.formState.errors.otp.message}</p>}
+                    </div>
+                  </div>)}
                 <div>
                   <label
                     htmlFor="password"
                     className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
                   >
-                    Mật khẩu
+                    Mật khẩu {status != 'login' && 'mới'}
                   </label>
                   <div className="relative">
                     <svg className='absolute top-1/2 left-2 transform -translate-y-1/2 w-[16px]' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z" /></svg>
                     <input
                       type="password"
-                      name="password"
-                      id="password"
+                      {...form.register('password', { required: 'Mat khau khong duoc de trong' })}
                       placeholder="••••••••"
                       className="pl-8 bg-white border-b-2 border-gray-300 text-gray-900 text-sm focus:outline-none focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
                       autoComplete="current-password"
                     />
+                    {form.formState.errors.password && <p className="text-red-500 text-sm">{form.formState.errors.password.message}</p>}
                   </div>
-
                 </div>
-
-                {isRegister && (
+                {status != 'login' && (
                   <>
                     <div>
                       <label
                         htmlFor="cPassword"
                         className="block mb-2 text-sm font-medium text-gray-700 dark:text-white"
                       >
-                        Mật khẩu
+                        Xác nhận mật khẩu mới
                       </label>
                       <div className="relative">
                         <svg className='absolute top-1/2 left-2 transform -translate-y-1/2 w-[16px]' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z" /></svg>
                         <input
                           type="password"
-                          name="cPassword"
-                          id="cPassword"
+                          {...form.register('cPassword', { required: 'Mat khau khong duoc de trong' })}
                           placeholder="••••••••"
                           className="pl-8 bg-white border-b-2 border-gray-300 text-gray-900 text-sm focus:outline-none focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                          required
-                          value={cPassword}
-                          onChange={(e) => setCPassword(e.target.value)}
                           autoComplete="current-password"
                         />
+                        {form.formState.errors.cPassword && <p className="text-red-500 text-sm">{form.formState.errors.cPassword.message}</p>}
                       </div>
                     </div>
                   </>
@@ -168,25 +207,28 @@ const AuthenticationModal = () => {
                       Nhớ mật khẩu
                     </label>
                   </div>
-                  <a
-                    href="#"
-                    className="text-sm text-blue-700 hover:underline dark:text-blue-500"
-                  >
-                    Quên mật khẩu?
-                  </a>
+                  {status != 'recover password' && (
+                    <button
+                      type="button"
+                      onClick={() => setStatus('recover password')}
+                      className="text-sm text-blue-700 hover:underline dark:text-blue-500"
+                    >
+                      Quên mật khẩu?
+                    </button>
+                  )}
                 </div>
                 <button
                   type="submit"
-                  className="w-full text-white bg-[#5a00b0] hover:opacity-80 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mt-4"
+                  className="w-full text-white bg-[#5a00b0] hover:opacity-80 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mt-4 capitalize"
                 >
-                  {isRegister ? 'Đăng ký' : 'Đăng nhập'}
+                  {status}
                 </button>
                 <div className="text-sm text-center font-medium text-gray-500 dark:text-gray-300 mt-2">
-                  {isRegister ? 'Đã có tài khoản' : 'Chưa có tài khoản'}?{' '}
-                  <button onClick={() => setIsRegister(!isRegister)}
-                    className="text-blue-700 hover:underline dark:text-blue-500"
+                  {status == 'login' ? 'Chưa có tài khoản?' : 'Đã có tài khoản?'} {' '}
+                  <button onClick={() => setStatus(status == 'login' ? 'register' : 'login')}
+                    className="text-blue-700 hover:underline dark:text-blue-500 capitalize"
                   >
-                    {isRegister ? 'Đăng nhập' : 'Đăng ký'}
+                    {status == 'login' ? 'Đăng ký' : 'Đăng nhập'}
                   </button>
                 </div>
                 <div className="text-center mt-2">
@@ -199,7 +241,6 @@ const AuthenticationModal = () => {
           </div>
         </div>
       </div>
-
       <div className="flex space-x-6 items-center">
         <button type="button" onClick={toggleModal} className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-2 py-2 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">Đăng nhập</button>
       </div>
