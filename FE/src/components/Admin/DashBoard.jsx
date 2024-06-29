@@ -96,12 +96,12 @@ const DashBoard = () => {
                   </Link>
                 </div>
                 <div className="item group">
-                  <Link to="/profile#order">
+                  <Link to="/admin/orders">
                     <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
                       <span>
                         <IcoCart />
                       </span>
-                      <span className=" font-normal text-base">Order</span>
+                      <span className=" font-normal text-base">Đơn hàng</span>
                     </div>
                   </Link>
                 </div>

@@ -17,6 +17,7 @@ import AllProductPage from "./components/Product/AllProductPage";
 import UserForm from "./components/Admin/Users/UserForm";
 import { ToastContainer } from 'react-toastify'
 import SuccessMessage from "./components/CheckoutPage/SuccessMessage";
+import Orders from "./components/Admin/order/Orders";
 
 function App() {
   return (
@@ -52,6 +53,9 @@ function App() {
             <Route path="trash" element={<UserList />} />
             <Route path="add" element={<UserForm />} />
             <Route path="edit/:id" element={<UserForm />} />
+          </Route>
+          <Route path="orders">
+            <Route index element={<Orders />} />
           </Route>
         </Route>
       </Routes>
