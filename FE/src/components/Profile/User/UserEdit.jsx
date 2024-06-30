@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
 import axios from "axios";
-import { useParams, useNavigate, Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 const UserEdit = () => {

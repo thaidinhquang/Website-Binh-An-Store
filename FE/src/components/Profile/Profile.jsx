@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import  { useContext, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import IcoDashboard from "../icons/IcoDashboard";
 import IcoPeople from "../icons/IcoPeople";

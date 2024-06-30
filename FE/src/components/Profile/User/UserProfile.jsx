@@ -1,9 +1,6 @@
-import React, { useContext } from "react";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { toast } from "sonner";
-import { Link } from "react-router-dom";
+import { useContext } from "react";
 import { AuthContext } from "../../Auth/core/Auth";
+
 
 const UserProfile = () => {
   const { currentUser } = useContext(AuthContext)

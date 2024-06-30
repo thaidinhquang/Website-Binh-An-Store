@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { toast } from "sonner";
+
 import { useTanstackMutation } from "../../../common/hooks/useTanstackQuery";
 
 const ChangePassword = () => {
