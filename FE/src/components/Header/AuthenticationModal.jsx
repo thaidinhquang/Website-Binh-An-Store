@@ -70,10 +70,10 @@ const AuthenticationModal = () => {
         aria-hidden={!isOpen}
         className={`${isOpen ? 'flex' : 'hidden'
           } fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-slate-950 bg-opacity-40 w-full h-full z-50 justify-center items-center`}
-      >
-        <div className="relative p-2 w-full max-w-md">
+      > 
+        <div className="relative p-2 w-full max-w-md ">
           {/* Modal content */}
-          <div className="relative h-[600px] bg-white rounded-lg shadow dark:bg-gray-700">
+          <div className="relative max-h-screen bg-white rounded-lg py-2 shadow dark:bg-gray-700 overflow-y-auto scrollbar-hide">
             {/* Modal header */}
             <div className="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
               <h3 className="text-2xl font-semibold text-gray-900 dark:text-white capitalize">
@@ -112,24 +112,27 @@ const AuthenticationModal = () => {
                   >
                     Email
                   </label>
-                  <div className=" relative">
-                    <svg className='absolute top-1/2 left-2 transform -translate-y-1/2 w-[16px] bg-white' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M64 112c-8.8 0-16 7.2-16 16v22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1V128c0-8.8-7.2-16-16-16H64zM48 212.2V384c0 8.8 7.2 16 16 16H448c8.8 0 16-7.2 16-16V212.2L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64H448c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z" /></svg>
-                    <div className='flex justify-between'>
+                  <div className="relative">
+                    <svg className='absolute top-1/2 left-2 transform -translate-y-1/2 w-4 h-4 bg-white' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M64 112c-8.8 0-16 7.2-16 16v22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1V128c0-8.8-7.2-16-16-16H64zM48 212.2V384c0 8.8 7.2 16 16 16H448c8.8 0 16-7.2 16-16V212.2L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64H448c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z" /></svg>
+                    <div className='flex items-center'>
                       <input
                         type="email"
-                        {...form.register('email', { required: 'Email khong duoc de trong', pattern: { value: /^\S+@\S+$/i, message: 'Email khong dung dinh dang' } })}
+                        {...form.register('email', { required: 'Email không được để trống', pattern: { value: /^\S+@\S+$/i, message: 'Email không đúng định dạng' } })}
                         className="pl-8 bg-white border-b-2 border-gray-300 text-gray-900 text-sm focus:outline-none focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                         placeholder="name@company.com"
                         autoComplete="username"
                       />
-                      {status == 'recover password' && (
-                        <button type='button' onClick={() => onSendOTP()} className={`my-auto bg-white border-b-2 text-gray-900 text-sm focus:outline-none focus:ring-blue-500 block p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 w-12 ${countDown > 0 ? "text-red-500" : "text-blue-400"}`}>
+                      {status === 'recover password' && (
+                        <button type='button' onClick={() => onSendOTP()} className={`my-auto bg-gray-400 border-b-2 text-gray-900 text-sm focus:outline-none focus:ring-blue-500 block p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 w-12 ${countDown > 0 ? "text-red-500" : "text-blue-400"}`}>
                           {countDown > 0 ? countDown : 'Gửi'}
                         </button>
                       )}
                     </div>
-                    {form.formState.errors.email && <p className="text-red-500 text-sm">{form.formState.errors.email.message}</p>}
                   </div>
+                  {form.formState.errors.email && (
+                    <p className="mt-1 mt-1 text-red-500 text-sm">{form.formState.errors.email.message}</p>
+                  )}
+
                 </div>
                 {status == 'recover password' && (
                   <div>
@@ -148,8 +151,8 @@ const AuthenticationModal = () => {
                         placeholder="12345"
                         autoComplete="otp"
                       />
-                      {form.formState.errors.otp && <p className="text-red-500 text-sm">{form.formState.errors.otp.message}</p>}
                     </div>
+                      {form.formState.errors.otp && <p className="mt-1 text-red-500 text-sm">{form.formState.errors.otp.message}</p>}
                   </div>)}
                 <div>
                   <label
@@ -167,8 +170,8 @@ const AuthenticationModal = () => {
                       className="pl-8 bg-white border-b-2 border-gray-300 text-gray-900 text-sm focus:outline-none focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                       autoComplete="current-password"
                     />
-                    {form.formState.errors.password && <p className="text-red-500 text-sm">{form.formState.errors.password.message}</p>}
                   </div>
+                    {form.formState.errors.password && <p className="mt-1 text-red-500 text-sm">{form.formState.errors.password.message}</p>}
                 </div>
                 {status != 'login' && (
                   <>
@@ -188,8 +191,8 @@ const AuthenticationModal = () => {
                           className="pl-8 bg-white border-b-2 border-gray-300 text-gray-900 text-sm focus:outline-none focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                           autoComplete="current-password"
                         />
-                        {form.formState.errors.cPassword && <p className="text-red-500 text-sm">{form.formState.errors.cPassword.message}</p>}
                       </div>
+                        {form.formState.errors.cPassword && <p className="mt-1 text-red-500 text-sm">{form.formState.errors.cPassword.message}</p>}
                     </div>
                   </>
                 )}
