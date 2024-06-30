@@ -24,6 +24,7 @@ import UserProfile from "./components/Profile/User/UserProfile";
 import Address from "./components/Profile/Address/Address";
 import Orders from "./components/Profile/Order/Orders";
 import ChangePassword from "./components/Profile/ChangePassword/ChangePassword";
+import UserEdit from "./components/Profile/User/UserEdit";
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
             <Route path="" element={<UserProfile />} />
             <Route path="address" element={<Address />} />
             <Route path="orders" element={<Orders />} />
+            <Route path="edit" element={<UserEdit />} />
             <Route path="change-password" element={<ChangePassword />} />
           </Route>
         </Route>

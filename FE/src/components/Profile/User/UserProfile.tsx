@@ -32,9 +32,7 @@ const UserProfile = () => {
               <span className="font-semibold text-gray-700">Số điện thoại:</span>
               <span className="text-gray-900">{currentUser?.phone}</span>
             </div>
-            <button className="btn bg-blue-500 text-white px-4 py-2 rounded" >
-              Chỉnh sửa
-            </button>
+            <Link className="btn bg-blue-500 text-white px-4 py-2 rounded" to={`/profile/edit/`}> chỉnh Sửa</Link>
           </div>
         </div>
       </div>
