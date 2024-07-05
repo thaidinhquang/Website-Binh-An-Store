@@ -11,6 +11,7 @@ import {
 } from "../controllers/order.js";
 import { getUser } from "../middlewares/getUser.js";
 import { checkPermission } from "../middlewares/checkPermission.js";
+import { ROLES } from "../constants/Role.js";
 
 const router = Router();
 
@@ -20,7 +21,7 @@ router.get("/", getUser, getAllOrders);
 router.get("/by_user", getUser, getAllOrdersByUser);
 router.get("/:orderId", getUser, getOrderDetails);
 router.patch("/cancel", getUser, cancelOrder);
-router.patch("/confirmed", getUser, checkPermission, confirmedOrder);
-router.patch("/done", getUser, checkPermission, finishAnOrder);
+router.patch("/confirm", getUser, confirmedOrder);
+router.patch("/done", getUser, finishAnOrder);
 
 export default router;

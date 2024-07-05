@@ -100,6 +100,7 @@ const orderSchema = new mongoose.Schema(
         ORDER_STATUS.SHIPPING,
         ORDER_STATUS.DELIVERED,
         ORDER_STATUS.DONE,
+        ORDER_STATUS.CANCELED,
       ],
     },
   },

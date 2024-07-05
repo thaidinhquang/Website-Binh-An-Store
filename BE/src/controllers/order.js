@@ -60,7 +60,7 @@ export const createOrder = async (req, res) => {
       metadata: null,
     });
   } catch (error) {
-    console.log("Something went wrong...", error);
+    return console.log("Something went wrong...", error);
   }
 };
 
@@ -107,7 +107,10 @@ export const createStripeOrder = async (session) => {
 
     console.log("Order saved successfully");
   } catch (error) {
-    console.error("Error processing checkout.session.completed event:", error);
+    return console.error(
+      "Error processing checkout.session.completed event:",
+      error
+    );
   }
 };
 
@@ -182,7 +185,7 @@ export const getAllOrdersByUser = async (req, res) => {
       metadata: orders,
     });
   } catch (error) {
-    console.log("Something went wrong.", error);
+    return console.log("Something went wrong.", error);
   }
 };
 
@@ -199,7 +202,7 @@ export const getOrderDetails = async (req, res) => {
       .status(200)
       .json({ message: "OK", success: true, metadata: order });
   } catch (error) {
-    console.log("Something went wrong.", error);
+    return console.log("Something went wrong.", error);
   }
 };
 
@@ -223,7 +226,7 @@ export const cancelOrder = async (req, res) => {
     foundedOrder.save();
     return res.status(200).json({ message: "Canceled", success: true });
   } catch (error) {
-    console.log("Something went wrong.", error);
+    return console.log("Something went wrong.", error);
   }
 };
 
@@ -239,6 +242,8 @@ export const getAllOrders = async (req, res) => {
     sort: req.query.sort ? req.query.sort : { createdAt: -1 },
     lean: true,
   };
+
+  const filter = {};
 
   if (req.query.search) {
     const search = req.query.search;
@@ -272,20 +277,23 @@ export const getAllOrders = async (req, res) => {
 
 // @PATCH CONFIRM AN ORDER BY ADMIN
 export const confirmedOrder = async (req, res) => {
+  console.log(req.userId);
   try {
     const foundedOrder = await Order.findById(req.body.orderId);
+
     if (!foundedOrder) {
       throw new Error(`NOt found any order with id ${req.body.orderId}`);
     }
 
     foundedOrder.orderStatus = ORDER_STATUS.CONFIRMED;
+    foundedOrder.save();
 
     return res.status(200).json({
       message: "This order is confirmed.",
       success: true,
     });
   } catch (error) {
-    console.log("Something went wrong.", error);
+    return console.log("Something went wrong.", error);
   }
 };
 
@@ -297,18 +305,20 @@ export const finishAnOrder = async (req, res) => {
       throw new Error(`NOt found any order with id ${req.body.orderId}`);
     }
 
-    if (foundedOrder.orderStatus !== ORDER_STATUS.DELIVERED) {
+    if (foundedOrder.orderStatus === ORDER_STATUS.DELIVERED) {
       throw new Error(
         "This order is done when it is delivered or customer received."
       );
     }
 
     foundedOrder.orderStatus = ORDER_STATUS.DONE;
+    foundedOrder.save();
+
     return res.status(200).json({
       message: "This order is done.",
       success: true,
     });
   } catch (error) {
-    console.log("Something went wrong.", error);
+    return console.log("Something went wrong.", error);
   }
 };
