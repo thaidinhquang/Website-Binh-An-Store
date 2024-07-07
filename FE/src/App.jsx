@@ -15,14 +15,26 @@ import CategorytForm from "./components/Admin/Category/CategoryForm";
 import ProductForm from "./components/Admin/Product/ProductForm";
 import AllProductPage from "./components/Product/AllProductPage";
 import UserForm from "./components/Admin/Users/UserForm";
-import { ToastContainer } from 'react-toastify'
+import { ToastContainer } from "react-toastify";
 import SuccessMessage from "./components/CheckoutPage/SuccessMessage";
 import Orders from "./components/Admin/order/Orders";
+import Statistics from "./components/Admin/Stats";
 
 function App() {
   return (
     <>
-      <ToastContainer limit={3} newestOnTop={true} position="top-right" autoClose={3000} hideProgressBar={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+      <ToastContainer
+        limit={3}
+        newestOnTop={true}
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <Routes>
         <Route path="/" element={<LayOutHome />}>
           <Route index element={<Home />} />
@@ -36,6 +48,7 @@ function App() {
         </Route>
         <Route path="checkoutsuccess" element={<SuccessMessage />} />
         <Route path="/admin" element={<LayOutAdmin />}>
+          <Route index element={<Statistics />} />
           <Route path="products">
             <Route index element={<ProductList />} />
             <Route path="trash" element={<ProductList />} />
