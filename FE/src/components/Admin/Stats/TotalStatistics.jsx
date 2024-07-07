@@ -2,7 +2,8 @@ import { Card, Col, Row, Statistic } from "antd";
 import { FaLuggageCart, FaUserEdit } from "react-icons/fa";
 import { LuReceipt } from "react-icons/lu";
 
-const TotalStatistics = (stats) => {
+const TotalStatistics = ({ stats }) => {
+  console.log(stats);
   return (
     <Row className="w-full gap-3 py-2" justify={"center"}>
       <Col span={7}>
