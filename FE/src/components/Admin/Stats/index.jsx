@@ -16,7 +16,7 @@ const Statistics = () => {
         <OrdersByDayChart stats={stats} />
       </div>
       <div className="mt-[5rem]">
-        <h2 className="font-semibold my-4">Doanh số theo tháng</h2>
+        <h2 className="font-semibold my-4">Thống kê theo tháng</h2>
         <OrdersByMonth orderStats={orderStats} />
       </div>
     </div>

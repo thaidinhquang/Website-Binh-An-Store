@@ -111,6 +111,7 @@ export const orderStatisticsByMonth = async (req, res) => {
           year: "$_id.year",
           month: "$_id.month",
           totalOrders: 1,
+          totalAmount: 1,
           _id: 0,
         },
       },

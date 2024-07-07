@@ -1,34 +1,17 @@
-import { Line } from "@ant-design/charts";
+import { Column } from "@ant-design/plots";
 
 const OrdersByMonth = ({ orderStats }) => {
-  console.log(orderStats);
-  const data =
-    orderStats && orderStats.stats
-      ? orderStats.stats.map((item) => ({
-          month: item.month,
-          amount: item.totalOrders,
-        }))
-      : [];
-
   const config = {
-    data,
+    data: orderStats,
     xField: "month",
-    yField: "amount",
-    point: {
-      shapeField: "circle",
-      sizeField: 4,
-    },
-    interaction: {
-      tooltip: {
-        marker: false,
-      },
-    },
-    legend: { size: false },
+    yField: "values",
+    colorField: "name",
+    group: true,
     style: {
-      lineWidth: 2,
+      inset: 5,
     },
-    colorField: "blue",
   };
-  return <Line {...config} />;
+  return <Column {...config} />;
 };
+
 export default OrdersByMonth;
