@@ -12,7 +12,7 @@ export const getCartByUserId = async (req, res, next) => {
             await newCart.save();
             return res.status(200).json({ data: newCart });
         }
-        return !data ? res.status(500).json({ message: "Get cart by userId failed" }) : res.status(200).json({ data });
+        return !data ? res.status(500).json({ message: "Get cart by userId failed" }) : res.status(200).json({ data, message: "Get cart by userId successfully"});
     } catch (error) {
         next(error);
     }
@@ -38,7 +38,7 @@ export const addItemToCart = async (req, res, next) => {
             cart.products.push({ productId, quantity });
         }
         await cart.save();
-        return res.status(200).json({ cart });
+        return res.status(200).json({ cart, message: "Add item to cart successfully"});
     } catch (error) {
         next(error);
     }
@@ -58,7 +58,7 @@ export const removeItemFromCart = async (req, res, next) => {
         }
         cart.products.splice(productIndex, 1);
         await cart.save();
-        return res.status(200).json({ cart });
+        return res.status(200).json({ cart, message: "Remove item from cart successfully"});
     } catch (error) {
         next(error);
     }
@@ -78,7 +78,7 @@ export const updateItemInCart = async (req, res, next) => {
         }
         cart.products[productIndex].quantity = quantity;
         await cart.save();
-        return res.status(200).json({ cart });
+        return res.status(200).json({ cart, message: "Update item in cart successfully"});
     } catch (error) {
         next(error);
     }
@@ -141,7 +141,7 @@ export const increeaseItemQuantity = async (req, res, next) => {
         }
         cart.products[productIndex].quantity++;
         await cart.save();
-        return res.status(200).json({ cart });
+        return res.status(200).json({ cart, message: "Increase item quantity successfully"});
     } catch (error) {
         next(error);
     }
@@ -165,7 +165,7 @@ export const decreaseItemQuantity = async (req, res, next) => {
             cart.products[productIndex].quantity--;
         }
         await cart.save();
-        return res.status(200).json({ cart });
+        return res.status(200).json({ cart, message: "Decrease item quantity successfully"});
     } catch (error) {
         next(error);
     }

@@ -1,8 +1,21 @@
 import User from "../models/User.js";
+import { hashPassword } from "../utils/password.js";
 
 export const getAllUser = async (req, res, next) => {
     try {
-        const data = await User.find();
+        const options = {
+            page: req.query.page ? +req.query.page : 1,
+            limit: req.query.limit ? +req.query.limit : 10,
+            sort: req.query.sort ? req.query.sort : { createdAt: -1 },
+        };
+        let query = {};
+        if (req.query.name) {
+            query.name = { $regex: new RegExp(req.query.name, 'i') };
+        }
+        if (req.query.active) {
+            query.active = req.query.active;
+        }
+        const data = await User.paginate(query, options);
         return !data ? res.status(400).json({ message: "Get all user failed" }) : res.status(200).json({ data })
     } catch (error) {
         next(error);
@@ -21,6 +34,7 @@ export const getUserById = async (req, res, next) => {
 
 export const createUser = async (req, res, next) => {
     try {
+        req.body.password = await hashPassword(req.body.password);
         const data = await User.create(req.body);
         return !data ? res.status(500).json({ message: "Create user failed" }) : res.status(201).json({ data });
     } catch (error) {

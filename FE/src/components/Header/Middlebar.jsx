@@ -11,9 +11,6 @@ import { AuthContext } from '../Auth/core/Auth'
 
 const Middlebar = ({ className }) => {
   const { currentUser, removeCurrentUser } = useContext(AuthContext);
-  useEffect(() => {
-    console.log(currentUser);
-  }, [currentUser])
   const logout = () => {
     removeCurrentUser()
   }

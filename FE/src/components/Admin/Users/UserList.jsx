@@ -1,69 +1,59 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import { toast } from "sonner";
+import { useTanstackMutation, useTanstackQuery } from "../../../common/hooks/useTanstackQuery";
+import { useEffect, useState } from 'react';
+import socket from "/src/config/socket";
+import { Link, useLocation } from "react-router-dom";
+import Pageination from "../../UI/Pagination";
+
 const UserList = () => {
-  const queryClient = useQueryClient();
-
-  const { data } = useQuery({
-    queryKey: ["Users"], //từ khóa truy vấn để xác định loại dự liệu cần lấy
-    queryFn: async () => {
-      //Hàm queryFn thực hiện yêu cầu GET để lấy dữ liệu từ URL cụ thể
-      const { data } = await axios.get(`http://localhost:3000/users`);
-      return data;
-    },
-  });
-
-  // Sử dụng useMutation để thực hiện mutation
-  const { mutate } = useMutation({
-    // mutationFn là hàm bất đồng bộ thực hiện việc xóa sản phẩm
-    mutationFn: async (id) => {
-      // Hiển thị hộp thoại xác nhận từ người dùng bằng cửa sổ confirm
-      const isConfirmed = window.confirm(
-        "Bạn có chắc chắn muốn xóa sản phẩm này không?"
-      );
-      if (isConfirmed) {
-        // Nếu người dùng xác nhận, gửi yêu cầu DELETE đến URL cụ thể bằng Axios
-        await axios.delete(`http://localhost:3000/users/${id}`);
-        // Hiển thị toast thông báo thành công
-        toast.success("Tài khoẳn đã được xóa thành công");
-      } else {
-        // Nếu người dùng hủy, hiển thị toast thông báo hủy bỏ và ném một lỗi để ngăn việc gọi onSuccess
-        toast.info("Hủy bỏ việc xóa tài khoản");
-        throw new Error("Deletion cancelled");
-      }
-    },
-    // Hành động được thực hiện khi mutation thành công
-    onSuccess: () => {
-      // Vô hiệu hóa truy vấn cụ thể trong cache để cập nhật lại dữ liệu
-      queryClient.invalidateQueries({
-        queryKey: ["Users"],
-      });
-    },
-    // Hành động được thực hiện khi có lỗi trong quá trình mutation
-    onError: (error) => {
-      // Kiểm tra nếu lỗi không phải do việc hủy bỏ, hiển thị toast thông báo lỗi
-      if (error.message !== "Deletion cancelled") {
-        // Vô hiệu hóa truy vấn cụ thể trong cache và hiển thị toast thông báo lỗi
-        queryClient.invalidateQueries({
-          queryKey: ["PRODUCT"],
-        });
-        toast.error("Không thể xóa sản phẩm");
-      }
-    },
-  });
+  const page = new URLSearchParams(useLocation().search).get('page') || 1;
+  const isTrash = useLocation().pathname.includes('trash');
+  const { data, isLoading, refetch } = useTanstackQuery('users', {
+    active: isTrash ? false : true,
+    page
+  })
+  console.log(data);
+  const { mutate, isPending } = useTanstackMutation(`users`, isTrash ? "RESTORE" : "DELETE");
+  const [listUserOnEditRoute, setListUserOnEditRoute] = useState(null);
+  const isUserEditing = (id) => {
+    const user = listUserOnEditRoute ? listUserOnEditRoute[id] : null;
+    return user ? <span className="inline-block px-2 py-1 text-xs font-semibold text-white bg-red-500 rounded-full ml-2">{user} đang chỉnh sửa</span> : '';
+  };
+  useEffect(() => {
+    const handleUserEditing = (data) => {
+      setListUserOnEditRoute(data);
+    };
+    socket.on('userEditing', handleUserEditing);
+    socket.emit('getUsersEditing');
+  }, []);
+  useEffect(() => {
+    refetch()
+  }, [isTrash]);
+  useEffect(() => {
+    refetch()
+  }, [page]);
+  if (isLoading) return <p>Loading...</p>
   return (
     <>
       <div>Danh sách nguời dùng</div>
-
+      <div className="my-8 flex justify-between">
+        <Link to={`/admin/users/add`}
+          className="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+        >
+          thêm người dùng
+        </Link>
+        <Link to={isTrash ? '/admin/users' : '/admin/users/trash'}
+          className="text-white  bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
+        >
+          {isTrash ? 'Danh sách' : 'Thùng rác'}
+        </Link>
+      </div>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <td scope="col" className="px-6 py-3"></td>
-
-            
               <td scope="col" className="px-6 py-3">
-                Tên đăng nhập
+                Tên
               </td>
               <td scope="col" className="px-6 py-3">
                 Email
@@ -83,15 +73,15 @@ const UserList = () => {
             </tr>
           </thead>
           <tbody>
-            {data?.map((item, index) => (
+            {data?.docs?.length > 0 ? data.docs.map((item, index) => (
               <tr
-                key={item.id}
+                key={item._id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
               >
                 <th className="px-6 py-4">{index + 1}</th>
-              
                 <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  {item.userName}
+                  <p className="inline-block">{item.name}</p>
+                  {isUserEditing(item._id)}
                 </th>
                 <th className="px-6 py-4">{item.email}</th>
                 <th className="px-6 py-4">{item.address}</th>
@@ -115,22 +105,27 @@ const UserList = () => {
                       className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
                     >
                       <li>
-                        <button className="" onClick={() => mutate(item.id)}>
-                          Xóa
+                        <button onClick={() => mutate(item)}>
+                          {isPending ? (isTrash ? 'Đang hồi sinh' : 'Đang xóa...') : (isTrash ? 'Khôi phục' : 'Xóa')}
                         </button>
                       </li>
                       <li>
                         {" "}
-                        <a href={`/admin/users/edit/${item.id}`}>Sửa</a>
+                        <Link to={`/admin/users/edit/${item._id}`}>Sửa</Link>
                       </li>
                     </ul>
                   </div>
                 </th>
               </tr>
-            ))}
+            ))
+              :
+              <tr>
+                <td colSpan="7" className="text-center py-4">Không có dữ liệu</td>
+              </tr>}
           </tbody>
         </table>
-      </div>
+        <Pageination data={data} />
+      </div >
     </>
   );
 };

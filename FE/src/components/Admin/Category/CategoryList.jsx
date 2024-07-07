@@ -1,10 +1,17 @@
-import { useTanstackQuery } from "../../../common/hooks/useTanstackQuery";
+import { useTanstackMutation, useTanstackQuery } from "../../../common/hooks/useTanstackQuery";
 import { useEffect, useState } from 'react';
 import socket from "/src/config/socket";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import Pageination from "../../UI/Pagination";
 
 const CategorytList = () => {
-  const { data, isLoading } = useTanstackQuery('categories')
+  const page = new URLSearchParams(useLocation().search).get('page') || 1;
+  const isTrash = useLocation().pathname.includes('trash');
+  const { data, isLoading, refetch } = useTanstackQuery('categories', {
+    active: isTrash ? false : true,
+    page
+  })
+  const { mutate, isPending } = useTanstackMutation(`categories`, isTrash ? "RESTORE" : "DELETE");
   const [listUserOnEditRoute, setListUserOnEditRoute] = useState(null);
   const isUserEditing = (id) => {
     const user = listUserOnEditRoute ? listUserOnEditRoute[id] : null;
@@ -18,17 +25,25 @@ const CategorytList = () => {
     socket.emit('getUsersEditing');
   }, []);
   useEffect(() => {
-  }, [listUserOnEditRoute]);
+    refetch()
+  }, [isTrash]);
+  useEffect(() => {
+    refetch()
+  }, [page]);
   if (isLoading) return <p>Loading...</p>
   return (
     <>
       <div>Danh sách danh mục</div>
-
-      <div className="my-8">
-        <Link to={`/admin/category/add`}
+      <div className="my-8 flex justify-between">
+        <Link to={`/admin/categories/add`}
           className="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
         >
           thêm danh mục
+        </Link>
+        <Link to={isTrash ? '/admin/categories' : '/admin/categories/trash'}
+          className="text-white  bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
+        >
+          {isTrash ? 'Danh sách' : 'Thùng rác'}
         </Link>
       </div>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -46,7 +61,7 @@ const CategorytList = () => {
             </tr>
           </thead>
           <tbody>
-            {data?.map((category, index) => (
+            {data?.docs?.length > 0 ? data.docs.map((category, index) => (
               <tr
                 key={category._id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -76,24 +91,25 @@ const CategorytList = () => {
                       className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
                     >
                       <li>
-                        <button
-                          className=""
-                          onClick={() => mutate(category.id)}
-                        >
-                          Xóa
+                        <button onClick={() => mutate(category)}>
+                          {isPending ? (isTrash ? 'Đang hồi sinh' : 'Đang xóa...') : (isTrash ? 'Khôi phục' : 'Xóa')}
                         </button>
                       </li>
                       <li>
-
-                        <Link to={`/admin/category/edit/${category._id}`}>Sửa</Link>
+                        <Link to={`/admin/categories/edit/${category._id}`}>Sửa</Link>
                       </li>
                     </ul>
                   </div>
                 </th>
               </tr>
-            ))}
+            ))
+              :
+              <tr>
+                <td colSpan="3" className="text-center py-4">Không có dữ liệu</td>
+              </tr>}
           </tbody>
         </table>
+        <Pageination data={data} />
       </div>
     </>
   );

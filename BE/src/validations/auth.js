@@ -14,20 +14,6 @@ export const registerSchema = Joi.object({
     }),
 });
 
-export const loginSchema = Joi.object({
-    email: Joi.string().email().required().messages({
-        "string.base": "Email phải là một chuỗi!",
-        "string.empty": "Email không được để trống!",
-        "string.email": "Email không đúng định dạng!",
-    
-    }),
-    password: Joi.string().min(6).required().messages({
-        "string.base": "Password phải là một chuỗi!",
-        "string.empty": "Password không được để trống!",
-        "string.min": "Password phải có ít nhất 6 ký tự!",
-    }),
-});
-
 export const otpSchema = Joi.object({
     otp: Joi.number().required().messages({
         "number.base": "OTP phải là một số!",

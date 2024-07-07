@@ -1,11 +1,12 @@
 import { useRef, useState } from "react";
 import BreadcrumbCom from "../UI/BreadcrumbCom"
 import Reviews from "./Reviews";
-import Product from "../Product/Product";
+// import Product from "../Pages/Product/Product";
 import ProductView from "./ProductView";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+
+import Product from "../icons/Product";
+import { useTanstackQuery } from "../../common/hooks/useTanstackQuery";
 
 const SingleProduct = () => {
   const [tab, setTab] = useState("des");
@@ -81,15 +82,9 @@ const SingleProduct = () => {
       return false;
     }, 2000);
   };
-  const {id} = useParams();
-  const { data } = useQuery({
-    queryKey: ["PRODUCT_DETAIL",id], //từ khóa truy vấn để xác định loại dự liệu cần lấy
-    queryFn: async () => {
-      //Hàm queryFn thực hiện yêu cầu GET để lấy dữ liệu từ URL cụ thể
-      const { data } = await axios.get(`http://localhost:3000/products/${id}`);
-      return data;
-    },
-  });
+  
+  const { id } = useParams();
+  const { data: product } = useTanstackQuery(`/products/${id}`);
   // console.log(data)
   return (
     <div>
@@ -101,7 +96,8 @@ const SingleProduct = () => {
                 <BreadcrumbCom
                   paths={[
                     { name: "home", path: "/" },
-                    { name: "single product", path: "/detail" },
+                    // { name: "single product", path: `/detail/${product?.name}` },
+                    // { name: product?.name, path: `/detail/${product?.name}` },
                   ]}
                 />
               </div>
@@ -155,7 +151,7 @@ const SingleProduct = () => {
                   <div data-aos="fade-up" className="w-full tab-content-item">
                   
                     <p className="text-[15px] text-qgray text-normal mb-10">
-                     {data?.description}
+                     {product?.description}
                     </p>
                    
                   </div>
