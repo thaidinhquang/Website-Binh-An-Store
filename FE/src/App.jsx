@@ -15,11 +15,9 @@ import AllProductPage from "./components/Product/AllProductPage";
 import UserForm from "./components/Admin/Users/UserForm";
 import { ToastContainer } from "react-toastify";
 import SuccessMessage from "./components/CheckoutPage/SuccessMessage";
-import adminOrders from "./components/Admin/order/Orders";
+import AdminOrders from "./components/Admin/order/Orders";
 import Statistics from "./components/Admin/Stats";
 import NotfoundPage from "./components/layout/Notfound";
-import LayoutHome from "./components/layout/LayoutHome";
-import LayoutAdmin from "./components/layout/LayoutAdmin";
 import ProductDetail from "./components/Admin/Product/ProductDetail";
 import { Profile } from "./components/Profile/Profile";
 import UserProfile from "./components/Profile/User/UserProfile";
@@ -27,6 +25,8 @@ import Address from "./components/Profile/Address/Address";
 import Orders from "./components/Profile/Order/Orders";
 import ChangePassword from "./components/Profile/ChangePassword/ChangePassword";
 import UserEdit from "./components/Profile/User/UserEdit";
+import LayoutWebsite from "./components/layout/Website";
+import LayoutAdmin from "./components/layout/Admin";
 
 function App() {
   return (
@@ -44,7 +44,7 @@ function App() {
         pauseOnHover
       />
       <Routes>
-        <Route path="/" element={<LayoutHome />}>
+        <Route path="/" element={<LayoutWebsite />}>
           <Route index element={<Home />} />
           <Route path="detail/:id" element={<SingleProduct />} />
           <Route path="about" element={<About />} />
@@ -62,7 +62,7 @@ function App() {
           </Route>
         </Route>
         <Route path="checkoutsuccess" element={<SuccessMessage />} />
-        <Route path="/admin" element={<LayOutAdmin />}>
+        <Route path="/admin" element={<LayoutAdmin />}>
           <Route index element={<Statistics />} />
           <Route path="products">
             <Route index element={<ProductList />} />
@@ -81,7 +81,7 @@ function App() {
             <Route path="edit/:id" element={<UserForm />} />
           </Route>
           <Route path="orders">
-            <Route index element={<adminOrders />} />
+            <Route index element={<AdminOrders />} />
           </Route>
         </Route>
         <Route path="*" element={<NotfoundPage />} />

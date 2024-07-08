@@ -6,6 +6,8 @@ import Product from './Product';
 const ProductNew = () => {
   const { data, isLoading } = useTanstackQuery('products', {
     limit: 4,
+    sort: '-createdAt',
+    active: true
   });
   const { mutate, isPending } = useTanstackMutation(`cart/add-item`, 'CREATE');
   if (isLoading) return <p>Loading...</p>;

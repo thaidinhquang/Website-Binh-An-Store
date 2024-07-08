@@ -4,7 +4,7 @@ import Header from "../Header/Header"
 import { Outlet } from "react-router-dom";
 import DiscountBanner from "../Home/DiscountBanner";
 
-const LayoutHome = ({ children, childrenClasses}) => {
+const LayoutWebsite = ({ children, childrenClasses}) => {
     const [drawer, setDrawer] = useState(false);
   return (
     <div>
@@ -21,4 +21,4 @@ const LayoutHome = ({ children, childrenClasses}) => {
   )
 }
 
-export default LayoutHome
+export default LayoutWebsite

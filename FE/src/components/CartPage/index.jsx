@@ -99,7 +99,7 @@ const CartPage = ({ cart = true, className }) => {
               {/* Chinh sua */}
               <div className="mb-[30px]">
                 <div className={`w-full ${className || ""}`}>
-                  <div className="relative w-full overflow-x-auto border border-[#EDEDED]">
+                  <div className="relative w-full border border-[#EDEDED]">
                     <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                       <thead>
                         <tr>

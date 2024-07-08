@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { useTanstackQuery } from "../../../common/hooks/useTanstackQuery";
-
 const Orders = () => {
   const [statusFilter, setStatusFilter] = useState("");
-  const { data } = useTanstackQuery("orders/by_user", { orderStatus: statusFilter });
+  // const { data } = useTanstackQuery("orders", { orderStatus: statusFilter }, false);
+  const { data } = useTanstackQuery("orders/by_user", { orderStatus: statusFilter }, false);
   return (
     <div className="orders-container mx-auto mt-10">
       <div className="bg-white shadow-md rounded-lg p-6">
@@ -64,47 +65,53 @@ const Orders = () => {
             </tr>
           </thead>
           <tbody>
-            {data?.data?.metadata?.docs?.map((order) => (
-              <tr key={order._id}>
-                <td className="border px-4 py-2">{order._id}</td>
-                <td className="border px-4 py-2">
-                  {new Date(order.updatedAt).toLocaleString([], {
-                    year: "numeric",
-                    month: "numeric",
-                    day: "numeric",
-                    hour: "numeric",
-                    minute: "numeric",
-                  })}
-                </td>
-                <td className="border px-4 py-2">
-                  {order.items.map((item, index) => (
-                    <div
-                      key={index + 1}
-                      className="flex items-center space-x-4"
-                    >
-                      <img
-                        src={item.image}
-                        className="w-16 h-16 object-cover"
-                        alt={item.name}
-                      />
-                      <div>
-                        <p className="">{item.name}</p>
-                        <p>Giá: {item.price}</p>
-                      </div>
-                    </div>
-                  ))}
-                </td>
-                <td className="border px-4 py-2">
-                  <ul>
-                    {order.items.map((item, index) => (
-                      <li key={index + 1}>{item.quantity}</li>
-                    ))}
-                  </ul>
-                </td>
-                <td className="border px-4 py-2">{order.total}</td>
-                <td className="border px-4 py-2">{order.status}</td>
+            {!data?.metadata.docs.length
+              ?
+              <tr>
+                <td colSpan="6" className="text-center py-4">Không có đơn hàng nào</td>
               </tr>
-            ))}
+              :
+              data?.metadata?.docs?.map((order) => (
+                <tr key={order._id}>
+                  <td className="border px-4 py-2">{order._id}</td>
+                  <td className="border px-4 py-2">
+                    {new Date(order.updatedAt).toLocaleString([], {
+                      year: "numeric",
+                      month: "numeric",
+                      day: "numeric",
+                      hour: "numeric",
+                      minute: "numeric",
+                    })}
+                  </td>
+                  <td className="border px-4 py-2">
+                    {order.items.map((item, index) => (
+                      <div
+                        key={index + 1}
+                        className="flex items-center space-x-4"
+                      >
+                        <img
+                          src={item.image}
+                          className="w-16 h-16 object-cover"
+                          alt={item.name}
+                        />
+                        <div>
+                          <p className="">{item.name}</p>
+                          <p>Giá: {item.price}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </td>
+                  <td className="border px-4 py-2">
+                    <ul>
+                      {order.items.map((item, index) => (
+                        <li key={index + 1}>{item.quantity}</li>
+                      ))}
+                    </ul>
+                  </td>
+                  <td className="border px-4 py-2">{order.totalPrice}</td>
+                  <td className="border px-4 py-2">{order.orderStatus}</td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
