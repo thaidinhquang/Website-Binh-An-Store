@@ -2,8 +2,6 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
 import ProductList from "./components/Admin/Product/ProductList";
 import About from "./components/About/About";
-import LayOutHome from "./components/layout/LayOutHome";
-import LayOutAdmin from "./components/layout/LayOutAdmin";
 import Login from "./components/Auth/Login";
 import CartPage from "./components/CartPage";
 import SingleProduct from "./components/SingleProduct/SingleProduct";
@@ -17,8 +15,18 @@ import AllProductPage from "./components/Product/AllProductPage";
 import UserForm from "./components/Admin/Users/UserForm";
 import { ToastContainer } from "react-toastify";
 import SuccessMessage from "./components/CheckoutPage/SuccessMessage";
-import Orders from "./components/Admin/order/Orders";
+import adminOrders from "./components/Admin/order/Orders";
 import Statistics from "./components/Admin/Stats";
+import NotfoundPage from "./components/layout/Notfound";
+import LayoutHome from "./components/layout/LayoutHome";
+import LayoutAdmin from "./components/layout/LayoutAdmin";
+import ProductDetail from "./components/Admin/Product/ProductDetail";
+import { Profile } from "./components/Profile/Profile";
+import UserProfile from "./components/Profile/User/UserProfile";
+import Address from "./components/Profile/Address/Address";
+import Orders from "./components/Profile/Order/Orders";
+import ChangePassword from "./components/Profile/ChangePassword/ChangePassword";
+import UserEdit from "./components/Profile/User/UserEdit";
 
 function App() {
   return (
@@ -36,41 +44,47 @@ function App() {
         pauseOnHover
       />
       <Routes>
-        <Route path="/" element={<LayOutHome />}>
+        <Route path="/" element={<LayoutHome />}>
           <Route index element={<Home />} />
           <Route path="detail/:id" element={<SingleProduct />} />
           <Route path="about" element={<About />} />
           <Route path="cart" element={<CartPage />} />
           <Route path="checkout" element={<CheckoutPage />} />
-          <Route path="all-products" element={<AllProductPage />} />
+          <Route path="shop" element={<AllProductPage />} />
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
+          <Route path="/profile" element={<Profile />}>
+            <Route path="" element={<UserProfile />} />
+            <Route path="address" element={<Address />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="edit" element={<UserEdit />} />
+            <Route path="change-password" element={<ChangePassword />} />
+          </Route>
         </Route>
         <Route path="checkoutsuccess" element={<SuccessMessage />} />
         <Route path="/admin" element={<LayOutAdmin />}>
           <Route index element={<Statistics />} />
           <Route path="products">
             <Route index element={<ProductList />} />
-            <Route path="trash" element={<ProductList />} />
             <Route path="add" element={<ProductForm />} />
             <Route path="edit/:id" element={<ProductForm />} />
+            <Route path="detail/:id" element={<ProductDetail />} />
           </Route>
           <Route path="categories">
             <Route index element={<CategorytList />} />
-            <Route path="trash" element={<CategorytList />} />
             <Route path="add" element={<CategorytForm />} />
             <Route path="edit/:id" element={<CategorytForm />} />
           </Route>
           <Route path="users">
             <Route index element={<UserList />} />
-            <Route path="trash" element={<UserList />} />
             <Route path="add" element={<UserForm />} />
             <Route path="edit/:id" element={<UserForm />} />
           </Route>
           <Route path="orders">
-            <Route index element={<Orders />} />
+            <Route index element={<adminOrders />} />
           </Route>
         </Route>
+        <Route path="*" element={<NotfoundPage />} />
       </Routes>
     </>
   );

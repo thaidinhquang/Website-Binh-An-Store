@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import Cart from '../Cart/Cart'
-import SearchBox from './SearchBox'
 import Compair from '../icons/Compair'
 import ThinBag from '../icons/ThinBag'
 import ThinLove from '../icons/ThinLove'
@@ -10,10 +9,7 @@ import AuthenticationModal from './AuthenticationModal'
 import { AuthContext } from '../Auth/core/Auth'
 
 const Middlebar = ({ className }) => {
-  const { currentUser, removeCurrentUser } = useContext(AuthContext);
-  const logout = () => {
-    removeCurrentUser()
-  }
+  const { currentUser } = useContext(AuthContext);
   return (
     <div>
       <div className={`w-full h-[86px] bg-white ${className}`}>
@@ -25,14 +21,11 @@ const Middlebar = ({ className }) => {
                   <span className="text-lg font-semibold ml-2 text-gray-800">Bình An</span>
                 </a>
               </div>
-              <div className="w-[517px] h-[44px]">
+              {/* <div className="w-[517px] h-[44px]">
                 <SearchBox className="search-com" />
-              </div>
+              </div> */}
               {currentUser ?
                 <div className="flex space-x-6 items-center">
-                  <div className="logout relative">
-                    <button onClick={() => logout()}>Log out</button>
-                  </div>
                   <div className="compaire relative">
                     <a href="/products-compaire">
                       <span>

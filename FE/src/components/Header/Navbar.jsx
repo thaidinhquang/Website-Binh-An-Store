@@ -33,7 +33,7 @@ const Navbar = ({ className }) => {
           <div className="w-full h-full relative">
             <div className="w-full h-full flex justify-between items-center">
               <div className="category-and-nav flex xl:space-x-7 space-x-3 items-center">
-                <div className="category w-[270px] h-[53px] bg-white px-5 rounded-t-md mt-[6px] relative">
+                {/* <div className="category w-[270px] h-[53px] bg-white px-5 rounded-t-md mt-[6px] relative">
                   <button
                     onClick={handler}
                     type="button"
@@ -473,9 +473,7 @@ const Navbar = ({ className }) => {
 
                     </ul>
                   </div>
-                </div>
-
-
+                </div> */}
                 <div className="nav">
                   <ul className="nav-wrapper flex xl:space-x-10 space-x-5">
                     <li className="relative">
@@ -487,11 +485,19 @@ const Navbar = ({ className }) => {
                           </span>
                         </span>
                       </Link>
+                    </li>
+                    <li className="relative">
+                      <Link to="/shop">
+                        <span className="flex items-center text-sm text-qblack font-600 cursor-pointer ">
+                          <span>Shop</span>
+                          <span className="ml-1.5 ">
 
+                          </span>
+                        </span>
+                      </Link>
                     </li>
 
-
-                    <li>
+                    {/* <li>
                       <span className="flex items-center text-sm text-qblack font-600 cursor-pointer ">
                         <span>Shop</span>
                         <span className="ml-1.5 ">
@@ -704,7 +710,7 @@ const Navbar = ({ className }) => {
                           </div>
                         </div>
                       </div>
-                    </li>
+                    </li> */}
                     <li>
                       <Link to="/about">
                         <span className="flex items-center text-sm text-qblack font-600 cursor-pointer ">

@@ -20,10 +20,15 @@ export const updateCategory = async (req, res, next) => {
 
 export const getAllCategory = async (req, res, next) => {
   try {
+    let sort = { createdAt: -1 }; // Default sort order
+    if (req.query.sort) {
+      const [key, value] = req.query.sort.split(':');
+      sort = { [key]: Number(value) };
+    }
     const options = {
       page: req.query.page ? +req.query.page : 1,
       limit: req.query.limit ? +req.query.limit : 10,
-      sort: req.query.sort ? req.query.sort : { createdAt: -1 },
+      sort,
     };
     let query = {};
     if (req.query.name) {

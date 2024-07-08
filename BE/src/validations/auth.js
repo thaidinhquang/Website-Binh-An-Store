@@ -12,7 +12,7 @@ export const registerSchema = Joi.object({
         "string.min": "Password phải có ít nhất 6 ký tự!",
         "string.pattern.base": "Password phải chứa ít nhất 1 chữ thường, 1 chữ hoa, 1 số và 1 ký tự đặc biệt!",
     }),
-});
+}).unknown();
 
 export const otpSchema = Joi.object({
     otp: Joi.number().required().messages({
