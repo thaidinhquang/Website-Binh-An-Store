@@ -84,9 +84,8 @@ const orderSchema = new mongoose.Schema(
       type: String,
       enum: [ROLES.ADMIN, ROLES.USER],
     },
-    isCanceled: {
-      type: Boolean,
-      default: false,
+    canceledReason: {
+      type: String,
     },
     isPaid: {
       type: Boolean,
@@ -101,6 +100,7 @@ const orderSchema = new mongoose.Schema(
         ORDER_STATUS.SHIPPING,
         ORDER_STATUS.DELIVERED,
         ORDER_STATUS.DONE,
+        ORDER_STATUS.CANCELED,
       ],
     },
   },

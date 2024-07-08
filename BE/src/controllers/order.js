@@ -1,8 +1,11 @@
 import Stripe from "stripe";
 import Order from "../models/Order.js";
+import { ORDER_STATUS } from "../constants/order.js";
+import { ROLES } from "../constants/Role.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+// @POST CHECKOUT SESSION WITH STRIPE
 export const checkoutSession = async (req, res) => {
   const lineItems = req.body.items.map((item) => ({
     price_data: {
@@ -41,6 +44,7 @@ export const checkoutSession = async (req, res) => {
   });
 };
 
+// @POST CREATE ORDER BY CASH
 export const createOrder = async (req, res) => {
   try {
     const order = new Order({
@@ -56,10 +60,11 @@ export const createOrder = async (req, res) => {
       metadata: null,
     });
   } catch (error) {
-    console.log("Something went wrong...", error);
+    return console.log("Something went wrong...", error);
   }
 };
 
+// @POST CREATE ORDER BY CARD
 export const createStripeOrder = async (session) => {
   try {
     const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
@@ -102,10 +107,14 @@ export const createStripeOrder = async (session) => {
 
     console.log("Order saved successfully");
   } catch (error) {
-    console.error("Error processing checkout.session.completed event:", error);
+    return console.error(
+      "Error processing checkout.session.completed event:",
+      error
+    );
   }
 };
 
+// @HANDLE EVENT WHEN PROCESSING A TRANSACTION
 export const listenEvent = async (req, res) => {
   const sig = req.headers["stripe-signature"];
 
@@ -137,6 +146,7 @@ export const listenEvent = async (req, res) => {
   res.status(200).end();
 };
 
+// @GET ALL ORDER BY USER
 export const getAllOrdersByUser = async (req, res) => {
   const options = {
     page: req.query.page ? +req.query.page : 1,
@@ -146,8 +156,94 @@ export const getAllOrdersByUser = async (req, res) => {
   };
 
   const filter = {
-    userId: req.params.userId,
+    userId: req.user._id,
   };
+
+  if (req.query.search) {
+    const search = req.query.search;
+    filter._id = { $regex: new RegExp(search, "i") };
+  }
+
+  if (req.query.paymentMethod) {
+    filter.paymentMethod = req.query.paymentMethod;
+  }
+
+  if (req.query.isPaid) {
+    filter.isPaid = req.query.isPaid;
+  }
+
+  if (req.query.orderStatus) {
+    filter.orderStatus = req.query.orderStatus;
+  }
+
+  try {
+    const orders = await Order.paginate(filter, options);
+
+    return res.status(200).json({
+      message: "OK",
+      success: true,
+      metadata: orders,
+    });
+  } catch (error) {
+    return console.log("Something went wrong.", error);
+  }
+};
+
+// @GET ORDER DETAIL
+export const getOrderDetails = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.orderId).lean();
+
+    if (!order) {
+      throw new Error(`Not found any order with id: ${req.params.orderId} `);
+    }
+
+    return res
+      .status(200)
+      .json({ message: "OK", success: true, metadata: order });
+  } catch (error) {
+    return console.log("Something went wrong.", error);
+  }
+};
+
+// @PATCH CANCEL AN  ORDER
+export const cancelOrder = async (req, res) => {
+  try {
+    const foundedOrder = await Order.findById(req.body.orderId);
+    if (!foundedOrder) {
+      throw new Error(`NOt found any order with id ${req.body.orderId}`);
+    }
+
+    if (req.user.role === ROLES.ADMIN) {
+      foundedOrder.canceledBy = ROLES.ADMIN;
+    }
+
+    if (req.body.content) {
+      foundedOrder.canceledReason = req.body.content;
+    }
+
+    foundedOrder.orderStatus = ORDER_STATUS.CANCELED;
+    foundedOrder.save();
+    return res.status(200).json({ message: "Canceled", success: true });
+  } catch (error) {
+    return console.log("Something went wrong.", error);
+  }
+};
+
+/**
+ * ADMIN
+ */
+
+// @GET ALL ORDER BY ADMIN
+export const getAllOrders = async (req, res) => {
+  const options = {
+    page: req.query.page ? +req.query.page : 1,
+    limit: req.query.limit ? +req.query.limit : 10,
+    sort: req.query.sort ? req.query.sort : { createdAt: -1 },
+    lean: true,
+  };
+
+  const filter = {};
 
   if (req.query.search) {
     const search = req.query.search;
@@ -179,18 +275,50 @@ export const getAllOrdersByUser = async (req, res) => {
   }
 };
 
-export const getOrderDetails = async (req, res) => {
+// @PATCH CONFIRM AN ORDER BY ADMIN
+export const confirmedOrder = async (req, res) => {
+  console.log(req.userId);
   try {
-    const order = await Order.findById(req.params.orderId).lean();
+    const foundedOrder = await Order.findById(req.body.orderId);
 
-    if (!order) {
-      throw new Error(`Not found any order with id: ${req.params.orderId} `);
+    if (!foundedOrder) {
+      throw new Error(`NOt found any order with id ${req.body.orderId}`);
     }
 
-    return res
-      .status(200)
-      .json({ message: "OK", success: true, metadata: order });
+    foundedOrder.orderStatus = ORDER_STATUS.CONFIRMED;
+    foundedOrder.save();
+
+    return res.status(200).json({
+      message: "This order is confirmed.",
+      success: true,
+    });
   } catch (error) {
-    console.log("Something went wrong.", error);
+    return console.log("Something went wrong.", error);
+  }
+};
+
+// @PATCH FINISH AN ORDER BY ADMIN
+export const finishAnOrder = async (req, res) => {
+  try {
+    const foundedOrder = await Order.findById(req.body.orderId);
+    if (!foundedOrder) {
+      throw new Error(`NOt found any order with id ${req.body.orderId}`);
+    }
+
+    if (foundedOrder.orderStatus === ORDER_STATUS.DELIVERED) {
+      throw new Error(
+        "This order is done when it is delivered or customer received."
+      );
+    }
+
+    foundedOrder.orderStatus = ORDER_STATUS.DONE;
+    foundedOrder.save();
+
+    return res.status(200).json({
+      message: "This order is done.",
+      success: true,
+    });
+  } catch (error) {
+    return console.log("Something went wrong.", error);
   }
 };
