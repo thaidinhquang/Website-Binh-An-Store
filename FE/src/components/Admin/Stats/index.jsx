@@ -5,8 +5,10 @@ import OrdersByMonth from "./OrdersByMonth";
 import TotalStatistics from "./TotalStatistics";
 
 const Statistics = () => {
-  const { data: stats } = useTotalStatistics();
+  const { data: statsData } = useTotalStatistics();
   const { data: orderStats } = useOrdersStatistics();
+
+  const stats = statsData?.data && statsData.data.metadata;
 
   return (
     <div className="w-full h-ful">

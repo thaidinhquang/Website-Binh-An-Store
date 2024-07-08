@@ -20,14 +20,14 @@ instance.interceptors.request.use(
   }
 );
 
-instance.interceptors.response.use(
-  (response) => {
-    return response && response.data ? response.data.metadata : response.data;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+// instance.interceptors.response.use(
+//   (response) => {
+//     return response && response.data ? response.data.metadata : response.data;
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   }
+// );
 
 export const axiosGet = async (url) => {
   try {
