@@ -1,7 +1,5 @@
 import React, { useContext } from "react";
-import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../Auth/core/Auth";
 

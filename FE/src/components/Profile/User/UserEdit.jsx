@@ -1,13 +1,9 @@
-import React, { useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "../../Auth/core/Auth";
-
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { useTanstackMutation } from "../../../common/hooks/useTanstackQuery";
 
 const UserEdit = () => {
-    const { currentUser, setCurrentUser } = useContext(AuthContext);
-    const navigate = useNavigate();
+    const { currentUser } = useContext(AuthContext);
     const { form, onSubmit } = useTanstackMutation(`users`, "UPDATE", "/profile");
     const { register, handleSubmit, setValue } = form;
 
