@@ -4,6 +4,7 @@ const Orders = () => {
   const [statusFilter, setStatusFilter] = useState("");
   // const { data } = useTanstackQuery("orders", { orderStatus: statusFilter }, false);
   const { data } = useTanstackQuery("orders/by_user", { orderStatus: statusFilter }, false);
+  console.log(data)
   return (
     <div className="orders-container mx-auto mt-10">
       <div className="bg-white shadow-md rounded-lg p-6">
@@ -94,6 +95,7 @@ const Orders = () => {
                           className="w-16 h-16 object-cover"
                           alt={item.name}
                         />
+                        
                         <div>
                           <p className="">{item.name}</p>
                           <p>Giá: {item.price}</p>
