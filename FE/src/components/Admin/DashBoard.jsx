@@ -28,7 +28,7 @@ const DashBoard = () => {
                 <div className="w-[236px] min-h-[600px] border-r border-[rgba(0, 0, 0, 0.1)] ">
                   <div className="flex flex-col space-y-10 fixed h-screen overflow-y-auto no-scrollbar">
                     <div className="item group">
-                      <Link to="/profile#dashboard">
+                      <Link to="/admin">
                         <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
                           <span>
                             <IcoDashboard />

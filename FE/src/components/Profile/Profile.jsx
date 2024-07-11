@@ -7,7 +7,7 @@ import IcoAdress from "../icons/IcoAdress";
 import IcoPassword from "../icons/IcoPassword";
 import IcoSupport from "../icons/IcoSupport";
 import { AuthContext } from "../Auth/core/Auth";
-import '../UI/style.css'
+
 export const Profile = () => {
   const navigate = useNavigate();
   const { currentUser, removeCurrentUser } = useContext(AuthContext);
