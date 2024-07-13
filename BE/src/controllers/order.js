@@ -1,4 +1,4 @@
-import Stripe from "stripe";
+import Stripe from "stripe"
 import Order from "../models/Order.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);

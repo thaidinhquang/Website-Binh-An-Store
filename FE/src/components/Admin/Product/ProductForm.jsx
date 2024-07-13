@@ -67,6 +67,7 @@ const ProductForm = () => {
                                 />
                                 {form.formState.errors?.price && <span className="text-red-500">{form.formState.errors?.price?.message}</span>}
                             </div>
+                          
                             <div>
                                 <label className="block text-gray-700 text-sm font-bold mb-2">
                                     Ảnh Sản Phẩm
