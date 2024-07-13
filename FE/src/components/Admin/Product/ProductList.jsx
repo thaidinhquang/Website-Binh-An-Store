@@ -94,7 +94,7 @@ const ProductList = () => {
                 </th>
                 <th className="px-6 py-4">{product.price}</th>
 
-                <th className="px-6 py-4">{product.stock}</th>
+                <th className="px-6 py-4">{product.countInStock}</th>
                 <th className="px-6 py-4">
                   <div className="dropdown dropdown-hover dropdown-bottom dropdown-end">
                     <div tabIndex={0} role="button" className="btn m-1"><svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">

@@ -14,6 +14,7 @@ const CartPage = ({ cart = true, className }) => {
   const { mutate: increeseProduct } = useTanstackMutation(`cart/increase-quantity`, "CREATE");
   const { mutate: decreaseProduct } = useTanstackMutation(`cart/decrease-quantity`, "CREATE");
   const { mutate: removeProduct } = useTanstackMutation(`cart/remove-item`, "CREATE");
+  const { mutate: clearCart } = useTanstackMutation(`cart/clear`, "CREATE");
   const { mutate: order, isPending, data: response } = useTanstackMutation(`orders/create-checkout-session`, "CREATE");
   const { currentUser } = useContext(AuthContext);
   const calculateTotalPrice = (item) => {
@@ -47,6 +48,7 @@ const CartPage = ({ cart = true, className }) => {
       "currency": "usd",
     }
     order(data)
+    clearCart()
   }
   useEffect(() => {
     if (response) {
@@ -347,16 +349,25 @@ const CartPage = ({ cart = true, className }) => {
                       <p className="text-[18px] font-medium text-qred">${!isLoadingCartTotal && cartTotal}</p>
                     </div>
                   </div>
-                  <button onClick={() => onSubmit()} disabled={isLoadingItem} className="w-full h-[50px] black-btn flex justify-center items-center text-sm font-semibold">
-                    {isPending ? "Processing..." : "Thanh Toán online"}
-                  </button>
-                  <Link to="/checkout">
+                  {data.products.length > 0 ? (
+                    <>
+                    <button onClick={() => onSubmit()} disabled={isLoadingItem} className="w-full h-[50px] black-btn flex justify-center items-center text-sm font-semibold">
+                      {isPending ? "Processing..." : "Thanh Toán online"}
+                    </button>
+                    <Link to="/checkout">
                     <div className="mt-4 w-full h-[50px] black-btn flex justify-center items-center">
                       <span className="text-sm font-semibold">
                         Trả tiền khi nhận hàng
                       </span>
                     </div>
                   </Link>
+                  </>
+                  ) : (
+                    <div className="w-full h-[50px] black-btn flex justify-center items-center text-sm font-semibold opacity-50 cursor-not-allowed">
+                      Không có sản phẩm để thanh toán
+                    </div>
+                  )}
+                  
                 </div>
               </div>
             </div>

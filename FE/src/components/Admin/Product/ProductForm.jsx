@@ -67,6 +67,20 @@ const ProductForm = () => {
                                 />
                                 {form.formState.errors?.price && <span className="text-red-500">{form.formState.errors?.price?.message}</span>}
                             </div>
+
+                            
+                            <div>
+                                <label className="block text-gray-700 text-sm font-bold mb-2">
+                                    Số Lượng
+                                </label>
+                                <input
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                                    {...form.register("countInStock", { required: 'Product count is required', min: { value: 0, message: 'Product count must be greater than 0' }, pattern: { value: /^[0-9]+$/, message: 'Product price must be a number)' } })}
+                                    type="number"
+                                />
+                                {form.formState.errors?.countInStock && <span className="text-red-500">{form.formState.errors?.countInStock?.message}</span>}
+                            </div>
+
                             <div>
                                 <label className="block text-gray-700 text-sm font-bold mb-2">
                                     Ảnh Sản Phẩm
