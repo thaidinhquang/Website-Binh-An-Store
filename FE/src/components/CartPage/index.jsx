@@ -11,11 +11,26 @@ const CartPage = ({ cart = true, className }) => {
   const [items, setItems] = useState([])
   const { data, isLoading } = useTanstackQuery('cart')
   const { data: cartTotal, isLoading: isLoadingCartTotal, refetch} = useTanstackQuery('cart/total')
-  const { mutate: increeseProduct } = useTanstackMutation(`cart/increase-quantity`, "CREATE");
-  const { mutate: decreaseProduct } = useTanstackMutation(`cart/decrease-quantity`, "CREATE");
-  const { mutate: removeProduct } = useTanstackMutation(`cart/remove-item`, "CREATE");
-  const { mutate: clearCart } = useTanstackMutation(`cart/clear`, "CREATE");
-  const { mutate: order, data: response } = useTanstackMutation(`orders/create-checkout-session`, "CREATE");
+  const { mutate: increeseProduct } = useTanstackMutation({
+    path: `cart/increase-quantity`,
+    action: "CREATE",
+  });
+  const { mutate: decreaseProduct } = useTanstackMutation({
+    path: `cart/decrease-quantity`,
+    action: "CREATE",
+  });
+  const { mutate: removeProduct } = useTanstackMutation({
+    path: `cart/remove-item`,
+    action: "CREATE",
+  });
+  const { mutate: clearCart } = useTanstackMutation({
+    path: `cart/clear`,
+    action: "CREATE",
+  });
+  const { mutate: order, data: response } = useTanstackMutation({
+    path: `orders/create-checkout-session`,
+    action: "CREATE",
+  });
   const { currentUser } = useContext(AuthContext);
   const calculateTotalPrice = (item) => {
     return item.productId.price * item.quantity;

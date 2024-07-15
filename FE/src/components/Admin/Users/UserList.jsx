@@ -21,7 +21,10 @@ const UserList = () => {
   const { currentUser } = useContext(AuthContext)
   const { data: dataRole, isLoading: isLoadingRole } = useTanstackQuery('role')
   const { data, isLoading, refetch } = useTanstackQuery('users', { active, page, sort, name, email, phone, role })
-  const { mutate } = useTanstackMutation(`users`, "DELETE");
+  const { mutate } = useTanstackMutation({
+    path: `users`,
+    action: "DELETE",
+  });
   const [listUserOnEditRoute, setListUserOnEditRoute] = useState(null);
   const isUserEditing = (id) => {
     const user = listUserOnEditRoute ? listUserOnEditRoute[id] : null;

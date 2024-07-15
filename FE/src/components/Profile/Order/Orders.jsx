@@ -12,7 +12,10 @@ const Orders = () => {
   const page = search.get('page') || 1;
   const status = search.get('status') || '';
   const { data, refetch } = useTanstackQuery("orders", { orderStatus: status, page, limit: 6 }, false);
-  const { mutate } = useTanstackMutation("orders/cancel", "PATCH");
+  const { mutate } = useTanstackMutation({
+    path: `orders/cancel`,
+    action: "PATCH",
+  });
   useEffect(() => {
     refetch();
   }, [status, page]);

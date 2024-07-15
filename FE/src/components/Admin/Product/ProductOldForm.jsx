@@ -6,7 +6,11 @@ import { AuthContext } from "../../Auth/core/Auth";
 
 const ProductForm = () => {
     const { id } = useParams();
-    const { form, onSubmit } = useTanstackMutation(`products`, id ? "UPDATE" : "CREATE", "/admin/products");
+    const { form, onSubmit } = useTanstackMutation({
+        path: `products`,
+        action: id ? "UPDATE" : "CREATE",
+        navigatePage: "/admin/products",
+    });
     const { currentUser } = useContext(AuthContext);
     const { data } = id ? useTanstackQuery(`products/${id}`) : { data: null };
     const { data: category } = useTanstackQuery(`categories`);

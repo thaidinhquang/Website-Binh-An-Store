@@ -30,9 +30,18 @@ export const getAllProduct = async (req, res, next) => {
   }
 };
 
-export const getDetailProduct = async (req, res, next) => {
+export const getDetailProductPopulate = async (req, res, next) => {
   try {
     const data = await Product.findById(req.params.id).populate("category");
+    return !data ? res.status(400).json({ message: "Khong tim thay san pham!" }) : res.status(200).json({ data })
+  } catch (error) {
+    next(error)
+  }
+};
+
+export const getDetailProduct = async (req, res, next) => {
+  try {
+    const data = await Product.findById(req.params.id)
     return !data ? res.status(400).json({ message: "Khong tim thay san pham!" }) : res.status(200).json({ data })
   } catch (error) {
     next(error)
@@ -69,7 +78,9 @@ export const createProduct = async (req, res, next) => {
 
 export const updateProduct = async (req, res, next) => {
   try {
+    console.log(req.body);
     const data = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    console.log(data);
     return !data ? res.status(400).json({ message: "Update product failed!" }) : res.status(200).json({ data, message: "Update product successfully"})
   } catch (error) {
     next(error)

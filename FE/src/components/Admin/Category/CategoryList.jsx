@@ -15,7 +15,10 @@ const CategorytList = () => {
   const form = useForm();
   const useSearch = useHookSearch();
   const { data, isLoading, refetch } = useTanstackQuery('categories', { active, page, sort, name })
-  const { mutate } = useTanstackMutation(`categories`, "DELETE");
+  const { mutate } = useTanstackMutation({
+    path: `categories`,
+    action: "DELETE",
+  });
   const [listUserOnEditRoute, setListUserOnEditRoute] = useState(null);
   const isUserEditing = (id) => {
     const user = listUserOnEditRoute ? listUserOnEditRoute[id] : null;

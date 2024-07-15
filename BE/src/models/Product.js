@@ -39,6 +39,10 @@ const productSchema = new mongoose.Schema(
     tags: {
         type: Array,
     },
+    slug: {
+        type: String,
+        required: true,
+    },
     // attributes: [
     //     {
     //         type: mongoose.Schema.Types.ObjectId,

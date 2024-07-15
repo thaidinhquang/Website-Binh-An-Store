@@ -1,20 +1,30 @@
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useTanstackMutation, useTanstackQuery } from "../../../common/hooks/useTanstackQuery";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import socket from "/src/config/socket";
 import { AuthContext } from "../../Auth/core/Auth";
-import { uploadFileCloudinary } from "../../../common/libs/uploadImageCloud";
 
 const ProductForm = () => {
     const location = useLocation().pathname.split('/')[3];
     const { id } = useParams();
-    const { form, onSubmit } = useTanstackMutation(`products`, id ? "UPDATE" : "CREATE", "/admin/products");
+    const [image, setImage] = useState('https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg');
+    const { form, onSubmit } = useTanstackMutation({
+        path: `products`,
+        action: id ? "UPDATE" : "CREATE",
+        navigatePage: "/admin/products",
+    });
     const { currentUser } = useContext(AuthContext);
-    const { data } = id ? useTanstackQuery(`products/${id}`) : { data: null };
+    const { data } = id ? useTanstackQuery(`products/not-populate/${id}`) : { data: null };
     const { data: category } = useTanstackQuery(`categories`);
+    const { mutate, isPending } = useTanstackMutation({
+        action: "UPLOAD",
+        toastMessage: "Uploading image",
+        invalidateQueries: false
+    });
     useEffect(() => {
         if (data) {
             form.reset(data);
+            setImage(data.image);
         }
     }, [data]);
     useEffect(() => {
@@ -31,7 +41,6 @@ const ProductForm = () => {
             };
         }
     }, [location, currentUser, id, socket]);
-    console.log(location != 'detail');
     return (
         <div className="min-h-screen bg-gray-100 p-6">
             <div className="flex justify-between items-center mb-6">
@@ -46,7 +55,7 @@ const ProductForm = () => {
             <div className="flex flex-col md:flex-row gap-6">
                 <div className="bg-white p-6 shadow rounded md:w-1/3">
                     <h2 className="text-2xl font-semibold mb-4">Ảnh Sản Phẩm</h2>
-                    <img src={data?.image || 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg'} className="w-full h-auto object-cover rounded-lg mb-4" />
+                    <img src={image} className="w-full h-auto object-cover rounded-lg mb-4" />
                     {location == 'detail' ? <Link to={`/admin/products/edit/${id}`} className="block text-center text-blue-500 mt-4 hover:underline">
                         Edit
                     </Link>
@@ -58,16 +67,14 @@ const ProductForm = () => {
                                 Change image
                             </button>
                             <input type="file" name="" multiple={false} id="file" accept="image/jpg, image/jpeg, image/png" onChange={async ({ target }) => {
-                                if (target.files) {
-                                    const file = target.files[0]
-                                    setImg(URL.createObjectURL(file))
-                                    setFile('uploading')
-                                    const urls = await Promise.all(
-                                        Array.from(target.files).map(
-                                            uploadFileCloudinary,
-                                        )
-                                    )
-                                    setFile(urls[0])
+                                if (target.files.length > 0) {
+                                    const file = target.files[0];
+                                    setImage(URL.createObjectURL(file));
+                                    mutate(file, {
+                                        onSuccess: (data) => {
+                                            form.setValue('image', data);
+                                        }
+                                    });
                                 }
                             }}
                                 className="hidden" />
@@ -102,19 +109,6 @@ const ProductForm = () => {
                                 type="number"
                             />
                             {form.formState.errors.price && <span className="text-red-500">{form.formState.errors.price.message}</span>}
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2">
-                                Ảnh Sản Phẩm
-                            </label>
-                            <input
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:cursor-not-allowed"
-                                {...form.register("image")}
-                                disabled={location == 'detail'}
-                                type="text"
-                            />
-                            {form.formState.errors.image && <span className="text-red-500">{form.formState.errors.image.message}</span>}
                         </div>
 
                         <div className="mb-4">
@@ -159,7 +153,7 @@ const ProductForm = () => {
                             ></textarea>
                         </div>
 
-                        <button hidden={location == 'detail'} type="submit" className="w-full py-2 px-4 bg-yellow-400 hover:bg-yellow-500 text-white font-semibold rounded-lg focus:outline-none focus:ring-4 focus:ring-yellow-300">
+                        <button disabled={isPending} hidden={location == 'detail'} type="submit" className="w-full py-2 px-4 bg-yellow-400 hover:bg-yellow-500 text-white font-semibold rounded-lg focus:outline-none focus:ring-4 focus:ring-yellow-300 disabled:bg-blue-500">
                             {id ? "Sửa" : "Thêm"}
                         </button>
                     </form>

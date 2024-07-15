@@ -1,7 +1,11 @@
 import { useTanstackMutation } from "../../../common/hooks/useTanstackQuery";
 
 const ChangePassword = () => {
-  const { form, mutate, isPending } = useTanstackMutation(`auth/change-password`, "CREATE", "/profile");
+  const { form, mutate, isPending } = useTanstackMutation({
+    path: `auth/change-password`,
+    action: "CREATE",
+    navigatePage: "/profile",
+  });
   const onSubmit = (data) => {
     mutate(data)
   }

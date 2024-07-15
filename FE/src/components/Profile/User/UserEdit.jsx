@@ -4,7 +4,11 @@ import { useTanstackMutation } from "../../../common/hooks/useTanstackQuery";
 
 const UserEdit = () => {
     const { currentUser } = useContext(AuthContext);
-    const { form, onSubmit } = useTanstackMutation(`users`, "UPDATE", "/profile");
+    const { form, onSubmit } = useTanstackMutation({
+        path: `users`,
+        action: "UPDATE",
+        navigatePage: "/profile",
+    });
     const { register, handleSubmit, setValue } = form;
 
     useEffect(() => {

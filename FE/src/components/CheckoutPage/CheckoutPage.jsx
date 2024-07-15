@@ -9,7 +9,11 @@ const CheckoutPage = () => {
     const [isLoadingItem, setIsLoadingItem] = useState(false)
     const [items, setItems] = useState([])
     const { currentUser } = useContext(AuthContext);
-    const { form, mutate } = useTanstackMutation(`orders`, "CREATE", '/checkoutsuccess');
+    const { form, mutate } = useTanstackMutation({
+        path: `orders`,
+        action: "CREATE",
+        navigatePage: "/checkoutsuccess",
+    });
     useEffect(() => {
         if (cartItems?.products?.length > 0) {
             setIsLoadingItem(true)

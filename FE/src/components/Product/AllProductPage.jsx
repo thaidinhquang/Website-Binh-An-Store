@@ -17,7 +17,10 @@ const AllProductPage = () => {
   const useSearch = useHookSearch();
   const { data, isLoading, refetch } = useTanstackQuery('products', { limit: 12, active: true, page, sort, name });
   const { data: category, isLoading: isLoadingCategory } = useTanstackQuery('categories', { limit: 100, active: true });
-  const { mutate, isPending } = useTanstackMutation(`cart/add-item`, 'CREATE');
+  const { mutate, isPending } = useTanstackMutation({
+    path: `cart/add-item`,
+    action: "CREATE",
+  });
   useEffect(() => {
     form.reset({ name, sort, page });
   }, []);
