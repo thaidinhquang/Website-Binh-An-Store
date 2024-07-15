@@ -78,9 +78,7 @@ export const createProduct = async (req, res, next) => {
 
 export const updateProduct = async (req, res, next) => {
   try {
-    console.log(req.body);
     const data = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    console.log(data);
     return !data ? res.status(400).json({ message: "Update product failed!" }) : res.status(200).json({ data, message: "Update product successfully"})
   } catch (error) {
     next(error)

@@ -66,7 +66,7 @@ export const useTanstackMutation = ({
     },
     onSuccess: (data, variables, context) => {
       const elapsedTime = Date.now() - context.startTime; // Calculate elapsed time
-      const delay = Math.max(1000 - elapsedTime, 0); // Calculate remaining delay to ensure at least 1 second
+      const delay = Math.max(500 - elapsedTime, 0); // Calculate remaining delay to ensure at least 1 second
       setTimeout(() => { // Delay the toast update if needed
         toast.update(context.toastId, { render: toastMessage || data.message, type: "success", isLoading: false, autoClose: 5000 });
         if (navigatePage) {
