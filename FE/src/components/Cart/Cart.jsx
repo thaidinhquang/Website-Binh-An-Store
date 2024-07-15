@@ -1,9 +1,17 @@
 import { Link } from "react-router-dom"
-import { useTanstackQuery } from "../../common/hooks/useTanstackQuery"
+import { useTanstackMutation, useTanstackQuery } from "../../common/hooks/useTanstackQuery"
 
 const Cart = ({ className, type }) => {
   const { data, isLoading } = useTanstackQuery('cart')
   const { data: cartTotal, isLoading: isLoadingCartTotal, refetch } = useTanstackQuery('cart/total')
+  const { mutate: removeProduct } = useTanstackMutation({
+    path: `cart/remove-item`,
+    action: "CREATE",
+  });
+  const onHandleRemove = (productId) => {
+    removeProduct({ productId })
+    data.products = data.products.filter(item => item.productId._id !== productId)
+  }
   return (
     <div>
       <div
@@ -43,7 +51,7 @@ const Cart = ({ className, type }) => {
                         </p>
                       </div>
                     </div>
-                    <span className="mt-[20px] mr-[15px] inline-flex cursor-pointer ">
+                    <span onClick={() => onHandleRemove(item.productId._id)} className="mt-[20px] mr-[15px] inline-flex cursor-pointer ">
                       <svg
                         width="8"
                         height="8"
