@@ -21,7 +21,7 @@ const UserList = () => {
   const { currentUser } = useContext(AuthContext)
   const { data: dataRole, isLoading: isLoadingRole } = useTanstackQuery('role')
   const { data, isLoading, refetch } = useTanstackQuery('users', { active, page, sort, name, email, phone, role })
-  const { mutate, isPending } = useTanstackMutation(`users`, "DELETE");
+  const { mutate } = useTanstackMutation(`users`, "DELETE");
   const [listUserOnEditRoute, setListUserOnEditRoute] = useState(null);
   const isUserEditing = (id) => {
     const user = listUserOnEditRoute ? listUserOnEditRoute[id] : null;
@@ -161,11 +161,6 @@ const UserList = () => {
                       tabIndex={0}
                       className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
                     >
-                      <li>
-                        <button onClick={() => mutate(item)}>
-                          {isPending ? 'Đang xử lý...' : 'Xóa'}
-                        </button>
-                      </li>
                       <li>
                         {" "}
                         <Link to={`/admin/users/edit/${item._id}`}>Sửa</Link>

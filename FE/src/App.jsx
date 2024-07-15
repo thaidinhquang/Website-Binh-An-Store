@@ -18,7 +18,6 @@ import SuccessMessage from "./components/CheckoutPage/SuccessMessage";
 import AdminOrders from "./components/Admin/order/Orders";
 import Statistics from "./components/Admin/Stats";
 import NotfoundPage from "./components/layout/Notfound";
-import ProductDetail from "./components/Admin/Product/ProductDetail";
 import { Profile } from "./components/Profile/Profile";
 import UserProfile from "./components/Profile/User/UserProfile";
 import Address from "./components/Profile/Address/Address";
@@ -68,7 +67,7 @@ function App() {
             <Route index element={<ProductList />} />
             <Route path="add" element={<ProductForm />} />
             <Route path="edit/:id" element={<ProductForm />} />
-            <Route path="detail/:id" element={<ProductDetail />} />
+            <Route path="detail/:id" element={<ProductForm />} />
           </Route>
           <Route path="categories">
             <Route index element={<CategorytList />} />

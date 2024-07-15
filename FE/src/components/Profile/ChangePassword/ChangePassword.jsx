@@ -40,7 +40,7 @@ const ChangePassword = () => {
           <button type="submit" disabled={isPending}
             className="btn bg-blue-500 text-white  py-2 rounded"
           >
-            {isPending ? "Đang xử lý..." : "Đổi mật khẩu"}
+            Đổi mật khẩu
           </button>
         </div>
       </div>

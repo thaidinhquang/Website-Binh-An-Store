@@ -15,7 +15,7 @@ const CartPage = ({ cart = true, className }) => {
   const { mutate: decreaseProduct } = useTanstackMutation(`cart/decrease-quantity`, "CREATE");
   const { mutate: removeProduct } = useTanstackMutation(`cart/remove-item`, "CREATE");
   const { mutate: clearCart } = useTanstackMutation(`cart/clear`, "CREATE");
-  const { mutate: order, isPending, data: response } = useTanstackMutation(`orders/create-checkout-session`, "CREATE");
+  const { mutate: order, data: response } = useTanstackMutation(`orders/create-checkout-session`, "CREATE");
   const { currentUser } = useContext(AuthContext);
   const calculateTotalPrice = (item) => {
     return item.productId.price * item.quantity;
@@ -352,7 +352,7 @@ const CartPage = ({ cart = true, className }) => {
                   {data.products.length > 0 ? (
                     <>
                     <button onClick={() => onSubmit()} disabled={isLoadingItem} className="w-full h-[50px] black-btn flex justify-center items-center text-sm font-semibold">
-                      {isPending ? "Processing..." : "Thanh Toán online"}
+                      Thanh toán online
                     </button>
                     <Link to="/checkout">
                     <div className="mt-4 w-full h-[50px] black-btn flex justify-center items-center">

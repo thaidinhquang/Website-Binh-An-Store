@@ -53,14 +53,14 @@ export const createOrder = async (req, res) => {
     });
 
     await order.save();
-    
+
     return res.status(200).json({
       message: "Created a new order.",
       success: true,
       metadata: null,
     });
   } catch (error) {
-    return console.log("Something went wrong...", error);
+    next(error)
   }
 };
 
@@ -107,10 +107,7 @@ export const createStripeOrder = async (session) => {
 
     console.log("Order saved successfully");
   } catch (error) {
-    return console.error(
-      "Error processing checkout.session.completed event:",
-      error
-    );
+    next(error)
   }
 };
 
@@ -185,7 +182,7 @@ export const getAllOrdersByUser = async (req, res) => {
       metadata: orders,
     });
   } catch (error) {
-    return console.log("Something went wrong.", error);
+    next(error);
   }
 };
 
@@ -202,7 +199,7 @@ export const getOrderDetails = async (req, res) => {
       .status(200)
       .json({ message: "OK", success: true, metadata: order });
   } catch (error) {
-    return console.log("Something went wrong.", error);
+    next(error);
   }
 };
 
@@ -224,9 +221,9 @@ export const cancelOrder = async (req, res) => {
 
     foundedOrder.orderStatus = ORDER_STATUS.CANCELED;
     foundedOrder.save();
-    return res.status(200).json({ message: "Canceled", success: true });
+    return res.status(200).json({ success: true, message: "This order is canceled." });
   } catch (error) {
-    return console.log("Something went wrong.", error);
+    next(error);
   }
 };
 
@@ -271,7 +268,7 @@ export const getAllOrders = async (req, res) => {
       metadata: orders,
     });
   } catch (error) {
-    console.log("Something went wrong.", error);
+    next(error)
   }
 };
 
@@ -293,7 +290,7 @@ export const confirmedOrder = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    return console.log("Something went wrong.", error);
+    next(error)
   }
 };
 
@@ -319,6 +316,6 @@ export const finishAnOrder = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    return console.log("Something went wrong.", error);
+    next(error)
   }
 };

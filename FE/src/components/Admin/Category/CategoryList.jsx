@@ -15,7 +15,7 @@ const CategorytList = () => {
   const form = useForm();
   const useSearch = useHookSearch();
   const { data, isLoading, refetch } = useTanstackQuery('categories', { active, page, sort, name })
-  const { mutate, isPending } = useTanstackMutation(`categories`, "DELETE");
+  const { mutate } = useTanstackMutation(`categories`, "DELETE");
   const [listUserOnEditRoute, setListUserOnEditRoute] = useState(null);
   const isUserEditing = (id) => {
     const user = listUserOnEditRoute ? listUserOnEditRoute[id] : null;
@@ -112,11 +112,6 @@ const CategorytList = () => {
                       tabIndex={0}
                       className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
                     >
-                      <li>
-                        <button onClick={() => mutate(category)}>
-                          {isPending ? 'Đang xử lý...' : 'Xóa'}
-                        </button>
-                      </li>
                       <li>
                         <Link to={`/admin/categories/edit/${category._id}`}>Sửa</Link>
                       </li>

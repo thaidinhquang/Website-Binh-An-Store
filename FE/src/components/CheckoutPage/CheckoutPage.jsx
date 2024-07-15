@@ -9,7 +9,7 @@ const CheckoutPage = () => {
     const [isLoadingItem, setIsLoadingItem] = useState(false)
     const [items, setItems] = useState([])
     const { currentUser } = useContext(AuthContext);
-    const { form, isPending, mutate } = useTanstackMutation(`orders`, "CREATE", '/checkoutsuccess');
+    const { form, mutate } = useTanstackMutation(`orders`, "CREATE", '/checkoutsuccess');
     useEffect(() => {
         if (cartItems?.products?.length > 0) {
             setIsLoadingItem(true)
@@ -332,7 +332,7 @@ const CheckoutPage = () => {
                                 <button type="submit" disabled={isLoadingItem}
                                     className="px-8 z-30 py-2 w-full bg-black text-white relative font-semibold font-sans after:-z-20 after:absolute after:h-1 after:w-1 after:bg-gray-800 after:left-5 overflow-hidden after:bottom-0 after:translate-y-full after:rounded-md after:hover:scale-[300] after:hover:transition-all after:hover:duration-700 after:transition-all after:duration-700 transition-all duration-700 hover:[text-shadow:2px_2px_2px_#fda4af] text-2xl"
                                 >
-                                    {isPending ? "Đang Đặt Hàng..." : "Đặt Hàng"}
+                                    Đặt hàng
                                 </button>
                             </div>
                         </div>

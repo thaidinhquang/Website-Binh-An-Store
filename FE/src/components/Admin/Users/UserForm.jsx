@@ -6,7 +6,7 @@ import { AuthContext } from "../../Auth/core/Auth";
 
 const UserForm = () => {
   const { id } = useParams();
-  const { form, onSubmit, isPending } = useTanstackMutation(`users`, id ? "UPDATE" : "CREATE", "/admin/users");
+  const { form, onSubmit } = useTanstackMutation(`users`, id ? "UPDATE" : "CREATE", "/admin/users");
   const { currentUser } = useContext(AuthContext);
   const { data, isLoading } = id ? useTanstackQuery(`users/${id}`) : { data: null };
   if (id) {

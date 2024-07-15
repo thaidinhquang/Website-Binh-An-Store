@@ -15,7 +15,7 @@ const ProductList = () => {
   const form = useForm();
   const useSearch = useHookSearch();
   const { data, isLoading, refetch } = useTanstackQuery('products', { active, page, sort, name })
-  const { mutate, isPending } = useTanstackMutation(`products`, "DELETE");
+  const { mutate } = useTanstackMutation(`products`, "DELETE");
   const [listUserOnEditRoute, setListUserOnEditRoute] = useState(null);
   const isUserEditing = (id) => {
     const user = listUserOnEditRoute ? listUserOnEditRoute[id] : null;
@@ -101,9 +101,6 @@ const ProductList = () => {
                       <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
                     </svg></div>
                     <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                      <li><button onClick={() => mutate(product)}>
-                        {isPending ? 'Đang xóa...' : 'Xóa'}
-                      </button></li>
                       <li> <Link to={`/admin/products/edit/${product._id}`}>Sửa</Link></li>
                     </ul>
                   </div>

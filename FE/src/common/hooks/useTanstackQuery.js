@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { axiosDelete, axiosGet, axiosPost, axiosPut } from "../../config/axios";
+import { axiosDelete, axiosGet, axiosPatch, axiosPost, axiosPut } from "../../config/axios";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 export const addparamstoUrl = (url, params) => {
@@ -32,35 +32,63 @@ export const useTanstackQuery = (path, query = {}, returnData = true) => {
 };
 
 export const useTanstackMutation = (path, action, navigatePage) => {
-  const queryClient = useQueryClient()
-  const form = useForm()
-  const navigate = useNavigate()
-  const { mutate, ...rest } = useMutation({
+  const queryClient = useQueryClient();
+  const form = useForm();
+  const navigate = useNavigate();
+  const { mutate: originalMutate, ...rest } = useMutation({
     mutationFn: async (data) => {
       if (action === "CREATE") {
-        return await axiosPost(path, data)
+        return await axiosPost(path, data);
       } else if (action === "UPDATE") {
-        return await axiosPut(`${path}/${data._id}`, data)
+        return await axiosPut(`${path}/${data._id}`, data);
+      } else if (action === "PATCH") {
+        return await axiosPatch(path, data);
       } else if (action === "DELETE") {
-        return data.active ? await axiosDelete(`${path}/${data._id}`) : await axiosDelete(`${path}/restore/${data._id}`)
+        return data.active ? await axiosDelete(`${path}/${data._id}`) : await axiosDelete(`${path}/restore/${data._id}`);
       }
-      return null
+      return null;
     },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: [path],
-      })
-      toast.success(data.message)
-      if (navigatePage) {
-        navigate(navigatePage)
-      }
+    onMutate: async (variables) => {
+      const toastId = toast.loading("Processing...");
+      const startTime = Date.now(); // Record the start time
+      return { toastId, startTime };
     },
-    onError: (error) => {
-      toast.error(error.message)
-    }
-  })
+    onSuccess: (data, variables, context) => {
+      const elapsedTime = Date.now() - context.startTime; // Calculate elapsed time
+      const delay = Math.max(1000 - elapsedTime, 0); // Calculate remaining delay to ensure at least 1 second
+      setTimeout(() => { // Delay the toast update if needed
+        toast.update(context.toastId, { render: data.message, type: "success", isLoading: false, autoClose: 5000 });
+        if (navigatePage) {
+          navigate(navigatePage);
+        }
+      }, delay);
+    },
+    onError: (error, variables, context) => {
+      const elapsedTime = Date.now() - context.startTime; // Calculate elapsed time
+      const delay = Math.max(500 - elapsedTime, 0); // Calculate remaining delay to ensure at least 1 second
+      setTimeout(() => { // Delay the toast update if needed
+        toast.update(context.toastId, { render: `Error: ${error.message}`, type: "error", isLoading: false, autoClose: 5000 });
+      }, delay);
+    },
+    onSettled: (data, error, variables, context) => {
+      queryClient.invalidateQueries(path);
+    },
+  });
+
+  const mutate = (data, options = {}) => {
+    originalMutate(data, {
+      ...options,
+      onSettled: (data, error, variables, context) => {
+        if (options.onSettled) {
+          options.onSettled(data, error, variables, context);
+        }
+      },
+    });
+  };
+
   const onSubmit = (data) => {
-    mutate(data)
-  }
-  return { mutate, form, onSubmit, ...rest }
-}
+    mutate(data);
+  };
+
+  return { mutate, form, onSubmit, ...rest };
+};
