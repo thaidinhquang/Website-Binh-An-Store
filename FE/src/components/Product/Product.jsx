@@ -2,6 +2,7 @@ import QuickViewIco from '../icons/QuickViewIco';
 import Compair from '../icons/Compair';
 import ThinLove from '../icons/ThinLove';
 import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const ProductCard = ({ product, mutate, isPending }) => {
   return (
@@ -41,11 +42,11 @@ const ProductCard = ({ product, mutate, isPending }) => {
             </div>
           </button>
         </div>
-        <a href={`/detail/${product._id}`}>
+        <Link to={`/detail/${product._id}`}>
           <p className="title mb-2 text-[15px] font-600 text-qblack leading-[24px] line-clamp-2 hover:text-blue-600">
             {product.name}
           </p>
-        </a>
+        </Link>
 
         <p className="price">
           <span className="main-price text-qgray line-through font-600 text-[18px]">
@@ -57,11 +58,11 @@ const ProductCard = ({ product, mutate, isPending }) => {
         </p>
       </div>
       <div className="quick-access-btns flex flex-col space-y-2 absolute group-hover:right-4 -right-10 top-20  transition-all duration-300 ease-in-out">
-        <a href="#">
+        <Link to={`/detail/${product._id}`}>
           <span className="w-10 h-10 flex justify-center items-center bg-primarygray rounded">
             <QuickViewIco />
           </span>
-        </a>
+        </Link>
         <a href="#">
           <span className="w-10 h-10 flex justify-center items-center bg-primarygray rounded">
             <ThinLove />

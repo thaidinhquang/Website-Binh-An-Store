@@ -1,4 +1,5 @@
 
+import { Link } from 'react-router-dom'
 import ThinBag from '../icons/ThinBag'
 import Middlebar from './Middlebar'
 import Navbar from './Navbar'
@@ -27,21 +28,21 @@ const Header = ({className, drawerAction}) => {
           </svg>
         </div>
         <div>
-          <a href="/">
+          <Link to={'/'}>
             <img
               width="152"
               height="36"
               src={`/assets/images/logo-4.svg`}
               alt="logo"
             />
-          </a>
+          </Link>
         </div>
         <div className="cart relative cursor-pointer">
-          <a href="/cart">
+          <Link to="/cart">
             <span>
               <ThinBag />
             </span>
-          </a>
+          </Link>
           <span className="w-[18px] h-[18px] text-qblack rounded-full bg-qh4-pink absolute -top-2.5 -right-2.5 flex justify-center items-center text-[9px]">
             15
           </span>
