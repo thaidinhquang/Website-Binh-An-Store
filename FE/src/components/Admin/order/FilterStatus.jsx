@@ -36,6 +36,12 @@ const FilterStatus = ({ setOrderStatus, setPaymentMethod }) => {
       >
         Đã giao
       </Button>
+      <Button
+        className="h-[3rem] font-semibold border "
+        onClick={() => setOrderStatus(ORDER_STATUS.DONE)}
+      >
+       Giao hàng thành công
+      </Button>
 
       <Button
         className="h-[3rem] font-semibold border "
