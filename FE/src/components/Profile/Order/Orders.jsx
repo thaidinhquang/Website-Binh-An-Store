@@ -11,7 +11,7 @@ const Orders = () => {
   const search = new URLSearchParams(useLocation().search);
   const page = search.get('page') || 1;
   const status = search.get('status') || '';
-  const { data, refetch } = useTanstackQuery("orders", { orderStatus: status, page, limit: 6 }, false);
+  const { data, refetch } = useTanstackQuery("orders/by_user", { orderStatus: status, page, limit: 6 }, false);
   const { mutate } = useTanstackMutation({
     path: `orders/cancel`,
     action: "PATCH",
