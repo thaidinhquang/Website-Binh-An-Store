@@ -11,7 +11,7 @@ const useOrdersStatistics = () => {
     select: (data) => {
       const result =
         data?.data?.metadata &&
-        data?.data?.metadata?.stats.flatMap((item) => {
+        data?.data?.metadata?.stats?.flatMap((item) => {
           return [
             { name: "Orders", month: item.month, values: item.totalOrders },
             { name: "Revenue", month: item.month, values: item.totalAmount },

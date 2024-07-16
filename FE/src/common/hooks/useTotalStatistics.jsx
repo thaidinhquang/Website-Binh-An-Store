@@ -8,9 +8,6 @@ export const useTotalStatistics = () => {
     queryKey: [TOTAL_STATISTICS],
     queryFn: async () =>
       await axiosCustom.get(`http://localhost:8000/api/stats`),
-    select: (data) => {
-      return data;
-    },
     staleTime: 0,
   });
 };
