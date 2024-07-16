@@ -30,7 +30,17 @@ export const checkPermission = (perrmisson) => {
                     message: "User does not exist",
                 });
             }
+            if (user.active == false) {
+                return res.status(403).json({
+                    message: "User is not active",
+                });
+            }
             const userPermission = await Role.findOne({ name: user.role });
+            if (!userPermission) {
+                return res.status(403).json({
+                    message: "User role does not exist",
+                });
+            }
             const value = userPermission[perrmisson]
             if (!value) {
                 return res.status(403).json({
