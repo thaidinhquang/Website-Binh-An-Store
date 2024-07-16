@@ -52,8 +52,8 @@ const Orders = () => {
             Hoàn thành
           </button>
           <button
-            onClick={() => setStatus("canceled")}
-            className={`btn ${status === "canceled" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+            onClick={() => setStatus("cancelled")}
+            className={`btn ${status === "cancelled" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
           >
             Đã hủy
           </button>
