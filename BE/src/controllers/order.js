@@ -60,7 +60,7 @@ export const createOrder = async (req, res) => {
       metadata: null,
     });
   } catch (error) {
-    next(error)
+    return console.log("Something went wrong...", error);
   }
 };
 
@@ -107,7 +107,10 @@ export const createStripeOrder = async (session) => {
 
     console.log("Order saved successfully");
   } catch (error) {
-    next(error)
+    return console.error(
+      "Error processing checkout.session.completed event:",
+      error
+    );
   }
 };
 
@@ -157,8 +160,8 @@ export const getAllOrdersByUser = async (req, res) => {
   };
 
   if (req.query.search) {
-    const search = req.query.search;
-    filter._id = { $regex: new RegExp(search, "i") };
+    const search = req.query.search.toString();
+    filter["customerInfo.name"] = { $regex: new RegExp(search, "i") };
   }
 
   if (req.query.paymentMethod) {
@@ -182,7 +185,7 @@ export const getAllOrdersByUser = async (req, res) => {
       metadata: orders,
     });
   } catch (error) {
-    next(error);
+    return console.log("Something went wrong.", error);
   }
 };
 
@@ -199,7 +202,7 @@ export const getOrderDetails = async (req, res) => {
       .status(200)
       .json({ message: "OK", success: true, metadata: order });
   } catch (error) {
-    next(error);
+    return console.log("Something went wrong.", error);
   }
 };
 
@@ -212,18 +215,18 @@ export const cancelOrder = async (req, res) => {
     }
 
     if (req.user.role === ROLES.ADMIN) {
-      foundedOrder.canceledBy = ROLES.ADMIN;
+      foundedOrder.cancelledBy = ROLES.ADMIN;
     }
 
     if (req.body.content) {
-      foundedOrder.canceledReason = req.body.content;
+      foundedOrder.cancelledReason = req.body.content;
     }
 
-    foundedOrder.orderStatus = ORDER_STATUS.CANCELED;
+    foundedOrder.orderStatus = ORDER_STATUS.CANCELLED;
     foundedOrder.save();
-    return res.status(200).json({ success: true, message: "This order is canceled." });
+    return res.status(200).json({ message: "Cancelled", success: true });
   } catch (error) {
-    next(error);
+    return console.log("Something went wrong.", error);
   }
 };
 
@@ -244,7 +247,7 @@ export const getAllOrders = async (req, res) => {
 
   if (req.query.search) {
     const search = req.query.search;
-    filter._id = { $regex: new RegExp(search, "i") };
+    filter["customerInfo.name"] = { $regex: new RegExp(search, "i") };
   }
 
   if (req.query.paymentMethod) {
@@ -268,7 +271,7 @@ export const getAllOrders = async (req, res) => {
       metadata: orders,
     });
   } catch (error) {
-    next(error)
+    console.log("Something went wrong.", error);
   }
 };
 
@@ -290,7 +293,7 @@ export const confirmedOrder = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    next(error)
+    return console.log("Something went wrong.", error);
   }
 };
 
@@ -316,6 +319,6 @@ export const finishAnOrder = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    next(error)
+    return console.log("Something went wrong.", error);
   }
 };
