@@ -117,14 +117,12 @@ export const getValueAttributeById = async (req, res) => {
 // Controller để cập nhật một giá trị của thuộc tính
 export const updateValueAttribute = async (req, res) => {
     try {
-        const { name, price, quantity } = req.body;
+        const { name} = req.body;
         const value = await ValueAttributeModel.findById(req.params.id);
         if (!value) {
             return res.status(404).json({ message: "ValueAttribute not found" });
         }
         value.name = name;
-        value.price = price;
-        value.quantity = quantity;
         const updatedValue = await value.save();
         res.json(updatedValue);
     } catch (error) {
