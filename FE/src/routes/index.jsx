@@ -24,6 +24,12 @@ import UserEdit from "../components/Profile/User/UserEdit";
 import LayoutWebsite from "../components/layout/Website";
 import LayoutAdmin from "../components/layout/Admin";
 import { AdminRoute, LoginRoute } from "./PrivateRoute";
+import AttributeList from "../components/Admin/Attribute/AttributeList";
+import AttributeAdd from "../components/Admin/Attribute/AttributeAdd";
+import AttributeAddValue from "../components/Admin/Attribute/AttributeAddValue";
+import AttributeEdit from "../components/Admin/Attribute/AttributeEdit";
+import AttributeEditValue from "../components/Admin/Attribute/AttributeEditValue";
+import AttributeDetails from "../components/Admin/Attribute/AttributeDetails";
 const Router = () => {
     return (
         <>
@@ -84,6 +90,14 @@ const Router = () => {
                     </Route>
                     <Route path="orders">
                         <Route index element={<AdminOrders />} />
+                    </Route>
+                    <Route path="attribute">
+                        <Route index element={<AttributeList />} />
+                        <Route path="add" element={<AttributeAdd />} />
+                        <Route path="add/:id/value" element={<AttributeAddValue />} />
+                        <Route path="edit/:id" element={<AttributeEdit />} />
+                        <Route path="edit/:id/value" element={<AttributeEditValue />} />
+                        <Route path="detail/:id" element={<AttributeDetails />} />
                     </Route>
                 </Route>
                 <Route path="*" element={<NotfoundPage />} />

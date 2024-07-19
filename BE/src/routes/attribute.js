@@ -7,6 +7,7 @@ import {
     deleteValueAttribute,
     getAllAttributes,
     getAttributeById,
+    getValueAttributeById,
     updateAttribute,
     updateValueAttribute,
 } from "../controllers/attribute.js";
@@ -22,16 +23,19 @@ routerAtrribute.post("/:id/values", createValueAttribute);
 routerAtrribute.get("/", getAllAttributes);
 
 // Route để lấy một thuộc tính theo ID
-routerAtrribute.get("/attributes/:id", getAttributeById);
+routerAtrribute.get("/:id", getAttributeById);
+
+// Route để lấy giá trị một thuộc tính theo ID
+routerAtrribute.get("/:id/values", getValueAttributeById);
 
 // Route để cập nhật một thuộc tính theo ID
-routerAtrribute.put("/attributes/:id", updateAttribute);
+routerAtrribute.put("/:id", updateAttribute);
 
 // Route để sửa giá trị cho thuộc tính đã tồn tại
 routerAtrribute.put("/:id/values", updateValueAttribute);
 
 // Route để xóa một thuộc tính theo ID
-routerAtrribute.delete("/attributes/:id", deleteAttribute);
+routerAtrribute.delete("/:id", deleteAttribute);
 
 // Route để xóa giá trị cho thuộc tính đã tồn tại
 routerAtrribute.delete("/:id/values", deleteValueAttribute);
