@@ -1,15 +1,28 @@
 import { Link, useParams } from "react-router-dom";
 import { useTanstackMutation, useTanstackQuery } from "../../../common/hooks/useTanstackQuery";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import socket from "/src/config/socket";
 import { AuthContext } from "../../Auth/core/Auth";
+import { toast } from "react-toastify";
 
 const ProductForm = () => {
+    const [isNameTaken, setIsNameTaken] = useState(false);
     const { id } = useParams();
     const { form, onSubmit, isPending } = useTanstackMutation(`products`, id ? "UPDATE" : "CREATE", "/admin/products");
     const { currentUser } = useContext(AuthContext);
     const { data } = id ? useTanstackQuery(`products/${id}`) : { data: null };
     const { data: category } = useTanstackQuery(`categories`);
+
+    const checkNameUniqueness = async (name) => {
+        try {
+            const response = await fetch(`/api/products/check-name?name=${name}`);
+            const data = await response.json();
+            setIsNameTaken(data.exists);
+        } catch (error) {
+            // console.log(error);
+        }
+    };
+    
     if (id) {
         const userEditingPost = { id: currentUser?._id, post_id: id, fullname: currentUser?.email };
         const handleUnload = () => {
@@ -28,6 +41,20 @@ const ProductForm = () => {
             };
         }, [data]);
     }
+
+    useEffect(() => {
+        if (form.getValues("name")) {
+            checkNameUniqueness(form.getValues("name"));
+        }
+    }, [form.getValues("name")]);
+
+    const handleFormSubmit = (data) => {
+        if (isNameTaken) {
+            toast.error("Tên sản phẩm đã tồn tại!");
+            return;
+        }
+        onSubmit(data);
+    };
     return (
         <>
             <div>Sửa Sản Phẩm</div>
@@ -43,7 +70,7 @@ const ProductForm = () => {
             <div>
                 <div>
                     <div>
-                        <form onSubmit={form.handleSubmit(onSubmit)}>
+                        <form onSubmit={form.handleSubmit(handleFormSubmit)}>
                             <div>
                                 <label className="block text-gray-700 text-sm font-bold mb-2">
                                     Tên Sản Phẩm
@@ -54,6 +81,7 @@ const ProductForm = () => {
                                     type="text"
                                 />
                                 {form.formState.errors.name && <span className="text-red-500">{form.formState.errors.name.message}</span>}
+                                {isNameTaken && <span className="text-red-500">Tên sản phẩm đã tồn tại!</span>}
                             </div>
 
                             <div>

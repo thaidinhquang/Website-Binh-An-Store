@@ -59,6 +59,14 @@ export const restoreProduct = async (req, res, next) => {
 
 export const createProduct = async (req, res, next) => {
   try {
+    const { name } = req.body;
+
+    // Check tên sản phẩm
+    const existingProduct = await Product.findOne({ name });
+    if (existingProduct) {
+      return res.status(400).json({ message: "Tên sản phẩm đã tồn tại" });
+    }
+
     const data = await Product.create(req.body);
     await Category.findByIdAndUpdate(data.category, { $push: { products: data._id } });
     return !data ? res.status(400).json({ message: "Create product failed!" }) : res.status(200).json({ data, message: "Create product successfully"})
@@ -69,6 +77,15 @@ export const createProduct = async (req, res, next) => {
 
 export const updateProduct = async (req, res, next) => {
   try {
+    const { name } = req.body;
+    const { id } = req.params;
+
+    // Check tên sản phẩm
+    const existingProduct = await Product.findOne({ name, _id: { $ne: id } });
+    if (existingProduct) {
+      return res.status(400).json({ message: "Tên sản phẩm đã tồn tại" });
+    }
+
     const data = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
     return !data ? res.status(400).json({ message: "Update product failed!" }) : res.status(200).json({ data, message: "Update product successfully"})
   } catch (error) {
