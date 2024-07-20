@@ -8,7 +8,7 @@ const Statistics = () => {
   const { data: statsData } = useTotalStatistics();
   const { data: orderStats } = useOrdersStatistics();
 
-  const stats = statsData?.data && statsData.data.metadata;
+  const stats = statsData?.data && statsData?.data?.metadata;
 
   return (
     <div className="w-full h-ful">

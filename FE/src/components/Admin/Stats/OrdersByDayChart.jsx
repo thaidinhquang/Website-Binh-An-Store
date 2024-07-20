@@ -2,7 +2,7 @@ import { Column } from "@ant-design/plots";
 
 const OrdersByDayChart = ({ stats }) => {
   const data = stats
-    ? stats.stats.map((item) => ({
+    ? stats?.stats?.map((item) => ({
         day: item.day,
         amount: item.totalAmount,
       }))

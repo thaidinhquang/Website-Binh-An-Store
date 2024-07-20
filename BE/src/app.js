@@ -24,6 +24,7 @@ const io = new Server(server, {
 const { DB_URI, PORT } = process.env;
 
 await mongoose.connect(DB_URI).then(() => {
+  mongoose.set("strictQuery", false);
   console.log("connect to database successfully");
 });
 

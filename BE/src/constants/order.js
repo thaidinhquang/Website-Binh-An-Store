@@ -4,7 +4,7 @@ export const ORDER_STATUS = {
   SHIPPING: "shipping",
   DELIVERED: "delivered",
   DONE: "done",
-  CANCELED: "cancelled",
+  CANCELLED: "cancelLed",
 };
 
 export const PAYMENT_METHOD = {

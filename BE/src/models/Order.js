@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 import paginate from "mongoose-paginate-v2";
 import { ORDER_STATUS, PAYMENT_METHOD } from "../constants/order.js";
 import { ROLES } from "../constants/Role.js";
@@ -80,7 +80,7 @@ const orderSchema = new mongoose.Schema(
     description: {
       type: String,
     },
-    canceledBy: {
+    cancelledBy: {
       type: String,
       enum: [ROLES.ADMIN, ROLES.USER],
     },
@@ -100,7 +100,7 @@ const orderSchema = new mongoose.Schema(
         ORDER_STATUS.SHIPPING,
         ORDER_STATUS.DELIVERED,
         ORDER_STATUS.DONE,
-        ORDER_STATUS.CANCELED,
+        ORDER_STATUS.CANCELLED,
       ],
     },
   },
