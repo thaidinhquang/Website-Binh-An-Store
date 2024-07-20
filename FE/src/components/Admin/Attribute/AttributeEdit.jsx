@@ -30,7 +30,7 @@ const AttributeEdit = () => {
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (attribute) => {
-      const { data } = await instance.post(`/attributes`, attribute);
+      const { data } = await instance.put(`/attributes/${id}`, attribute);
       return data;
     },
     onSuccess: () => {
@@ -48,7 +48,7 @@ const AttributeEdit = () => {
 
   return (
     <div>
-    <div className="text-lg font-bold mb-4">Theem thông tin Attribute</div>
+    <div className="text-lg font-bold mb-4">Sửa thông tin Attribute</div>
     <div className="flex justify-end">
     <Link to="admin/attribute">
         <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
@@ -73,7 +73,7 @@ const AttributeEdit = () => {
     </div>
    
     <button className="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900">
-    {isPending ? "Đang Thêm..." : "Thêm"}
+    {isPending ? "Đang Sửa..." : "Sửa"}
     </button>
 </form>
 </div>
