@@ -43,13 +43,14 @@ const productSchema = new mongoose.Schema(
         type: String,
         required: true,
     },
-    // attributes: [
-    //     {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: "Attribute",
-    //     },
-    // ],
-    // 
+    attributes: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Attribute",
+            default: null
+        },
+    ],
+    
     active: {
       type: Boolean,
       default: true,
