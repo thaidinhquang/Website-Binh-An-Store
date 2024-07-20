@@ -48,7 +48,9 @@ const CartPage = ({ cart = true, className }) => {
       "currency": "usd",
     }
     order(data)
-    clearCart()
+    setTimeout(() => {
+      clearCart();
+    }, 10000)
   }
   useEffect(() => {
     if (response) {
