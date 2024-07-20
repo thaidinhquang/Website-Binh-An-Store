@@ -85,7 +85,6 @@ const SingleProduct = () => {
   
   const { id } = useParams();
   const { data: product } = useTanstackQuery(`/products/${id}`);
-  // console.log(data)
   return (
     <div>
     <div className="pt-0 pb-0">

@@ -9,7 +9,10 @@ const ProductNew = () => {
     sort: '-createdAt',
     active: true
   });
-  const { mutate, isPending } = useTanstackMutation(`cart/add-item`, 'CREATE');
+  const { mutate, isPending } = useTanstackMutation({
+    path: `cart/add-item`,
+    action: "CREATE",
+  });
   if (isLoading) return <p>Loading...</p>;
   return (
     <div className="products-page-wrapper w-full">

@@ -16,7 +16,10 @@ const AuthenticationModal = () => {
   const [path, setPath] = useState('sign-in');
   const [isOpen, setIsOpen] = useState(openform);
   const { setCurrentUser } = useContext(AuthContext);
-  const { mutate: sendOTP } = useTanstackMutation(`auth/send-otp`, "CREATE");
+  const { mutate: sendOTP } = useTanstackMutation({
+    path: `auth/send-otp`,
+    action: "CREATE",
+  });
   const [countDown, setCountDown] = useState(0);
   const form = useForm();
   const toggleModal = () => {

@@ -20,15 +20,6 @@ instance.interceptors.request.use(
   }
 );
 
-// instance.interceptors.response.use(
-//   (response) => {
-//     return response && response.data ? response.data.metadata : response.data;
-//   },
-//   (error) => {
-//     return Promise.reject(error);
-//   }
-// );
-
 export const axiosGet = async (url) => {
   try {
     const response = await instance.get(url);
@@ -50,6 +41,15 @@ export const axiosPost = async (url, data) => {
 export const axiosPut = async (url, data) => {
   try {
     const response = await instance.put(url, data);
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+export const axiosPatch = async (url, data) => {
+  try {
+    const response = await instance.patch(url, data);
     return response.data;
   } catch (error) {
     throw error.response.data;

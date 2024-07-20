@@ -2,13 +2,12 @@ import { useNavigate } from "react-router-dom";
 
 export const useHookSearch = () => {
     const navigate = useNavigate();
-
     const search = (data, path) => {
         const query = new URLSearchParams();
         for (const key in data) {
             query.append(key, data[key]);
         }
-        query.set('page', 1); // Ensure page is always set to 1
+        query.set('page', 1);
         navigate(`${path}?${query.toString()}`);
     }
 

@@ -44,8 +44,8 @@ export const Profile = () => {
                           <span>
                             <IcoDashboard />
                           </span>
-                          <span className=" font-normal text-base">
-                            Dashboard
+                          <span className=" font-normal text-base text-red-500">
+                            Admin Dashboard
                           </span>
                         </div>
                       </Link>

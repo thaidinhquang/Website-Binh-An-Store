@@ -11,15 +11,10 @@ function CountDown(lastDate) {
   // format date
   const year = provideDate.getFullYear();
   const month = provideDate.getMonth();
-  //   console.log(month);
   const date = provideDate.getDate();
-  //   console.log(date);
   const hours = provideDate.getHours();
-  //   console.log(hours);
   const minutes = provideDate.getMinutes();
-  //   console.log(minutes);
   const seconds = provideDate.getSeconds();
-  //   console.log(seconds);
 
   // date calculation logic
   const _seconds = 1000;
