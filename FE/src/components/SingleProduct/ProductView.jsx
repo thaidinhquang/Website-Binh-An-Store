@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Star from "../icons/Star";
 import { useTanstackMutation, useTanstackQuery } from "../../common/hooks/useTanstackQuery";
-import {  useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -13,14 +13,16 @@ const ProductView = ({ className, reportHandler }) => {
     isLoading,
     error,
   } = useTanstackQuery(`/products/${id}`);
-  const { mutate } = useTanstackMutation(`cart/add-item`, 'CREATE');
-  
+  const { mutate } = useTanstackMutation({
+    path: `cart/add-item`,
+    action: "CREATE",
+  });
+
   const [quantity, setQuantity] = useState(1);
- 
+
   const handleIncrement = () => {
     setQuantity(prevQuantity => {
       const newQuantity = prevQuantity + 1;
-      console.log('Số lượng tăng:', newQuantity);
       return newQuantity;
     });
   };
@@ -28,7 +30,6 @@ const ProductView = ({ className, reportHandler }) => {
   const handleDecrement = () => {
     setQuantity(prevQuantity => {
       const newQuantity = Math.max(prevQuantity - 1, 1);
-      console.log('Số lượng giảm:', newQuantity);
       return newQuantity;
     });
   };
@@ -44,9 +45,8 @@ const ProductView = ({ className, reportHandler }) => {
   return (
     <form onSubmit={handleAddToCart}>
       <div
-        className={`product-view w-full lg:flex justify-between ${
-          className || ""
-        }`}
+        className={`product-view w-full lg:flex justify-between ${className || ""
+          }`}
       >
         <div
           data-aos="fade-right"

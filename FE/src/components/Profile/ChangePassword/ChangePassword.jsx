@@ -1,7 +1,11 @@
 import { useTanstackMutation } from "../../../common/hooks/useTanstackQuery";
 
 const ChangePassword = () => {
-  const { form, mutate, isPending } = useTanstackMutation(`auth/change-password`, "CREATE", "/profile");
+  const { form, mutate, isPending } = useTanstackMutation({
+    path: `auth/change-password`,
+    action: "CREATE",
+    navigatePage: "/profile",
+  });
   const onSubmit = (data) => {
     mutate(data)
   }
@@ -40,7 +44,7 @@ const ChangePassword = () => {
           <button type="submit" disabled={isPending}
             className="btn bg-blue-500 text-white  py-2 rounded"
           >
-            {isPending ? "Đang xử lý..." : "Đổi mật khẩu"}
+            Đổi mật khẩu
           </button>
         </div>
       </div>

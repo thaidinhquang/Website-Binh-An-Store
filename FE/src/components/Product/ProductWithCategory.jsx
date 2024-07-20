@@ -5,7 +5,10 @@ import Product from "./Product";
 const ProductWithCategory = () => {
   const { data: categoriesData, isLoading: categoriesLoading } = useTanstackQuery('categories');
   const { data: productsData, isLoading: productsLoading } = useTanstackQuery('products');
-  const { mutate, isPending } = useTanstackMutation('cart/add-item', 'CREATE');
+  const { mutate, isPending } = useTanstackMutation({
+    path: `cart/add-item`,
+    action: "CREATE",
+  });
 
   if (categoriesLoading || productsLoading) return <p>Loading...</p>;
 
@@ -29,13 +32,13 @@ const ProductWithCategory = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 mb-8">
             <DataIteration data={category.products} startLength={0} endLength={category.products.length}>
               {({ data: product }) => (
-               <div key={product._id} data-aos="fade-up">
-               <Product
-               
-               product={product}
-               mutate={mutate}
-               isPending={isPending}
-             /></div>
+                <div key={product._id} data-aos="fade-up">
+                  <Product
+
+                    product={product}
+                    mutate={mutate}
+                    isPending={isPending}
+                  /></div>
               )}
             </DataIteration>
           </div>

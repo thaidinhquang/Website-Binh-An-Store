@@ -39,20 +39,6 @@ const DashBoard = () => {
                         </div>
                       </Link>
                     </div>
-
-                    <div className="item group">
-                      <Link to="/admin/products">
-                        <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
-                          <span>
-                            <Product />
-                          </span>
-                          <span className=" font-normal text-base">
-                            Sản phẩm
-                          </span>
-                        </div>
-                      </Link>
-                    </div>
-
                     <div className="item group">
                       <Link to="/admin/categories">
                         <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
@@ -65,7 +51,18 @@ const DashBoard = () => {
                         </div>
                       </Link>
                     </div>
-
+                    <div className="item group">
+                      <Link to="/admin/products">
+                        <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
+                          <span>
+                            <Product />
+                          </span>
+                          <span className=" font-normal text-base">
+                            Sản phẩm
+                          </span>
+                        </div>
+                      </Link>
+                    </div>
                     <div className="item group">
                       <Link to="/admin/users">
                         <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
@@ -79,7 +76,7 @@ const DashBoard = () => {
                       </Link>
                     </div>
 
-                    <div className="item group">
+                    {/* <div className="item group">
                       <Link to="/profile#payment">
                         <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
                           <span>
@@ -90,7 +87,7 @@ const DashBoard = () => {
                           </span>
                         </div>
                       </Link>
-                    </div>
+                    </div> */}
                     <div className="item group">
                       <Link to="/admin/orders">
                         <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
@@ -104,6 +101,18 @@ const DashBoard = () => {
                       </Link>
                     </div>
                     <div className="item group">
+                      <Link to="/">
+                        <div className="flex space-x-3 items-center text-green-500 hover:text-qblack">
+                          <span>
+                            <IcoLove />
+                          </span>
+                          <span className=" font-normal text-base">
+                            Website
+                          </span>
+                        </div>
+                      </Link>
+                    </div>
+                    {/* <div className="item group">
                       <Link to="/profile#wishlist">
                         <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
                           <span>
@@ -174,7 +183,7 @@ const DashBoard = () => {
                           </span>
                         </div>
                       </Link>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
                 <div className="flex-1">

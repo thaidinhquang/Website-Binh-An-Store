@@ -17,9 +17,9 @@ const Middlebar = ({ className }) => {
           <div className="relative h-full">
             <div className="flex justify-between items-center h-full">
               <div>
-                <a href="">
+                <Link to={'/'}>
                   <span className="text-lg font-semibold ml-2 text-gray-800">Bình An</span>
-                </a>
+                </Link>
               </div>
               {/* <div className="w-[517px] h-[44px]">
                 <SearchBox className="search-com" />
@@ -27,32 +27,32 @@ const Middlebar = ({ className }) => {
               {currentUser ?
                 <div className="flex space-x-6 items-center">
                   <div className="compaire relative">
-                    <a href="/products-compaire">
+                    <Link to="/products-compaire">
                       <span>
                         <Compair />
                       </span>
-                    </a>
+                    </Link>
                     <span className="w-[18px] h-[18px] rounded-full bg-qh4-pink absolute -top-2.5 -right-2.5 flex justify-center items-center text-[9px] text-qblack">
                       2
                     </span>
                   </div>
                   <div className="favorite relative">
-                    <a href="/wishlist">
+                    <Link to="/wishlist">
                       <span>
                         <ThinLove />
                       </span>
-                    </a>
+                    </Link>
                     <span className="w-[18px] h-[18px] rounded-full bg-qh4-pink absolute -top-2.5 -right-2.5 flex justify-center items-center text-[9px] text-qblack">
                       1
                     </span>
                   </div>
                   <div className="cart-wrapper group relative py-4">
                     <div className="cart relative cursor-pointer">
-                      <a href="/cart">
+                      <Link to="/cart">
                         <span>
                           <ThinBag />
                         </span>
-                      </a>
+                      </Link>
                       <span className="w-[18px] h-[18px] rounded-full bg-qh4-pink absolute -top-2.5 -right-2.5 flex justify-center items-center text-[9px] text-qblack">
                         15
                       </span>

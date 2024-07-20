@@ -6,7 +6,11 @@ import { AuthContext } from "../../Auth/core/Auth";
 
 const CategorytForm = () => {
     const { id } = useParams();
-    const { form, onSubmit, isPending } = useTanstackMutation(`categories`, id ? "UPDATE" : "CREATE", "/admin/categories");
+    const { form, onSubmit } = useTanstackMutation({
+        path: `categories`,
+        action: id ? "UPDATE" : "CREATE",
+        navigatePage: "/admin/categories",
+    });
     const { currentUser } = useContext(AuthContext);
     const { data, isLoading } = id? useTanstackQuery(`categories/${id}`) : { data: null };
     if (id) {
@@ -66,7 +70,7 @@ const CategorytForm = () => {
                                 {form.formState.errors.slug && <span className="text-red-500">{form.formState.errors.slug.message}</span>}
                             </div>
                             <button className="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900">
-                                {isPending ? id ? "Đang Sửa..." : "Đang Thêm..." : id ? "Sửa" : "Thêm"}
+                                {id ? "Sửa" : "Thêm"}
                             </button>
                         </form>
                     </div>
