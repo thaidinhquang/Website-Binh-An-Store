@@ -66,7 +66,7 @@ export const removeUserById = async (req, res, next) => {
 export const updateUser = async (req, res, next) => {
     try {
         const data = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        return !data ? res.status(500).json({ message: "Update user failed" }) : res.status(200).json({ data, message: "Update user successfully"});
+        return !data ? res.status(500).json({ message: "Cập nhật thông tin thất bại!" }) : res.status(200).json({ data, message: "Cập nhật thông tin thành công"});
     } catch (error) {
         next(error);
     }
