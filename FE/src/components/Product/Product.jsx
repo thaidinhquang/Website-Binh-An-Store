@@ -15,9 +15,9 @@ const ProductCard = ({ product, mutate, isPending }) => {
         />
       </div>
 
-      
+
       <div className="product-card-details px-[30px] pb-[80px] relative">
-        <div className="absolute w-full h-10 px-[30px] left-0 top-40 group-hover:top-[85px] transition-all duration-300 ease-in-out">
+        <div className="absolute w-full h-10 px-[30px] left-0 top-48 group-hover:top-[85px] transition-all duration-300 ease-in-out">
           <button
             type="button"
             onClick={() => {

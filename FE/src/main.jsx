@@ -13,9 +13,9 @@ AOS.init();
 ReactDOM.createRoot(document.getElementById('root')).render(
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </AuthProvider>
   </QueryClientProvider>,
 )

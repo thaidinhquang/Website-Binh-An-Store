@@ -4,6 +4,8 @@
         "i": "concurrently \"cd be && npm i\" \"cd fe && npm i\""
     },
     "dependencies": {
-        "concurrently": "^8.2.2"
+        "@tanstack/react-query": "^5.51.11",
+        "concurrently": "^8.2.2",
+        "react-query": "^3.39.3"
     }
 }
