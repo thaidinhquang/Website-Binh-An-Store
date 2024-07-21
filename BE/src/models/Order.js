@@ -39,6 +39,9 @@ const OrderItemSchema = new mongoose.Schema(
 
 const orderSchema = new mongoose.Schema(
   {
+    code: {
+      type: String,
+    },
     userId: {
       type: String,
       ref: "User",
@@ -99,8 +102,8 @@ const orderSchema = new mongoose.Schema(
         ORDER_STATUS.CONFIRMED,
         ORDER_STATUS.SHIPPING,
         ORDER_STATUS.DELIVERED,
-        ORDER_STATUS.DONE,
         ORDER_STATUS.CANCELLED,
+        ORDER_STATUS.DONE,
       ],
     },
   },
@@ -110,6 +113,11 @@ const orderSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+orderSchema.pre("save", function (next) {
+  this.code = this._id.toString();
+  next();
+});
 
 orderSchema.plugin(paginate);
 
