@@ -18,7 +18,7 @@ const ProductForm = () => {
     const { data: category } = useTanstackQuery(`categories`);
     const { mutate, isPending } = useTanstackMutation({
         action: "UPLOAD",
-        toastMessage: "Uploading image",
+        toastMessage: "Tải ảnh thành công!",
         invalidateQueries: false
     });
     useEffect(() => {

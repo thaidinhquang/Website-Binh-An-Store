@@ -120,7 +120,7 @@ const AuthenticationModal = () => {
                     <div className='flex items-center'>
                       <input
                         type="email"
-                        {...form.register('email', { required: 'Email không được để trống', pattern: { value: /^\S+@\S+$/i, message: 'Email không đúng định dạng' } })}
+                        {...form.register('email', { required: 'Email không được để trống!', pattern: { value: /^\S+@\S+$/i, message: 'Email không đúng định dạng' } })}
                         className="pl-8 bg-white border-b-2 border-gray-300 text-gray-900 text-sm focus:outline-none focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                         placeholder="name@company.com"
                         autoComplete="username"
@@ -149,7 +149,7 @@ const AuthenticationModal = () => {
                       <img src="https://www.svgrepo.com/show/368868/otp.svg" alt="" className='absolute top-1/2 left-2 transform -translate-y-1/2 w-[16px]' />
                       <input
                         type="otp"
-                        {...form.register('otp', { required: 'OTP khong duoc de trong' })}
+                        {...form.register('otp', { required: 'OTP không được để trống!' })}
                         className="pl-8 bg-white border-b-2 border-gray-300 text-gray-900 text-sm focus:outline-none focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                         placeholder="12345"
                         autoComplete="otp"
@@ -168,7 +168,7 @@ const AuthenticationModal = () => {
                     <svg className='absolute top-1/2 left-2 transform -translate-y-1/2 w-[16px]' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z" /></svg>
                     <input
                       type="password"
-                      {...form.register('password', { required: 'Mat khau khong duoc de trong' })}
+                      {...form.register('password', { required: 'Mật khẩu không được để trống!' })}
                       placeholder="••••••••"
                       className="pl-8 bg-white border-b-2 border-gray-300 text-gray-900 text-sm focus:outline-none focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                       autoComplete="current-password"
@@ -189,7 +189,7 @@ const AuthenticationModal = () => {
                         <svg className='absolute top-1/2 left-2 transform -translate-y-1/2 w-[16px]' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z" /></svg>
                         <input
                           type="password"
-                          {...form.register('cPassword', { required: 'Mat khau khong duoc de trong' })}
+                          {...form.register('cPassword', { required: 'Mật khẩu không được để trống!' })}
                           placeholder="••••••••"
                           className="pl-8 bg-white border-b-2 border-gray-300 text-gray-900 text-sm focus:outline-none focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                           autoComplete="current-password"
