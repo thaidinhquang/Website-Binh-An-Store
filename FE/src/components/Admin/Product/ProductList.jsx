@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 import Pageination from "../../UI/Pagination";
 import { useHookSearch } from "../../../common/hooks/useSearch";
 import { useForm } from "react-hook-form";
+import { Space } from "antd";
 
 const ProductList = () => {
   const search = new URLSearchParams(useLocation().search);
@@ -42,7 +43,9 @@ const ProductList = () => {
   if (isLoading) return <p>Loading...</p>
   return (
     <>
-      <div>Danh sách sản phẩm</div>
+    <Space className="font-semibold text-lg rounded-md bg-[#E9E9E9] w-full p-4">
+        Danh sách sản phẩm
+      </Space>
       <div className="my-8 flex justify-between">
         <Link to={`/admin/products/add`}
           className="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"

@@ -32,6 +32,7 @@ import AttributeEditValue from "../components/Admin/Attribute/AttributeEditValue
 import AttributeDetails from "../components/Admin/Attribute/AttributeDetails";
 import BrandList from "../components/Admin/Brand/BrandList";
 import BrandForm from "../components/Admin/Brand/BrandForm";
+import OrderDetail from "../components/Profile/Order/OrderDetail";
 const Router = () => {
   return (
     <>
@@ -67,7 +68,12 @@ const Router = () => {
           >
             <Route path="" element={<UserProfile />} />
             <Route path="address" element={<Address />} />
-            <Route path="orders" element={<Orders />} />
+            <Route path="orders">
+            <Route index element={<Orders />} />
+            <Route path="detail/:id" element={<OrderDetail />} />
+            </Route>
+
+          
             <Route path="edit" element={<UserEdit />} />
             <Route path="change-password" element={<ChangePassword />} />
           </Route>

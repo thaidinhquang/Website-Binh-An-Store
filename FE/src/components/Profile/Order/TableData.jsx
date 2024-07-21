@@ -17,7 +17,7 @@ const TableData = ({ orders, setPage }) => {
     orderStatus: order?.orderStatus?.toUpperCase(),
     createdAt: order?.createdAt,
     totalPrice: order?.totalPrice,
-    action: <Link>Xem chi tiết</Link>,
+    action: <Link to={`detail/${order._id}`}>Xem chi tiết</Link>,
   }));
 
   const columns = [

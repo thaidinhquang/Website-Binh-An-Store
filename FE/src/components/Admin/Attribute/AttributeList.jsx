@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import instance from "../../../config/axios";
 import Pageination from "../../UI/Pagination";
 import { Link } from "react-router-dom";
+import { Space } from "antd";
 
 const AttributeList = () => {
     const { data } = useQuery({
@@ -13,7 +14,10 @@ const AttributeList = () => {
         },
       });
     return (
-    <div>
+    <>
+    <Space className="font-semibold text-lg rounded-md bg-[#E9E9E9] w-full p-4">
+    Danh sách thuộc tính
+  </Space>
     <div className="my-8 flex justify-between">
         <Link to={`/admin/attribute/add`}
           className="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
@@ -37,7 +41,7 @@ const AttributeList = () => {
         </tr>
       </thead>
       <tbody>
-        {data?.length > 0 ? data.map((attribute, index) => (
+        {data?.length > 0 ? data?.map((attribute, index) => (
           <tr
             key={attribute._id}
             className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -88,7 +92,7 @@ const AttributeList = () => {
     <Pageination data={data} />
   </div>
     
-    </div>
+    </>
   )
 }
 
