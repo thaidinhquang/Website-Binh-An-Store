@@ -16,7 +16,7 @@ const AttributeDetails = () => {
       return response.data;
     },
   });
-  console.log("Dữ liệu trả về từ API:", data);
+  // console.log("Dữ liệu trả về từ API:", data);
   if (isLoading) return <div>Loading...</div>;
 
   // Đảm bảo rằng data và data.values không phải là null hoặc undefined
@@ -49,7 +49,10 @@ const AttributeDetails = () => {
                   <td className="px-6 py-4">{value.price}</td>
                   <td className="px-6 py-4">{value.quantity}</td>
                   <td className="px-6 py-4">
-                    <Link to={`/admin/attribute/edit/${value._id}`}>Sửa</Link>
+                    <button className="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900">
+                    <Link to={`/admin/attribute/edit/details/${value._id}/value`}>Sửa</Link>
+                    </button>
+                    
                   </td>
                 </tr>
               ))

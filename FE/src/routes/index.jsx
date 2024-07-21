@@ -30,6 +30,7 @@ import AttributeAddValue from "../components/Admin/Attribute/AttributeAddValue";
 import AttributeEdit from "../components/Admin/Attribute/AttributeEdit";
 import AttributeEditValue from "../components/Admin/Attribute/AttributeEditValue";
 import AttributeDetails from "../components/Admin/Attribute/AttributeDetails";
+import AttributeEditValueDetail from "../components/Admin/Attribute/AttributeEditValueDetail";
 const Router = () => {
     return (
         <>
@@ -97,6 +98,7 @@ const Router = () => {
                         <Route path="add/:id/value" element={<AttributeAddValue />} />
                         <Route path="edit/:id" element={<AttributeEdit />} />
                         <Route path="edit/:id/value" element={<AttributeEditValue />} />
+                        <Route path="edit/details/:id/value" element={<AttributeEditValueDetail />} />
                         <Route path="detail/:id" element={<AttributeDetails />} />
                     </Route>
                 </Route>
