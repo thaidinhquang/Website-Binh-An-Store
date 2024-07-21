@@ -1,6 +1,23 @@
 import mongoose from "mongoose";
 import mongoosePaginate from 'mongoose-paginate-v2';
 
+const reviewSchema = mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    rating: { type: Number, required: true },
+    comment: { type: String, required: true },
+    user: {
+     type: mongoose.Schema.Types.ObjectId,
+     required: true,
+     ref: 'User',
+           },
+   },
+  {
+    timestamps: true,
+  }
+)
+
+
 const productSchema = new mongoose.Schema(
   {
     name: {
@@ -31,6 +48,17 @@ const productSchema = new mongoose.Schema(
     countInStock: {
         type: Number,
         default: 0,
+    },
+    reviews: [reviewSchema],
+    rating: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    numReviews: {
+      type: Number,
+      required: true,
+      default: 0,
     },
     featured: {
         type: Boolean,
