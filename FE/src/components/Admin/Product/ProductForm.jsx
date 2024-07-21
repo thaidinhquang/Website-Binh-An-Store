@@ -3,6 +3,8 @@ import { useTanstackMutation, useTanstackQuery } from "../../../common/hooks/use
 import { useContext, useEffect, useState } from "react";
 import socket from "/src/config/socket";
 import { AuthContext } from "../../Auth/core/Auth";
+import instance from "../../../config/axios";
+import { useQuery } from "@tanstack/react-query";
 
 const ProductForm = () => {
     const location = useLocation().pathname.split('/')[3];
@@ -16,6 +18,24 @@ const ProductForm = () => {
     const { currentUser } = useContext(AuthContext);
     const { data } = id ? useTanstackQuery(`products/not-populate/${id}`) : { data: null };
     const { data: category } = useTanstackQuery(`categories`);
+    const { data:attribute } = useQuery({
+        queryKey: ["ATTRIBUTE"],
+        queryFn: async () => {
+          const { data } = await instance.get(`/attributes`);
+        //   console.log(attribute)
+          return data;
+        },
+      });
+      
+      const { data:brand } = useQuery({
+          queryKey: ["BRAND"],
+          queryFn: async () => {
+            const { data } = await instance.get(`/brands`);
+            console.log(brand)
+            return data?.data?.docs;
+          },
+        });
+
     const { mutate, isPending } = useTanstackMutation({
         action: "UPLOAD",
         toastMessage: "Uploading image",
@@ -122,6 +142,17 @@ const ProductForm = () => {
                             />
                             {form.formState.errors.slug && <span className="text-red-500">{form.formState.errors.slug.message}</span>}
                         </div>
+                        <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                            Số lượng
+                        </label>
+                        <input
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:cursor-not-allowed"
+                            {...form.register("countInStock", { required: 'Số lượng không được để trống' })}
+                            disabled={location == 'detail'}
+                        />
+                        {form.formState.errors.countInStock && <span className="text-red-500">{form.formState.errors.countInStock.message}</span>}
+                    </div>
 
                         <div className="mb-4">
                             <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -139,6 +170,39 @@ const ProductForm = () => {
                                 )) : <option value="">Không có danh mục</option>}
                             </select>
                         </div>
+                        <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                            Thuộc tính
+                        </label>
+                        <select
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:cursor-not-allowed"
+                            {...form.register("attributes", { required: 'attributes không được để trống' })}
+                            disabled={location == 'detail'}
+                        >
+                            {attribute?.length > 0 ? attribute.map((att) => (
+                                <option key={att._id} value={att._id}>
+                                    {att.name}
+                                </option>
+                            )) : <option value="">Không có thuộc tính</option>}
+                        </select>
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                            Nhãn hàng
+                        </label>
+                        <select
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:cursor-not-allowed"
+                            {...form.register("brand", { required: 'nhãn hàng không được để trống' })}
+                            disabled={location == 'detail'}
+                        >
+                            {brand?.length > 0 ? brand.map((brand) => (
+                                <option key={brand._id} value={brand._id}>
+                                    {brand.name}
+                                </option>
+                            )) : <option value="">Không có thuộc tính</option>}
+                        </select>
+                    </div>
+                    
 
                         <div className="mb-4">
                             <label className="block text-gray-700 text-sm font-bold mb-2">
