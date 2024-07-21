@@ -39,21 +39,13 @@ export const getAllProduct = async (req, res, next) => {
 
 export const getDetailProductPopulate = async (req, res, next) => {
   try {
-    const data = await Product.findById(req.params.id).populate("category");
+    const data = await Product.findById(req.params.id).populate("category","brand");
     return !data ? res.status(400).json({ message: "Khong tim thay san pham!" }) : res.status(200).json({ data })
   } catch (error) {
     next(error)
   }
 };
 
-export const getDetailProductPopulateBrand = async (req, res, next) => {
-  try {
-    const data = await Product.findById(req.params.id).populate("brand");
-    return !data ? res.status(400).json({ message: "Khong tim thay san pham!" }) : res.status(200).json({ data })
-  } catch (error) {
-    next(error)
-  }
-};
 
 export const getDetailProduct = async (req, res, next) => {
   try {
