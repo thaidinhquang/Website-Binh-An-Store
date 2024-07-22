@@ -84,20 +84,20 @@ const ProductList = () => {
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <td scope="col" className="px-6 py-3">Mã ID</td>
-              <td scope="col" className="px-6 py-3">Ảnh </td>
-              <td scope="col" className="px-6 py-3" >Tên Sản Phẩm</td>
-              <td scope="col" className="px-6 py-3">Giá Sản Phẩm</td>
+              <td scope="col" className="px-6 py-3">Ảnh</td>
+              <td scope="col" className="px-6 py-3" >Tên</td>
+              <td scope="col" className="px-6 py-3">Giá</td>
               <td scope="col" className="px-6 py-3">Số Lượng</td>
               <td scope="col" className="px-6 py-3">action</td>
               <td scope="col" className="px-6 py-3">active</td>
             </tr>
           </thead>
           <tbody>
-            {data?.docs?.length > 0 ? data.docs.map((product) => (
+            {data?.docs?.length > 0 ? data.docs.map((product, index) => (
               <tr key={product._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                 <th className="px-6 py-4">{product._id}</th>
                 <th className="px-6 py-4">
-                  <img src={product.image} className="" alt="" />
+                  <img src={product.image} width={80} className=" rounded-lg" alt="" />
                 </th>
                 <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                   <p className="inline-block">{product.name}</p>
