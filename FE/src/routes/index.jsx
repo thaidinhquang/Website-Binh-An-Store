@@ -27,6 +27,14 @@ import { AdminRoute, LoginRoute } from "./PrivateRoute";
 import DetailOrder from './../components/Admin/order/DetailOrder';
 // import OrdersProfile from "../components/Profile/Order/Orders";
 import Orders from './../components/Admin/order/Orders';
+import AttributeList from "../components/Admin/Attribute/AttributeList";
+import AttributeAdd from "../components/Admin/Attribute/AttributeAdd";
+import AttributeAddValue from "../components/Admin/Attribute/AttributeAddValue";
+import AttributeEdit from "../components/Admin/Attribute/AttributeEdit";
+import AttributeEditValue from "../components/Admin/Attribute/AttributeEditValue";
+import AttributeDetails from "../components/Admin/Attribute/AttributeDetails";
+import BrandList from "../components/Admin/Brand/BrandList";
+import BrandForm from "../components/Admin/Brand/BrandForm";
 const Router = () => {
     return (
         <>
@@ -89,6 +97,19 @@ const Router = () => {
                     <Route index element={<Orders />} />
                     <Route path=":id" element={<DetailOrder />} />
                   </Route>
+                  <Route path="attribute">
+                  <Route index element={<AttributeList/>} />
+                  <Route path="add" element={<AttributeAdd />} />
+                  <Route path="add/:id/value" element={<AttributeAddValue />} />
+                  <Route path="edit/:id" element={<AttributeEdit />} />
+                  <Route path="edit/:id/value" element={<AttributeEditValue />} />
+                  <Route path="detail/:id" element={<AttributeDetails />} />
+                </Route>
+                <Route path="brands">
+                  <Route index element={<BrandList />} />
+                  <Route path="add" element={<BrandForm />} />
+                  <Route path="edit/:id" element={<BrandForm />} />
+                </Route>
                 </Route>
                 <Route path="*" element={<NotfoundPage />} />
             </Routes>
