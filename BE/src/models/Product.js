@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import mongoosePaginate from 'mongoose-paginate-v2';
+import mongoosePaginate from "mongoose-paginate-v2";
 
 const productSchema = new mongoose.Schema(
   {
@@ -17,39 +17,39 @@ const productSchema = new mongoose.Schema(
     image: {
       type: String,
     },
-    
+
     gallery: {
-        type: Array,
+      type: Array,
     },
     description: {
-        type: String,
+      type: String,
     },
     discount: {
-        type: Number,
-        default: 0,
+      type: Number,
+      default: 0,
     },
     countInStock: {
-        type: Number,
-        default: 0,
+      type: Number,
+      default: 0,
     },
     featured: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
     tags: {
-        type: Array,
+      type: Array,
     },
     slug: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
-    // attributes: [
-    //     {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: "Attribute",
-    //     },
-    // ],
-    // 
+    attributes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Attribute",
+        default: null,
+      },
+    ],
     active: {
       type: Boolean,
       default: true,
@@ -57,6 +57,11 @@ const productSchema = new mongoose.Schema(
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
+      default: null,
+    },
+    brand: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Brand",
       default: null,
     },
   },

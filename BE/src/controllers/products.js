@@ -1,4 +1,6 @@
+import { populate } from "dotenv";
 import Category from "../models/Category.js";
+import Brand from "../models/Brand.js";
 import Product from "../models/Product.js";
 
 export const getAllProduct = async (req, res, next) => {
@@ -8,6 +10,7 @@ export const getAllProduct = async (req, res, next) => {
       limit: req.query.limit ? +req.query.limit : 10,
       sort: req.query.sort ? req.query.sort : { createdAt: -1 },
       populate: 'category',
+      populate:'brand'
     };
     let query = {};
     if (req.query.name) {
@@ -19,6 +22,10 @@ export const getAllProduct = async (req, res, next) => {
     if (req.query.category) {
       const categoryIds = req.query.category.split(',');
       query.category = { $in: categoryIds };
+    } 
+    if (req.query.brand) {
+      const brandIds = req.query.category.split(',');
+      query.brand = { $in: brandIds };
     }
     if (req.query.active) {
       query.active = req.query.active;
@@ -32,12 +39,13 @@ export const getAllProduct = async (req, res, next) => {
 
 export const getDetailProductPopulate = async (req, res, next) => {
   try {
-    const data = await Product.findById(req.params.id).populate("category");
+    const data = await Product.findById(req.params.id).populate("category","brand");
     return !data ? res.status(400).json({ message: "Khong tim thay san pham!" }) : res.status(200).json({ data })
   } catch (error) {
     next(error)
   }
 };
+
 
 export const getDetailProduct = async (req, res, next) => {
   try {
@@ -78,6 +86,7 @@ export const createProduct = async (req, res, next) => {
 
     const data = await Product.create(req.body);
     await Category.findByIdAndUpdate(data.category, { $push: { products: data._id } });
+    await Brand.findByIdAndUpdate(data.brand, { $push: { products: data._id } });
     return !data ? res.status(400).json({ message: "Create product failed!" }) : res.status(200).json({ data, message: "Create product successfully"})
   } catch (error) {
     next(error)

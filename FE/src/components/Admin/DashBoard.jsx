@@ -15,7 +15,7 @@ const DashBoard = () => {
           <div className="">
             <div className="w-full bg-white px-10 py-9">
               <div className="title-area w-full flex justify-between items-center fixed">
-                <h1 className="text-[22px] font-bold text-qblack text-[#706e6e] italic">
+                <h1 className="text-[22px] font-bold text-qblack italic">
                   Bình An Store
                 </h1>
               </div>
@@ -29,11 +29,23 @@ const DashBoard = () => {
                             <IcoDashboard />
                           </span>
                           <span className=" font-normal text-base">
-                            Dashboard
+                            Quản lý thông kê
                           </span>
                         </div>
                       </Link>
                     </div>
+                    <div className="item group">
+                    <Link to="/admin/products">
+                      <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
+                        <span>
+                          <Product />
+                        </span>
+                        <span className=" font-normal text-base">
+                         Quản lý sản phẩm
+                        </span>
+                      </div>
+                    </Link>
+                  </div>
                     <div className="item group">
                       <Link to="/admin/categories">
                         <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
@@ -41,23 +53,12 @@ const DashBoard = () => {
                             <IcoCategory />
                           </span>
                           <span className=" font-normal text-base">
-                            Danh mục
+                            Quản lý danh mục
                           </span>
                         </div>
                       </Link>
                     </div>
-                    <div className="item group">
-                      <Link to="/admin/products">
-                        <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
-                          <span>
-                            <Product />
-                          </span>
-                          <span className=" font-normal text-base">
-                            Sản phẩm
-                          </span>
-                        </div>
-                      </Link>
-                    </div>
+                 
                     <div className="item group">
                       <Link to="/admin/users">
                         <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
@@ -65,7 +66,7 @@ const DashBoard = () => {
                             <IcoPeople />
                           </span>
                           <span className=" font-normal text-base">
-                            Người dùng
+                           Quản lý người dùng
                           </span>
                         </div>
                       </Link>
@@ -77,11 +78,35 @@ const DashBoard = () => {
                             <IcoCart />
                           </span>
                           <span className=" font-normal text-base">
-                            Đơn hàng
+                           Quản lý đơn hàng
                           </span>
                         </div>
                       </Link>
                     </div>
+                    <div className="item group">
+                      <Link to="/admin/attribute">
+                        <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
+                          <span>
+                            <IcoCart />
+                          </span>
+                          <span className=" font-normal text-base">
+                           Quản lý thuộc tính
+                          </span>
+                        </div>
+                      </Link>
+                    </div>
+                    <div className="item group">
+                    <Link to="/admin/brands">
+                      <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
+                        <span>
+                          <IcoCart />
+                        </span>
+                        <span className=" font-normal text-base">
+                         Quản lý nhãn hàng
+                        </span>
+                      </div>
+                    </Link>
+                  </div>
                     <div className="item group">
                       <Link to="/">
                         <div className="flex space-x-3 items-center text-green-500 hover:text-qblack">

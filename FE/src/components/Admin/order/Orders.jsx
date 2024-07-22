@@ -42,7 +42,7 @@ const Orders = () => {
   return (
     <div className="w-full h-ful">
       <Space className="font-semibold text-lg rounded-md bg-[#E9E9E9] w-full p-4">
-        Quản Lý đơn hàng
+        Danh sách đơn hàng
       </Space>
 
       <FilterStatus
