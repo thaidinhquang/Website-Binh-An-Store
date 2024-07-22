@@ -24,6 +24,14 @@ const ProductList = () => {
     const user = listUserOnEditRoute ? listUserOnEditRoute[id] : null;
     return user ? <span className="inline-block px-2 py-1 text-xs font-semibold text-white bg-red-500 rounded-full ml-2">{user} đang chỉnh sửa</span> : '';
   };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
+    }).format(price);
+  };
+
   useEffect(() => {
     form.reset({ name, sort, page, active });
     const handleUserEditing = (data) => {
@@ -95,7 +103,7 @@ const ProductList = () => {
                   <p className="inline-block">{product.name}</p>
                   {isUserEditing(product._id)}
                 </th>
-                <th className="px-6 py-4">{product.price} đ</th>
+                <th className="px-6 py-4">{formatPrice(product.price)}</th>
 
                 <th className="px-6 py-4">{product.countInStock}</th>
                 <th className="px-6 py-4">

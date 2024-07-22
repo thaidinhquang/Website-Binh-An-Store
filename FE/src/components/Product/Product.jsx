@@ -1,10 +1,17 @@
 import QuickViewIco from '../icons/QuickViewIco';
 import Compair from '../icons/Compair';
 import ThinLove from '../icons/ThinLove';
-import { useEffect } from 'react';
+
 import { Link } from 'react-router-dom';
 
 const ProductCard = ({ product, mutate, isPending }) => {
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
+    }).format(price);
+  };
+
   return (
     <div key={product._id} className="product-card-one bg-white relative group overflow-hidden shadow-md">
       <div className="product-card-img h-80 overflow-hidden">
@@ -49,11 +56,11 @@ const ProductCard = ({ product, mutate, isPending }) => {
         </Link>
 
         <p className="price">
-          <span className="main-price text-qgray line-through font-600 text-[18px]">
-            {product.price}
+          <span className="main-price text-qgray line-through  text-[18px]">
+          {formatPrice(product.price)}
           </span>
           <span className="offer-price text-qred font-600 text-[18px] ml-2">
-            {product.price}
+          {formatPrice(product.price)}
           </span>
         </p>
       </div>

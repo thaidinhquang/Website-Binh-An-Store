@@ -60,14 +60,23 @@ const TableData = ({ orders, setPage }) => {
       defaultSortOrder: "descend",
       sorter: (a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
       render: (value) => {
-        return moment(value).format("DD/MM/YYYY");
+        return moment(value).format("DD/MM/YYYY HH:mm:ss");
       },
     },
     {
       title: "Tổng tiền",
       dataIndex: "totalPrice",
       key: "totalPrice",
-    },
+      render: (text) => {
+          // Format the totalPrice with currency symbol "vnd"
+          const formattedPrice = new Intl.NumberFormat('vi-VN', {
+              style: 'currency',
+              currency: 'VND'
+          }).format(text || 0);
+
+          return <span>{formattedPrice}</span>;
+      },
+  },
     {
       title: "Thao tác",
       dataIndex: "action",
