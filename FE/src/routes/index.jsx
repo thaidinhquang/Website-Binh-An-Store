@@ -18,13 +18,15 @@ import NotfoundPage from "../components/layout/Notfound";
 import { Profile } from "../components/Profile/Profile";
 import UserProfile from "../components/Profile/User/UserProfile";
 import Address from "../components/Profile/Address/Address";
-import Orders from "../components/Profile/Order/Orders";
+
 import ChangePassword from "../components/Profile/ChangePassword/ChangePassword";
 import UserEdit from "../components/Profile/User/UserEdit";
 import LayoutWebsite from "../components/layout/Website";
 import LayoutAdmin from "../components/layout/Admin";
 import { AdminRoute, LoginRoute } from "./PrivateRoute";
 import DetailOrder from './../components/Admin/order/DetailOrder';
+// import OrdersProfile from "../components/Profile/Order/Orders";
+import Orders from './../components/Admin/order/Orders';
 const Router = () => {
     return (
         <>
@@ -51,7 +53,7 @@ const Router = () => {
                     }>
                         <Route path="" element={<UserProfile />} />
                         <Route path="address" element={<Address />} />
-                        <Route path="orders" element={<Orders />} />
+                        {/*<Route path="orders" element={<OrdersProfile />} />*/}
                         <Route path="edit" element={<UserEdit />} />
                         <Route path="change-password" element={<ChangePassword />} />
                     </Route>

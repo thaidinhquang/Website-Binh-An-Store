@@ -31,7 +31,7 @@ const OrderProcessing = ({ order }) => {
           <>
             <h2 className="text-red-500">
               Đơn hàng đã bị hủy{" "}
-              {`${order?.cancelledBy === "admin" ? `bởi Admin` : ""}`}
+              {`${order.cancelledBy === "admin" ? `bởi Admin` : ""}`}
             </h2>
             <p>{`${
               order?.canceledReason ??

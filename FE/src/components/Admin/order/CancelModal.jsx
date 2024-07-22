@@ -1,22 +1,23 @@
 import { Button, Form, Input, Modal } from "antd";
-import  { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useCancelOrder } from "../../../common/hooks/useCancelOrder";
 import { toast } from "react-toastify";
 
-const CancelModal = ({ orderId }) => {
+const CancelModal = ({ order }) => {
   const [form] = Form.useForm();
+
   const [open, setOpen] = useState(false);
 
   const cancelOrder = useCancelOrder();
 
   const handleCancel = (values) => {
     if (!values.content) {
-      return;
+      return toast.error("Please input a reason!");
     }
 
     cancelOrder.mutate(
       {
-        orderId: orderId,
+        orderId: order.key,
         description: values.content,
       },
       {
@@ -38,6 +39,7 @@ const CancelModal = ({ orderId }) => {
       </Button>
 
       <Modal
+        maskClosable={false}
         open={open}
         title="Cancel Order"
         cancelText="Cancel"

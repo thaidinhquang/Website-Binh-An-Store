@@ -3,8 +3,6 @@ import { Descriptions } from "antd";
 import moment from "moment";
 
 const OrderStatus = ({ order }) => {
-  console.log(order);
-
   const items = [
     {
       key: "1",

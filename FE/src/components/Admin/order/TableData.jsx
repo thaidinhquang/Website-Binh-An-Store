@@ -14,7 +14,7 @@ const TableData = ({ orders, setPage }) => {
 
   const dataSource = orders?.docs?.map((order) => ({
     key: order._id,
-    code: order?.code,
+    code: order?.code ?? order?._id,
     customer: order?.customerInfo?.name,
     paymentMethod: order?.paymentMethod?.toUpperCase(),
     orderStatus: order?.orderStatus?.toUpperCase(),
@@ -29,22 +29,26 @@ const TableData = ({ orders, setPage }) => {
       dataIndex: "code",
       key: "code",
       ellipsis: true,
+      width: "15%",
     },
     {
       title: "Tên khách hàng",
       dataIndex: "customer",
       key: "customer",
+      width: "10%",
       sorter: (a, b) => a.customer.localeCompare(b.customer),
     },
     {
-      title: "Phương thức thanh toán",
+      title: "Thanh toán",
       dataIndex: "paymentMethod",
       key: "paymentMethod",
+      width: "10%",
     },
     {
       title: "Trạng thái",
       dataIndex: "orderStatus",
       key: "orderStatus",
+      width: "10%",
       render: (text) => {
         if (text === "DELIVERED") {
           return <span className="text-blue-500 font-semibold">{text}</span>;
@@ -61,15 +65,11 @@ const TableData = ({ orders, setPage }) => {
       dataIndex: "createdAt",
       key: "createdAt",
       defaultSortOrder: "descend",
+      width: "10%",
       sorter: (a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
       render: (value) => {
         return moment(value).format("DD/MM/YYYY");
       },
-    },
-    {
-      title: "Tổng tiền",
-      dataIndex: "totalPrice",
-      key: "totalPrice",
     },
     {
       title: "Thao tác",
@@ -78,13 +78,12 @@ const TableData = ({ orders, setPage }) => {
       width: "20%",
       render: (value, _record) => {
         const status = _record?.orderStatus?.toLowerCase();
-
         return (
           <Space>
             {status === ORDER_STATUS.PENDING && (
               <Button
                 onClick={() => {
-                  confirmOrder.mutate(_record.orderId);
+                  confirmOrder.mutate(_record.key);
                 }}
               >
                 Confirm
@@ -92,11 +91,11 @@ const TableData = ({ orders, setPage }) => {
             )}
             {status === ORDER_STATUS.PENDING && (
               <>
-                <CancelModal orderId={_record?.orderId} />
+                <CancelModal order={_record} />
               </>
             )}
             {status === ORDER_STATUS.DELIVERED && (
-              <Button onClick={(e) => handleFinish(e, _record.orderId)}>
+              <Button onClick={(e) => handleFinish(e, _record.key)}>
                 Done
               </Button>
             )}

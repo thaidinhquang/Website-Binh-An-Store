@@ -14,7 +14,7 @@ const DetailOrder = () => {
   const { data: order } = useOrderDetail(id);
 
   return (
-    <>
+    <div className="w-full">
       <div className="font-bold mb-4 text-lg"> Thông tin đơn hàng</div>
 
       <OrderProcessing order={order} />
@@ -35,7 +35,7 @@ const DetailOrder = () => {
       )}
 
       <TableDataDetail order={order} />
-    </>
+    </div>
   );
 };
 
