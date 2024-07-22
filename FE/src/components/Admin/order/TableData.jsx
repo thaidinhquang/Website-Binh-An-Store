@@ -1,31 +1,33 @@
 import { Button, Pagination, Space, Table } from "antd";
 import moment from "moment";
-
+import React from "react";
 import { Link } from "react-router-dom";
-import { ORDER_STATUS } from "../../../constants/order";
 import { useConfirmOrder } from "../../../common/hooks/useConfirmOrder.jsx";
-import { useCancelOrder } from "../../../common/hooks/useCancelOrder.jsx";
+import { ORDER_STATUS } from "../../../constants/order.js";
+import CancelModal from "./CancelModal.jsx";
+import { useFinishOrder } from "../../../common/hooks/useFinishOrder.jsx";
+import { toast } from "react-toastify";
 
 const TableData = ({ orders, setPage }) => {
   const confirmOrder = useConfirmOrder();
-  const cancelOrder = useCancelOrder();
+  const finishOrder = useFinishOrder();
 
   const dataSource = orders?.docs?.map((order) => ({
     key: order._id,
-    orderId: order?._id,
+    code: order?.code,
     customer: order?.customerInfo?.name,
     paymentMethod: order?.paymentMethod?.toUpperCase(),
     orderStatus: order?.orderStatus?.toUpperCase(),
     createdAt: order?.createdAt,
     totalPrice: order?.totalPrice,
-    action: <Link>Xem chi tiết</Link>,
+    action: <Link to={`/admin/orders/${order._id}`}>Xem chi tiết</Link>,
   }));
 
   const columns = [
     {
       title: "Mã đơn hàng",
-      dataIndex: "orderId",
-      key: "orderId",
+      dataIndex: "code",
+      key: "code",
       ellipsis: true,
     },
     {
@@ -89,8 +91,13 @@ const TableData = ({ orders, setPage }) => {
               </Button>
             )}
             {status === ORDER_STATUS.PENDING && (
-              <Button onClick={() => cancelOrder.mutate(_record.orderId)}>
-                Cancel
+              <>
+                <CancelModal orderId={_record?.orderId} />
+              </>
+            )}
+            {status === ORDER_STATUS.DELIVERED && (
+              <Button onClick={(e) => handleFinish(e, _record.orderId)}>
+                Done
               </Button>
             )}
             <Button>{value}</Button>
@@ -99,6 +106,19 @@ const TableData = ({ orders, setPage }) => {
       },
     },
   ];
+
+  const handleFinish = (e, orderId) => {
+    e.preventDefault();
+
+    finishOrder.mutate(orderId, {
+      onSuccess: () => {
+        toast.success("Finish order successfully");
+      },
+      onError: () => {
+        toast.error("Finish order failed");
+      },
+    });
+  };
 
   return (
     <>

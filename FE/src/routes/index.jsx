@@ -12,7 +12,7 @@ import ProductForm from "../components/Admin/Product/ProductForm";
 import AllProductPage from "../components/Product/AllProductPage";
 import UserForm from "../components/Admin/Users/UserForm";
 import SuccessMessage from "../components/CheckoutPage/SuccessMessage";
-import AdminOrders from "../components/Admin/order/Orders";
+
 import Statistics from "../components/Admin/Stats";
 import NotfoundPage from "../components/layout/Notfound";
 import { Profile } from "../components/Profile/Profile";
@@ -24,6 +24,7 @@ import UserEdit from "../components/Profile/User/UserEdit";
 import LayoutWebsite from "../components/layout/Website";
 import LayoutAdmin from "../components/layout/Admin";
 import { AdminRoute, LoginRoute } from "./PrivateRoute";
+import DetailOrder from './../components/Admin/order/DetailOrder';
 const Router = () => {
     return (
         <>
@@ -83,8 +84,9 @@ const Router = () => {
                         <Route path="edit/:id" element={<UserForm />} />
                     </Route>
                     <Route path="orders">
-                        <Route index element={<AdminOrders />} />
-                    </Route>
+                    <Route index element={<Orders />} />
+                    <Route path=":id" element={<DetailOrder />} />
+                  </Route>
                 </Route>
                 <Route path="*" element={<NotfoundPage />} />
             </Routes>
