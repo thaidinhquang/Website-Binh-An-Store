@@ -2,6 +2,7 @@ import Stripe from "stripe";
 import Order from "../models/Order.js";
 import { ORDER_STATUS } from "../constants/order.js";
 import { ROLES } from "../constants/Role.js";
+import mongoose from "mongoose";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -49,7 +50,7 @@ export const createOrder = async (req, res) => {
   try {
     const order = new Order({
       ...req.body,
-      userId: req.userId,
+      userId: req.user?._id?.toString(),
     });
 
     await order.save();
@@ -63,7 +64,6 @@ export const createOrder = async (req, res) => {
     return console.log("Something went wrong...", error);
   }
 };
-
 // @POST CREATE ORDER BY CARD
 export const createStripeOrder = async (session) => {
   try {
@@ -223,7 +223,8 @@ export const cancelOrder = async (req, res) => {
     }
 
     foundedOrder.orderStatus = ORDER_STATUS.CANCELLED;
-    foundedOrder.save();
+    foundedOrder.canceledReason = req.body.content;
+    await foundedOrder.save();
     return res.status(200).json({ message: "Cancelled", success: true });
   } catch (error) {
     return console.log("Something went wrong.", error);
@@ -247,7 +248,12 @@ export const getAllOrders = async (req, res) => {
 
   if (req.query.search) {
     const search = req.query.search;
-    filter["customerInfo.name"] = { $regex: new RegExp(search, "i") };
+    // filter["customerInfo.name"] = { $regex: new RegExp(search, "i") };
+
+    filter.$or = [
+      { "customerInfo.name": { $regex: new RegExp(search, "i") } },
+      { code: { $regex: new RegExp(search, "i") } },
+    ];
   }
 
   if (req.query.paymentMethod) {
@@ -305,14 +311,14 @@ export const finishAnOrder = async (req, res) => {
       throw new Error(`NOt found any order with id ${req.body.orderId}`);
     }
 
-    if (foundedOrder.orderStatus === ORDER_STATUS.DELIVERED) {
+    if (foundedOrder.orderStatus !== ORDER_STATUS.DELIVERED) {
       throw new Error(
         "This order is done when it is delivered or customer received."
       );
     }
 
     foundedOrder.orderStatus = ORDER_STATUS.DONE;
-    foundedOrder.save();
+    await foundedOrder.save();
 
     return res.status(200).json({
       message: "This order is done.",

@@ -5,10 +5,14 @@ export const useConfirmOrder = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (orderId) =>
-      await axiosCustom.patch(`http://localhost:8000/api/orders/confirm`, {
-        orderId,
-      }),
+    mutationFn: async (orderId) => {
+      return await axiosCustom.patch(
+        `http://localhost:8000/api/orders/confirm`,
+        {
+          orderId,
+        }
+      );
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["orders"],
