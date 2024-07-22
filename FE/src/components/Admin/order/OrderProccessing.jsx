@@ -10,19 +10,21 @@ const OrderProcessing = ({ order }) => {
   const currentStep = () => {
     switch (order?.orderStatus) {
       case ORDER_STATUS.PENDING:
-        return 1;
+        return 0;
       case ORDER_STATUS.CONFIRMED:
-        return 2;
-      case ORDER_STATUS.SHIPPING:
-        return 3;
-      case ORDER_STATUS.DELIVERED:
-        return 4;
-      case ORDER_STATUS.COMPLETED:
-        return 5;
-      default:
         return 1;
+      case ORDER_STATUS.SHIPPING:
+        return 2;
+      case ORDER_STATUS.DELIVERED:
+        return 3;
+      case ORDER_STATUS.COMPLETED:
+        return 4;
+      default:
+        return 0;
     }
   };
+
+  console.log("order", currentStep());
 
   return (
     <Space className="bg-[#ffff] w-full p-4 rounded-lg font-semibold border flex-col">

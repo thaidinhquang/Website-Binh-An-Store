@@ -17,8 +17,13 @@ const ProductView = ({ className, reportHandler }) => {
     path: `cart/add-item`,
     action: "CREATE",
   });
-
   const [quantity, setQuantity] = useState(1);
+
+  const { data: category } = useTanstackQuery(`categories/${product?.category?._id}`);
+
+  const { data: brand } = useTanstackQuery(`brands/${product?.brand}`);
+  console.log(product)
+  console.log(brand)
 
   const handleIncrement = () => {
     setQuantity(prevQuantity => {
@@ -71,7 +76,7 @@ const ProductView = ({ className, reportHandler }) => {
               data-aos="fade-up"
               className="text-qgray text-xs font-normal uppercase tracking-wider mb-2 inline-block"
             >
-              Mobile Phones
+              {category?.name || "Loading category..."}
             </span>
             <p
               data-aos="fade-up"
@@ -105,13 +110,7 @@ const ProductView = ({ className, reportHandler }) => {
                 {product.price}
               </span>
             </div>
-            <p
-              data-aos="fade-up"
-              className="text-qgray text-sm text-normal mb-[30px] leading-7"
-            >
-              It is a long established fact that a reader will be distracted by
-              the readable there content of a page when looking at its layout.
-            </p>
+
             <div
               data-aos="fade-up"
               className="quantity-card-wrapper w-full flex items-center h-[50px] space-x-[10px] mb-[30px]"
@@ -167,10 +166,11 @@ const ProductView = ({ className, reportHandler }) => {
             </div>
             <div data-aos="fade-up" className="mb-[20px]">
               <p className="text-[13px] text-qgray leading-7">
-                <span className="text-qblack">Category :</span> Kitchen
+                <span className="text-qblack">Category : </span>
+                {category?.name || "Loading category..."}
               </p>
               <p className="text-[13px] text-qgray leading-7">
-                <span className="text-qblack">Tags :</span> Beer, Foamer
+                <span className="text-qblack">Brand :</span> {brand?.name || "No brand available"}
               </p>
               <p className="text-[13px] text-qgray leading-7">
                 <span className="text-qblack">SKU:</span> KE-91039
@@ -206,57 +206,7 @@ const ProductView = ({ className, reportHandler }) => {
                 Report incorrect product information
               </button>
             </div>
-            <div data-aos="fade-up" className="border-t border-qgray-border">
-              <div className="w-full">
-                <ul
-                  className="flex justify-center items-center my-[30px]"
-                  role="tablist"
-                >
-                  <li className="tab_nav_list">
-                    <button
-                      type="button"
-                      className="text-sm font-semibold text-qblack focus:outline-none"
-                      role="tab"
-                    >
-                      Description
-                    </button>
-                  </li>
-                  <li className="tab_nav_list">
-                    <button
-                      type="button"
-                      className="text-sm font-normal text-qgray focus:outline-none"
-                      role="tab"
-                    >
-                      Additional Info
-                    </button>
-                  </li>
-                  <li className="tab_nav_list">
-                    <button
-                      type="button"
-                      className="text-sm font-normal text-qgray focus:outline-none"
-                      role="tab"
-                    >
-                      Reviews
-                    </button>
-                  </li>
-                </ul>
-                <div className="tab_content text-qgray text-sm">
-                  <p>
-                    It is a long established fact that a reader will be
-                    distracted by the readable content of a page when looking at
-                    its layout. The point of using Lorem Ipsum is that it has a
-                    more-or-less normal distribution of letters, as opposed to
-                    using ‘Content here, content here’, making it look like
-                    readable English. Many desktop publishing packages and web
-                    page editors now use Lorem Ipsum as their default model
-                    text, and a search for ‘lorem ipsum’ will uncover many web
-                    sites still in their infancy. Various versions have evolved
-                    over the years, sometimes by accident, sometimes on purpose
-                    (injected humour and the like).
-                  </p>
-                </div>
-              </div>
-            </div>
+
           </div>
         </div>
       </div>
