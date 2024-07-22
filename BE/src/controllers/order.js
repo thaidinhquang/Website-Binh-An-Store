@@ -50,7 +50,7 @@ export const createOrder = async (req, res) => {
   try {
     const order = new Order({
       ...req.body,
-      userId: req.userId,
+      userId: req.user?._id?.toString(),
     });
 
     await order.save();
@@ -64,7 +64,6 @@ export const createOrder = async (req, res) => {
     return console.log("Something went wrong...", error);
   }
 };
-
 // @POST CREATE ORDER BY CARD
 export const createStripeOrder = async (session) => {
   try {

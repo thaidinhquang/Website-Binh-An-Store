@@ -3,7 +3,7 @@ export const ORDER_STATUS = {
   CONFIRMED: "confirmed",
   SHIPPING: "shipping",
   DELIVERED: "delivered",
-  CANCELLED: "cancelLed",
+  CANCELLED: "cancelled",
   DONE: "done",
 };
 

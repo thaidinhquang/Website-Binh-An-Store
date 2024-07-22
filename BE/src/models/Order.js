@@ -1,4 +1,4 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 import paginate from "mongoose-paginate-v2";
 import { ORDER_STATUS, PAYMENT_METHOD } from "../constants/order.js";
 import { ROLES } from "../constants/Role.js";
@@ -114,8 +114,11 @@ const orderSchema = new mongoose.Schema(
   }
 );
 
-orderSchema.pre("save", function (next) {
-  this.code = this._id.toString();
+orderSchema.pre("save", { document: true, query: false }, function (next) {
+  let obj = this;
+  if (obj.isNew) {
+    obj.code = obj._id.toString();
+  }
   next();
 });
 
