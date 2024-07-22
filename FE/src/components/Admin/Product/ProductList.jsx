@@ -83,8 +83,8 @@ const ProductList = () => {
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <td scope="col" className="px-6 py-3"></td>
-              <td scope="col" className="px-6 py-3">Ảnh Sản Phẩm</td>
+              <td scope="col" className="px-6 py-3">Mã ID</td>
+              <td scope="col" className="px-6 py-3">Ảnh </td>
               <td scope="col" className="px-6 py-3" >Tên Sản Phẩm</td>
               <td scope="col" className="px-6 py-3">Giá Sản Phẩm</td>
               <td scope="col" className="px-6 py-3">Số Lượng</td>
@@ -93,11 +93,11 @@ const ProductList = () => {
             </tr>
           </thead>
           <tbody>
-            {data?.docs?.length > 0 ? data.docs.map((product, index) => (
+            {data?.docs?.length > 0 ? data.docs.map((product) => (
               <tr key={product._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <th className="px-6 py-4">{index + 1}</th>
+                <th className="px-6 py-4">{product._id}</th>
                 <th className="px-6 py-4">
-                  <img src={product.image} width={100} className=" rounded-lg" alt="" />
+                  <img src={product.image} className="" alt="" />
                 </th>
                 <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                   <p className="inline-block">{product.name}</p>
