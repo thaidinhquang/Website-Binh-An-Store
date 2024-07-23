@@ -34,7 +34,7 @@ const AttributeEdit = () => {
       return data;
     },
     onSuccess: () => {
-      toast.success("attribute đã được thêm thành công!");
+      toast.success("Attribute đã được thêm thành công!");
       navigate("/admin/attribute");
     },
     onError: () => {

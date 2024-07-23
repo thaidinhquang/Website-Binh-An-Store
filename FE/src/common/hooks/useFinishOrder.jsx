@@ -1,18 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosCustom from "../../config/axios.js";
 
-export const useConfirmOrder = () => {
+export const useFinishOrder = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (orderId) => {
-      return await axiosCustom.patch(
-        `http://localhost:8000/api/orders/confirm`,
-        {
-          orderId,
-        }
-      );
-    },
+    mutationFn: async (orderId) =>
+      await axiosCustom.patch(`http://localhost:8000/api/orders/done`, {
+        orderId: orderId,
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["orders"],
