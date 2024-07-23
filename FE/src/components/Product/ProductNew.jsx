@@ -19,7 +19,7 @@ const ProductNew = () => {
       <div className="container-x mx-auto">
         <div className="best-sallers-section mb-8">
           <ViewMoreTitle
-            seeMoreUrl="/all-products"
+            seeMoreUrl="/shop"
             categoryTitle="Sản Phẩm Mới"
           />
         </div>
