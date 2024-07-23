@@ -14,14 +14,14 @@ const ProductView = ({ className }) => {
   };
 
   const { id } = useParams();
-  
+
   // Fetch product data
   const { data: product, isLoading, error } = useTanstackQuery(`/products/${id}`);
-  
+
   // Fetch category and brand data
   const { data: category } = useTanstackQuery(`categories/${product?.category?._id}`);
   const { data: brand } = useTanstackQuery(`brands/${product?.brand}`);
-  
+
   const { data: attributes, isLoading: attributesLoading } = useQuery({
     queryKey: ["attributes"],
     queryFn: async () => {
@@ -41,18 +41,17 @@ const ProductView = ({ className }) => {
     action: "CREATE",
   });
 
-  // Initialize selected attributes with the first value of each attribute
-  useEffect(() => {
-    if (productAttributes) {
-      const defaultAttributes = {};
-      productAttributes.forEach(attr => {
-        if (attr.values.length > 0) {
-          defaultAttributes[attr._id] = attr.values[0]._id;
-        }
-      });
-      setSelectedAttributes(defaultAttributes);
-    }
-  }, [productAttributes]);
+  // useEffect(() => {
+  //   if (productAttributes) {
+  //     const defaultAttributes = {};
+  //     productAttributes.forEach(attr => {
+  //       if (attr.values.length > 0) {
+  //         defaultAttributes[attr._id] = attr.values[0]._id;
+  //       }
+  //     });
+  //     setSelectedAttributes(defaultAttributes);
+  //   }
+  // }, [productAttributes]);
 
   const handleIncrement = () => {
     setQuantity(prevQuantity => prevQuantity + 1);
@@ -71,6 +70,7 @@ const ProductView = ({ className }) => {
 
   const handleAddToCart = (event) => {
     event.preventDefault();
+
     const attributesArray = Object.values(selectedAttributes);
     mutate({ productId: product._id, quantity, attributesId: attributesArray });
   };
@@ -84,7 +84,7 @@ const ProductView = ({ className }) => {
         <div data-aos="fade-right" className="lg:w-1/2 xl:mr-[70px] lg:mr-[50px]">
           <div className="w-full">
             <div className="w-full h-[600px] border border-qgray-border flex justify-center items-center overflow-hidden relative mb-3">
-              <img src={product.image} alt="" className="object-contain w-full" />
+              <img src={product.image} alt={product.name} className="object-contain w-full" />
               <div className="w-[80px] h-[80px] rounded-full bg-qyellow text-qblack flex justify-center items-center text-xl font-medium absolute left-[30px] top-[30px]">
                 <span>-50%</span>
               </div>
@@ -107,7 +107,7 @@ const ProductView = ({ className }) => {
             </div>
 
             {/* Display attributes */}
-              <div className="my-9">
+            <div className="my-9">
               {attributesLoading ? (
                 <p>Loading attributes...</p>
               ) : (
@@ -160,7 +160,7 @@ const ProductView = ({ className }) => {
                 </button>
               </div>
             </div>
-            
+
             <div data-aos="fade-up" className="mb-[20px]">
               <p className="text-[13px] text-qgray leading-7">
                 <span className="text-qblack">Category : </span>
@@ -173,7 +173,7 @@ const ProductView = ({ className }) => {
                 <span className="text-qblack">SKU:</span> KE-91039
               </p>
             </div>
-            
+
             <div data-aos="fade-up" className="flex space-x-2 items-center mb-[20px]">
               <span>
                 <svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">

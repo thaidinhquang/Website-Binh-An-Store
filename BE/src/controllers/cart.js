@@ -25,6 +25,9 @@ export const addItemToCart = async (req, res, next) => {
         if (quantity <= 0) {
             return res.status(400).json({ message: "Số lượng phải lớn hơn 0" });
         }
+        if (!attributesId || !Array.isArray(attributesId) || attributesId.length === 0) {
+            return res.status(400).json({ message: "Bạn phải chọn ít nhất một thuộc tính" });
+        }
 
         let cart = await Cart.findOne({ userId });
         if (!cart) {
@@ -126,7 +129,7 @@ export const clearCart = async (req, res, next) => {
 
         cart.products = [];
         await cart.save();
-        return res.status(200).json({ cart, message: "Xóa giỏ hàng thành công" });
+        return res.status(200).json({ cart });
     } catch (error) {
         next(error);
     }
