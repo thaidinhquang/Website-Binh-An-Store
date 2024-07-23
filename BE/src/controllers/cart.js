@@ -38,7 +38,7 @@ export const addItemToCart = async (req, res, next) => {
             cart.products.push({ productId, quantity });
         }
         await cart.save();
-        return res.status(200).json({ cart, message: "Add item to cart successfully"});
+        return res.status(200).json({ cart, message: "Bạn đã thêm sản phẩm vào giỏ hàng!"});
     } catch (error) {
         next(error);
     }
@@ -54,11 +54,11 @@ export const removeItemFromCart = async (req, res, next) => {
         }
         const productIndex = cart.products.findIndex(product => product.productId == productId);
         if (productIndex === -1) {
-            return res.status(404).json({ message: "Product not found" });
+            return res.status(404).json({ message: "Không có sản phẩm!" });
         }
         cart.products.splice(productIndex, 1);
         await cart.save();
-        return res.status(200).json({ cart, message: "Remove item from cart successfully"});
+        return res.status(200).json({ cart, message: "Xóa sản phẩm trong giỏ hàng thành công!"});
     } catch (error) {
         next(error);
     }
@@ -74,11 +74,11 @@ export const updateItemInCart = async (req, res, next) => {
         }
         const productIndex = cart.products.findIndex(product => product.productId == productId);
         if (productIndex === -1) {
-            return res.status(404).json({ message: "Product not found" });
+            return res.status(404).json({ message: "Không có sản phẩm!" });
         }
         cart.products[productIndex].quantity = quantity;
         await cart.save();
-        return res.status(200).json({ cart, message: "Update item in cart successfully"});
+        return res.status(200).json({ cart, message: "Cập nhật sản phẩm trong giỏ hàng thành công!"});
     } catch (error) {
         next(error);
     }
@@ -141,7 +141,7 @@ export const increeaseItemQuantity = async (req, res, next) => {
         }
         cart.products[productIndex].quantity++;
         await cart.save();
-        return res.status(200).json({ cart, message: "Increase item quantity successfully"});
+        return res.status(200).json({ cart, message: "Tăng số lượng thành công!"});
     } catch (error) {
         next(error);
     }
@@ -157,7 +157,7 @@ export const decreaseItemQuantity = async (req, res, next) => {
         }
         const productIndex = cart.products.findIndex(product => product.productId == productId);
         if (productIndex === -1) {
-            return res.status(404).json({ message: "Product not found" });
+            return res.status(404).json({ message: "Không có sản phẩm!" });
         }
         if (cart.products[productIndex].quantity === 1) {
             cart.products.splice(productIndex, 1);
@@ -165,7 +165,7 @@ export const decreaseItemQuantity = async (req, res, next) => {
             cart.products[productIndex].quantity--;
         }
         await cart.save();
-        return res.status(200).json({ cart, message: "Decrease item quantity successfully"});
+        return res.status(200).json({ cart, message: "Giảm số lượng thành công!"});
     } catch (error) {
         next(error);
     }

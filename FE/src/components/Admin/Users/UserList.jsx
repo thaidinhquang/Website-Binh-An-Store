@@ -6,7 +6,6 @@ import Pageination from "../../UI/Pagination";
 import { useForm } from "react-hook-form";
 import { useHookSearch } from "../../../common/hooks/useSearch";
 import { AuthContext } from "../../Auth/core/Auth";
-import { Space } from "antd";
 
 const UserList = () => {
   const search = new URLSearchParams(useLocation().search);
@@ -64,14 +63,12 @@ const UserList = () => {
   if (isLoading || isLoadingRole) return <p>Loading...</p>
   return (
     <>
-    <Space className="font-semibold text-lg rounded-md bg-[#E9E9E9] w-full p-4">
-    Danh sách người dùng
-  </Space>
+      <div>Danh Sách Người Dùng</div>
       <div className="my-8 flex justify-between">
         <Link to={`/admin/users/add`}
           className="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
         >
-          thêm người dùng
+          Thêm Người Dùng
         </Link>
       </div>
       <form onSubmit={form.handleSubmit(searchForm)} className="flex justify-between gap-3">
