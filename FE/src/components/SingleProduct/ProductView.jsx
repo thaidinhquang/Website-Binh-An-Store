@@ -22,7 +22,6 @@ const ProductView = ({ className }) => {
   const { data: category } = useTanstackQuery(`categories/${product?.category?._id}`);
   const { data: brand } = useTanstackQuery(`brands/${product?.brand}`);
   
-  // Fetch attributes data
   const { data: attributes, isLoading: attributesLoading } = useQuery({
     queryKey: ["attributes"],
     queryFn: async () => {
@@ -34,12 +33,26 @@ const ProductView = ({ className }) => {
   // Filter attributes based on product attributes
   const productAttributes = attributes?.filter(attr => product?.attributes.includes(attr._id));
 
+  const [selectedAttributes, setSelectedAttributes] = useState({});
   const [quantity, setQuantity] = useState(1);
 
   const { mutate } = useTanstackMutation({
     path: `cart/add-item`,
     action: "CREATE",
   });
+
+  // Initialize selected attributes with the first value of each attribute
+  useEffect(() => {
+    if (productAttributes) {
+      const defaultAttributes = {};
+      productAttributes.forEach(attr => {
+        if (attr.values.length > 0) {
+          defaultAttributes[attr._id] = attr.values[0]._id;
+        }
+      });
+      setSelectedAttributes(defaultAttributes);
+    }
+  }, [productAttributes]);
 
   const handleIncrement = () => {
     setQuantity(prevQuantity => prevQuantity + 1);
@@ -49,9 +62,17 @@ const ProductView = ({ className }) => {
     setQuantity(prevQuantity => Math.max(prevQuantity - 1, 1));
   };
 
+  const handleAttributeSelect = (attrId, valueId) => {
+    setSelectedAttributes(prevState => ({
+      ...prevState,
+      [attrId]: valueId,
+    }));
+  };
+
   const handleAddToCart = (event) => {
     event.preventDefault();
-    mutate({ productId: product._id, quantity });
+    const attributesArray = Object.values(selectedAttributes);
+    mutate({ productId: product._id, quantity, attributesId: attributesArray });
   };
 
   if (isLoading) return <p>Loading...</p>;
@@ -86,7 +107,7 @@ const ProductView = ({ className }) => {
             </div>
 
             {/* Display attributes */}
-            <div className="my-9">
+              <div className="my-9">
               {attributesLoading ? (
                 <p>Loading attributes...</p>
               ) : (
@@ -100,7 +121,8 @@ const ProductView = ({ className }) => {
                         <Button
                           key={value._id}
                           className="m-1"
-                          type={product.attributes.includes(value._id) ? "primary" : "default"}
+                          type={selectedAttributes[attr._id] === value._id ? "primary" : "default"}
+                          onClick={() => handleAttributeSelect(attr._id, value._id)}
                         >
                           {value.name}
                         </Button>

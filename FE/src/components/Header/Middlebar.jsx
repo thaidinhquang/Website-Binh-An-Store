@@ -7,9 +7,13 @@ import ThinPeople from '../icons/ThinPeople'
 import { useContext, useEffect } from "react";
 import AuthenticationModal from './AuthenticationModal'
 import { AuthContext } from '../Auth/core/Auth'
+import { useTanstackQuery } from '../../common/hooks/useTanstackQuery'
 
 const Middlebar = ({ className }) => {
   const { currentUser } = useContext(AuthContext);
+  const { data: cartData } = useTanstackQuery('cart');
+  const cartItemCount = cartData ? cartData.products.reduce((total, product) => total + product.quantity, 0) : 0;
+
   return (
     <div>
       <div className={`w-full h-[86px] bg-white ${className}`}>
@@ -26,16 +30,7 @@ const Middlebar = ({ className }) => {
               </div> */}
               {currentUser ?
                 <div className="flex space-x-6 items-center">
-                  <div className="compaire relative">
-                    <Link to="/products-compaire">
-                      <span>
-                        <Compair />
-                      </span>
-                    </Link>
-                    <span className="w-[18px] h-[18px] rounded-full bg-qh4-pink absolute -top-2.5 -right-2.5 flex justify-center items-center text-[9px] text-qblack">
-                      2
-                    </span>
-                  </div>
+                 
                   <div className="favorite relative">
                     <Link to="/wishlist">
                       <span>
@@ -54,7 +49,7 @@ const Middlebar = ({ className }) => {
                         </span>
                       </Link>
                       <span className="w-[18px] h-[18px] rounded-full bg-qh4-pink absolute -top-2.5 -right-2.5 flex justify-center items-center text-[9px] text-qblack">
-                        15
+                      {cartItemCount}
                       </span>
                     </div>
                     {/* <div className="fixed left-0 top-0 w-full h-full z-40"></div> */}

@@ -1,8 +1,10 @@
+
+import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import instance from '../../config/axios';
 import QuickViewIco from '../icons/QuickViewIco';
 import Compair from '../icons/Compair';
 import ThinLove from '../icons/ThinLove';
-
-import { Link } from 'react-router-dom';
 
 const ProductCard = ({ product, mutate, isPending }) => {
   const formatPrice = (price) => {
@@ -10,6 +12,31 @@ const ProductCard = ({ product, mutate, isPending }) => {
       style: 'currency',
       currency: 'VND'
     }).format(price);
+  };
+
+  // Fetch attributes data
+  const { data: attributes } = useQuery({
+    queryKey: ["attributes"],
+    queryFn: async () => {
+      const { data } = await instance.get(`/attributes`);
+      return data;
+    },
+  });
+
+  // Determine default attributes
+  const getDefaultAttributes = () => {
+    const defaultAttributes = {};
+    attributes?.forEach(attr => {
+      if (attr.values.length > 0) {
+        defaultAttributes[attr._id] = attr.values[0]._id; // Select the first value as default
+      }
+    });
+    return defaultAttributes;
+  };
+
+  const handleAddToCart = () => {
+    const defaultAttributes = getDefaultAttributes();
+    mutate({ productId: product._id, quantity: 1, attributesId: Object.values(defaultAttributes) });
   };
 
   return (
@@ -22,14 +49,11 @@ const ProductCard = ({ product, mutate, isPending }) => {
         />
       </div>
 
-      
       <div className="product-card-details px-[30px] pb-[80px] relative">
         <div className="absolute w-full h-10 px-[30px] left-0 top-40 group-hover:top-[85px] transition-all duration-300 ease-in-out">
           <button
             type="button"
-            onClick={() => {
-              mutate({ productId: product._id, quantity: 1 });
-            }}
+            onClick={handleAddToCart}
             className={isPending ? "blue-btn" : "yellow-btn"}
           >
             <div className="flex items-center space-x-3">
@@ -56,15 +80,15 @@ const ProductCard = ({ product, mutate, isPending }) => {
         </Link>
 
         <p className="price">
-          <span className="main-price text-qgray line-through  text-[18px]">
-          {formatPrice(product.price)}
+          <span className="main-price text-qgray line-through text-[18px]">
+            {formatPrice(product.price)}
           </span>
           <span className="offer-price text-qred font-600 text-[18px] ml-2">
-          {formatPrice(product.price)}
+            {formatPrice(product.price)}
           </span>
         </p>
       </div>
-      <div className="quick-access-btns flex flex-col space-y-2 absolute group-hover:right-4 -right-10 top-20  transition-all duration-300 ease-in-out">
+      <div className="quick-access-btns flex flex-col space-y-2 absolute group-hover:right-4 -right-10 top-20 transition-all duration-300 ease-in-out">
         <Link to={`/detail/${product._id}`}>
           <span className="w-10 h-10 flex justify-center items-center bg-primarygray rounded">
             <QuickViewIco />
