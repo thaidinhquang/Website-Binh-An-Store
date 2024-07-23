@@ -9,6 +9,9 @@ import routerOrder from "./order.js";
 import routerStats from "./stats.js";
 import attribute from "./attribute.js";
 import routerReview from "./review.js";
+import routerBrand from "./brand.js";
+import routerAtrribute from "./attribute.js";
+
 const router = Router();
 
 router.use("/auth", routerAuth);
@@ -21,4 +24,7 @@ router.use("/orders", routerOrder);
 router.use("/stats", routerStats);
 router.use("/attributes", attribute);
 router.use("/reviews", routerReview );
+router.use("/attributes", routerAtrribute);
+router.use("/brands", routerBrand )
+
 export default router;

@@ -48,7 +48,7 @@ export const createUser = async (req, res, next) => {
     try {
         req.body.password = await hashPassword(req.body.password);
         const data = await User.create(req.body);
-        return !data ? res.status(500).json({ message: "Create user failed" }) : res.status(201).json({ data });
+        return !data ? res.status(500).json({ message: "Tạo user thất bại" }) : res.status(201).json({ data });
     } catch (error) {
         next(error);
     }
@@ -57,7 +57,7 @@ export const createUser = async (req, res, next) => {
 export const removeUserById = async (req, res, next) => {
     try {
         const data = await User.findByIdAndUpdate(req.params.id, { active: false }, { new: true });
-        return !data ? res.status(500).json({ message: "Remove user failed" }) : res.status(200).json({ data, message: "Remove user successfully"});
+        return !data ? res.status(500).json({ message: "Xóa user thất bại" }) : res.status(200).json({ data, message: "Xóa user thành công"});
     } catch (error) {
         next(error);
     }
@@ -66,7 +66,7 @@ export const removeUserById = async (req, res, next) => {
 export const updateUser = async (req, res, next) => {
     try {
         const data = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        return !data ? res.status(500).json({ message: "Update user failed" }) : res.status(200).json({ data, message: "Update user successfully"});
+        return !data ? res.status(500).json({ message: "Cập nhật thông tin thất bại!" }) : res.status(200).json({ data, message: "Cập nhật thông tin thành công"});
     } catch (error) {
         next(error);
     }

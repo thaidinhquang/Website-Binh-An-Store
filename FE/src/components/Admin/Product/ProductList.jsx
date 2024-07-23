@@ -42,12 +42,12 @@ const ProductList = () => {
   if (isLoading) return <p>Loading...</p>
   return (
     <>
-      <div>Danh sách sản phẩm</div>
+      <div>Danh Sách Sản Phẩm</div>
       <div className="my-8 flex justify-between">
         <Link to={`/admin/products/add`}
           className="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
         >
-          Thêm sản phẩm
+          Thêm Sản Phẩm
         </Link>
       </div>
       <form onSubmit={form.handleSubmit(searchForm)} className="flex justify-between gap-3">
@@ -76,7 +76,6 @@ const ProductList = () => {
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <td scope="col" className="px-6 py-3"></td>
-              <td scope="col" className="px-6 py-3">Mã</td>
               <td scope="col" className="px-6 py-3">Ảnh Sản Phẩm</td>
               <td scope="col" className="px-6 py-3" >Tên Sản Phẩm</td>
               <td scope="col" className="px-6 py-3">Giá Sản Phẩm</td>
@@ -88,8 +87,7 @@ const ProductList = () => {
           <tbody>
             {data?.docs?.length > 0 ? data.docs.map((product, index) => (
               <tr key={product._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <th className="px-6 py-4">{index+1}</th>
-                <th className="px-6 py-4">{product._id}</th>
+                <th className="px-6 py-4">{index + 1}</th>
                 <th className="px-6 py-4">
                   <img src={product.image} width={100} className=" rounded-lg" alt="" />
                 </th>

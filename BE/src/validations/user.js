@@ -6,7 +6,7 @@ export const userSchema = Joi.object({
         "string.empty": "Email không được để trống!",
         "string.email": "Email không đúng định dạng!",
     }),
-    password: Joi.string().required().messages({
+    password: Joi.string().optional().messages({
         "string.base": "Password phải là một chuỗi!",
         "string.empty": "Password không được để trống!",
     }),

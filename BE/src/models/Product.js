@@ -16,6 +16,8 @@ const reviewSchema = new mongoose.Schema({
   rating: { type: Number, required: true, min: 1, max: 5 },
 });
 
+
+
 const productSchema = new mongoose.Schema(
   {
     name: {
@@ -47,8 +49,6 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    reviews: { type: [reviewSchema], default: [] },
-
     featured: {
       type: Boolean,
       default: false,
@@ -60,6 +60,7 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    reviews: { type: [reviewSchema], default: [] },
     attributes: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -67,7 +68,6 @@ const productSchema = new mongoose.Schema(
         default: null,
       },
     ],
-
     active: {
       type: Boolean,
       default: true,
@@ -75,6 +75,11 @@ const productSchema = new mongoose.Schema(
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
+      default: null,
+    },
+    brand: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Brand",
       default: null,
     },
   },
