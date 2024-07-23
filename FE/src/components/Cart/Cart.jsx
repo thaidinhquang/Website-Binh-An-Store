@@ -12,6 +12,13 @@ const Cart = ({ className, type }) => {
     removeProduct({ productId })
     data.products = data.products.filter(item => item.productId._id !== productId)
   }
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
+    }).format(price);
+  };
+
   return (
     <div>
       <div
@@ -46,7 +53,7 @@ const Cart = ({ className, type }) => {
 
                         <p className="price">
                           <span className="offer-price text-qred font-600 text-[15px] ml-2">
-                            ${item.productId.price}
+                            {formatPrice(item.productId.price)} 
                           </span>
                         </p>
                       </div>
@@ -72,7 +79,7 @@ const Cart = ({ className, type }) => {
           <div className="product-actions px-4 mb-[30px]">
             <div className="total-equation flex justify-between items-center mb-[28px]">
               <span className="text-[15px] font-500 text-qblack">Subtotal</span>
-              <span className="text-[15px] font-500 text-qred ">${!isLoadingCartTotal && cartTotal}</span>
+              <span className="text-[15px] font-500 text-qred ">{formatPrice(!isLoadingCartTotal && cartTotal)}</span>
             </div>
             <div className="product-action-btn">
               <Link to="/cart">

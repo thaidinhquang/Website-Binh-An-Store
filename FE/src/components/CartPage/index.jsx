@@ -1,16 +1,23 @@
 import { Link } from "react-router-dom";
-import { useTanstackQuery, useTanstackMutation } from "../../common/hooks/useTanstackQuery";
+import {
+  useTanstackQuery,
+  useTanstackMutation,
+} from "../../common/hooks/useTanstackQuery";
 import BreadcrumbCom from "../UI/BreadcrumbCom";
 import PageTitle from "../UI/PageTitle";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../Auth/core/Auth";
-
+import { clearCart } from "../../../../BE/src/controllers/cart";
 
 const CartPage = ({ cart = true, className }) => {
-  const [isLoadingItem, setIsLoadingItem] = useState(false)
-  const [items, setItems] = useState([])
-  const { data, isLoading } = useTanstackQuery('cart')
-  const { data: cartTotal, isLoading: isLoadingCartTotal, refetch} = useTanstackQuery('cart/total')
+  const [isLoadingItem, setIsLoadingItem] = useState(false);
+  const [items, setItems] = useState([]);
+  const { data, isLoading } = useTanstackQuery("cart");
+  const {
+    data: cartTotal,
+    isLoading: isLoadingCartTotal,
+    refetch,
+  } = useTanstackQuery("cart/total");
   const { mutate: increeseProduct } = useTanstackMutation({
     path: `cart/increase-quantity`,
     action: "CREATE",
@@ -27,6 +34,7 @@ const CartPage = ({ cart = true, className }) => {
     path: `cart/clear`,
     action: "CREATE",
   });
+
   const { mutate: order, data: response } = useTanstackMutation({
     path: `orders/create-checkout-session`,
     action: "CREATE",
@@ -36,57 +44,72 @@ const CartPage = ({ cart = true, className }) => {
     return item.productId.price * item.quantity;
   };
   const updateProduct = (product, action) => {
-    const productId = product.productId._id
-    const quantity = data.products.find(item => item.productId._id === productId).quantity
-    if (action === 'increase') {
-      increeseProduct({ productId })
-      data.products.find(item => item.productId._id === productId).quantity++
+    const productId = product.productId._id;
+    const quantity = data.products.find(
+      (item) => item.productId._id === productId
+    ).quantity;
+    if (action === "increase") {
+      increeseProduct({ productId });
+      data.products.find((item) => item.productId._id === productId).quantity++;
     }
-    if (action === 'decrease') {
+    if (action === "decrease") {
       if (quantity > 1) {
-        decreaseProduct({ productId })
-        data.products.find(item => item.productId._id === productId).quantity--
+        decreaseProduct({ productId });
+        data.products.find((item) => item.productId._id === productId)
+          .quantity--;
       }
     }
-    if (action === 'remove') {
-      removeProduct({ productId })
-      data.products = data.products.filter(item => item.productId._id !== productId)
+    if (action === "remove") {
+      removeProduct({ productId });
+      data.products = data.products.filter(
+        (item) => item.productId._id !== productId
+      );
     }
     setTimeout(() => {
-      refetch()
-    }, 1000)
+      refetch();
+    }, 1000);
   };
-  const onSubmit = async () => {
-    const data = {
-      userId: currentUser._id,
-      items: items,
-      "currency": "usd",
-    }
-    order(data)
-    clearCart()
-  }
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
+    }).format(price);
+  };
+
+    
+    const onSubmit = async () => {
+      const data = {
+        userId: currentUser._id,
+        items: items,
+        currency: "vnd",
+      };
+      order(data);
+      // clearCart();
+    
+    };
+
   useEffect(() => {
     if (response) {
-      window.location.replace(response.sessionUrl)
+      window.location.replace(response.sessionUrl);
     }
-  }, [response])
+  }, [response]);
   useEffect(() => {
     if (data?.products?.length > 0) {
-      setIsLoadingItem(true)
-      let listItem = []
-      data.products.forEach(item => {
+      setIsLoadingItem(true);
+      let listItem = [];
+      data.products.forEach((item) => {
         listItem.push({
           name: item.productId._id,
           image: item.productId.image,
           price: item.productId.price,
-          quantity: item.quantity
-        })
-      })
-      setItems(listItem)
-      setIsLoadingItem(false)
+          quantity: item.quantity,
+        });
+      });
+      setItems(listItem);
+      setIsLoadingItem(false);
     }
-  }, [data])
-  if (isLoading) return <p>Loading...</p>
+  }, [data]);
+  if (isLoading) return <p>Loading...</p>;
   return (
     <div className={cart ? "pt-0 pb-0" : ""}>
       {cart === false ? (
@@ -135,17 +158,17 @@ const CartPage = ({ cart = true, className }) => {
                           <th className="py-4 whitespace-nowrap text-center">
                             Total
                           </th>
-                          <th className="py-4 whitespace-nowrap text-center">
-
-                          </th>
+                          <th className="py-4 whitespace-nowrap text-center"></th>
                         </tr>
                       </thead>
                       <tbody>
-                        {!data.products.length ?
+                        {!data.products.length ? (
                           <tr>
-                            <td colSpan="6" className="text-center py-4">No product in cart</td>
+                            <td colSpan="6" className="text-center py-4">
+                              No product in cart
+                            </td>
                           </tr>
-                          :
+                        ) : (
                           data.products.map((item, index) => (
                             <tr
                               key={index}
@@ -179,7 +202,7 @@ const CartPage = ({ cart = true, className }) => {
                               <td className="text-center py-4 px-2">
                                 <div className="flex space-x-1 items-center justify-center">
                                   <span className="text-[15px] font-normal">
-                                    {item.productId.price}
+                                    {formatPrice(item.productId.price)}
                                   </span>
                                 </div>
                               </td>
@@ -188,7 +211,9 @@ const CartPage = ({ cart = true, className }) => {
                                 <div className="flex justify-center items-center space-x-2">
                                   <button
                                     disabled={item.quantity === 1}
-                                    onClick={() => updateProduct(item, 'decrease')}
+                                    onClick={() =>
+                                      updateProduct(item, "decrease")
+                                    }
                                     className="px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded"
                                   >
                                     -
@@ -200,7 +225,9 @@ const CartPage = ({ cart = true, className }) => {
                                     className="w-12 text-center border border-gray-300 rounded"
                                   />
                                   <button
-                                    onClick={() => updateProduct(item, 'increase')}
+                                    onClick={() =>
+                                      updateProduct(item, "increase")
+                                    }
                                     className="px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded"
                                   >
                                     +
@@ -211,14 +238,18 @@ const CartPage = ({ cart = true, className }) => {
                               <td className="text-right py-4">
                                 <div className="flex space-x-1 items-center justify-center">
                                   <span className="text-[15px] font-normal">
-                                    ${calculateTotalPrice(item)}
+                                    {formatPrice(calculateTotalPrice(item))}
                                   </span>
                                 </div>
                               </td>
 
                               <td className="text-right py-4">
                                 <div className="flex space-x-1 items-center justify-center">
-                                  <span onClick={() => updateProduct(item, 'remove')}>
+                                  <span
+                                    onClick={() =>
+                                      updateProduct(item, "remove")
+                                    }
+                                  >
                                     <svg
                                       width="10"
                                       height="10"
@@ -236,7 +267,8 @@ const CartPage = ({ cart = true, className }) => {
                                 </div>
                               </td>
                             </tr>
-                          ))}
+                          ))
+                        )}
                       </tbody>
                     </table>
                   </div>
@@ -361,28 +393,33 @@ const CartPage = ({ cart = true, className }) => {
                       <p className="text-[18px] font-medium text-qblack">
                         Total
                       </p>
-                      <p className="text-[18px] font-medium text-qred">${!isLoadingCartTotal && cartTotal}</p>
+                      <p className="text-[18px] font-medium text-qred">
+                        {formatPrice(!isLoadingCartTotal && cartTotal)}
+                      </p>
                     </div>
                   </div>
                   {data.products.length > 0 ? (
                     <>
-                    <button onClick={() => onSubmit()} disabled={isLoadingItem} className="w-full h-[50px] black-btn flex justify-center items-center text-sm font-semibold">
-                      Thanh toán online
-                    </button>
-                    <Link to="/checkout">
-                    <div className="mt-4 w-full h-[50px] black-btn flex justify-center items-center">
-                      <span className="text-sm font-semibold">
-                        Trả tiền khi nhận hàng
-                      </span>
-                    </div>
-                  </Link>
-                  </>
+                      <button
+                        onClick={() => onSubmit()}
+                        disabled={isLoadingItem}
+                        className="w-full h-[50px] black-btn flex justify-center items-center text-sm font-semibold"
+                      >
+                        Thanh toán online
+                      </button>
+                      <Link to="/checkout">
+                        <div className="mt-4 w-full h-[50px] black-btn flex justify-center items-center">
+                          <span className="text-sm font-semibold">
+                            Trả tiền khi nhận hàng
+                          </span>
+                        </div>
+                      </Link>
+                    </>
                   ) : (
                     <div className="w-full h-[50px] black-btn flex justify-center items-center text-sm font-semibold opacity-50 cursor-not-allowed">
                       Không có sản phẩm để thanh toán
                     </div>
                   )}
-                  
                 </div>
               </div>
             </div>

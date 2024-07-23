@@ -90,11 +90,23 @@ const DashBoard = () => {
                             <IcoCart />
                           </span>
                           <span className=" font-normal text-base">
-                           Quản lý attribute
+                           Quản lý thuộc tính
                           </span>
                         </div>
                       </Link>
                     </div>
+                    <div className="item group">
+                    <Link to="/admin/brands">
+                      <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
+                        <span>
+                          <IcoCart />
+                        </span>
+                        <span className=" font-normal text-base">
+                         Quản lý nhãn hàng
+                        </span>
+                      </div>
+                    </Link>
+                  </div>
                     <div className="item group">
                       <Link to="/">
                         <div className="flex space-x-3 items-center text-green-500 hover:text-qblack">

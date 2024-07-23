@@ -6,7 +6,7 @@ import TableData from "./TableData.jsx";
 import FilterStatus from "./FilterStatus.jsx";
 import { ORDER_STATUS } from "../../../constants/order.js";
 
-const Orders = () => {
+const OrderAdmin = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [limit, setLimit] = useState(10);
@@ -42,7 +42,7 @@ const Orders = () => {
   return (
     <div className="w-full h-ful">
       <Space className="font-semibold text-lg rounded-md bg-[#E9E9E9] w-full p-4">
-        Quản Lý đơn hàng
+        Danh sách đơn hàng
       </Space>
 
       <FilterStatus
@@ -82,4 +82,4 @@ const Orders = () => {
   );
 };
 
-export default Orders;
+export default OrderAdmin;
