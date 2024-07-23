@@ -8,6 +8,7 @@ import routerUser from "./user.js";
 import routerOrder from "./order.js";
 import routerStats from "./stats.js";
 import attribute from "./attribute.js";
+import routerReview from "./review.js";
 const router = Router();
 
 router.use("/auth", routerAuth);
@@ -19,4 +20,5 @@ router.use("/users", routerUser);
 router.use("/orders", routerOrder);
 router.use("/stats", routerStats);
 router.use("/attributes", attribute);
+router.use("/reviews", routerReview );
 export default router;

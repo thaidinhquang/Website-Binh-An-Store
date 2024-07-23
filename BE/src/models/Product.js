@@ -1,22 +1,20 @@
 import mongoose from "mongoose";
-import mongoosePaginate from 'mongoose-paginate-v2';
+import mongoosePaginate from "mongoose-paginate-v2";
 
-const reviewSchema = mongoose.Schema(
-  {
-    name: { type: String, required: true },
-    rating: { type: Number, required: true },
-    comment: { type: String, required: true },
-    user: {
-     type: mongoose.Schema.Types.ObjectId,
-     required: true,
-     ref: 'User',
-           },
-   },
-  {
-    timestamps: true,
-  }
-)
-
+const reviewSchema = new mongoose.Schema({
+  // name: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   required: true,
+  //   ref: "User",
+  // },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
+  },
+  comment: { type: String, required: true },
+  rating: { type: Number, required: true, min: 1, max: 5 },
+});
 
 const productSchema = new mongoose.Schema(
   {
@@ -34,51 +32,42 @@ const productSchema = new mongoose.Schema(
     image: {
       type: String,
     },
-    
+
     gallery: {
-        type: Array,
+      type: Array,
     },
     description: {
-        type: String,
+      type: String,
     },
     discount: {
-        type: Number,
-        default: 0,
+      type: Number,
+      default: 0,
     },
     countInStock: {
-        type: Number,
-        default: 0,
-    },
-    reviews: [reviewSchema],
-    rating: {
       type: Number,
-      required: true,
       default: 0,
     },
-    numReviews: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
+    reviews: { type: [reviewSchema], default: [] },
+
     featured: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
     tags: {
-        type: Array,
+      type: Array,
     },
     slug: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     attributes: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Attribute",
-            default: null
-        },
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Attribute",
+        default: null,
+      },
     ],
-    
+
     active: {
       type: Boolean,
       default: true,

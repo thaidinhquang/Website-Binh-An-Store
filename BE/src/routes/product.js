@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { createProduct, createProductReview, deleteProduct, getAllProduct, getDetailProduct, getDetailProductPopulate, restoreProduct, updateProduct } from "../controllers/products.js";
+import { createProduct, deleteProduct, getAllProduct, getDetailProduct, getDetailProductPopulate, restoreProduct, updateProduct } from "../controllers/products.js";
 import { productValid } from "../validations/productValid.js";
 import { checkRequestBody } from "../middlewares/checkRequestBody.js";
 import { checkPermission } from "../middlewares/checkPermission.js";
+
 
 const routerProduct = Router();
 routerProduct.get("/", getAllProduct);
@@ -13,5 +14,5 @@ routerProduct.delete("/restore/:id", checkPermission('restore_product'), restore
 routerProduct.use(checkRequestBody(productValid))
 routerProduct.post("/", checkPermission('create_product'), createProduct);
 routerProduct.put("/:id", checkPermission('update_product'), updateProduct);
-routerProduct.post("/:id/reviews" , createProductReview);
+
 export default routerProduct;
