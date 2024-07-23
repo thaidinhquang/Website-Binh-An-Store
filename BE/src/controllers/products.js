@@ -2,6 +2,7 @@ import { populate } from "dotenv";
 import Category from "../models/Category.js";
 import Brand from "../models/Brand.js";
 import Product from "../models/Product.js";
+// import asyncHandler from 'express-async-handler'
 
 export const getAllProduct = async (req, res, next) => {
   try {
