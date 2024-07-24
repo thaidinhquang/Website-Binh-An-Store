@@ -12,7 +12,6 @@ import ProductForm from "../components/Admin/Product/ProductForm";
 import AllProductPage from "../components/Product/AllProductPage";
 import UserForm from "../components/Admin/Users/UserForm";
 import SuccessMessage from "../components/CheckoutPage/SuccessMessage";
-import AdminOrders from "../components/Admin/order/Orders";
 import Statistics from "../components/Admin/Stats";
 import NotfoundPage from "../components/layout/Notfound";
 import { Profile } from "../components/Profile/Profile";
@@ -30,84 +29,111 @@ import AttributeAddValue from "../components/Admin/Attribute/AttributeAddValue";
 import AttributeEdit from "../components/Admin/Attribute/AttributeEdit";
 import AttributeEditValue from "../components/Admin/Attribute/AttributeEditValue";
 import AttributeDetails from "../components/Admin/Attribute/AttributeDetails";
-import AttributeEditValueDetail from "../components/Admin/Attribute/AttributeEditValueDetail";
-import OrderAdmin from './../components/Admin/order/Orders';
+import BrandList from "../components/Admin/Brand/BrandList";
+import BrandForm from "../components/Admin/Brand/BrandForm";
+import OrderDetail from "../components/Profile/Order/OrderDetail";
+import OrderAdmin from "../components/Admin/order/Orders";
+import DetailOrder from './../components/Admin/order/DetailOrder';
 const Router = () => {
-    return (
-        <>
-            <Routes>
-                <Route path="/" element={<LayoutWebsite />}>
-                    <Route index element={<Home />} />
-                    <Route path="detail/:id" element={<SingleProduct />} />
-                    <Route path="about" element={<About />} />
-                    <Route path="cart" element={
-                        <LoginRoute>
-                            <CartPage />
-                        </LoginRoute>
-                    } />
-                    <Route path="checkout" element={
-                        <LoginRoute>
-                            <CheckoutPage />
-                        </LoginRoute>
-                    } />
-                    <Route path="shop" element={<AllProductPage />} />
-                    <Route path="/profile" element={
-                        <LoginRoute>
-                            <Profile />
-                        </LoginRoute>
-                    }>
-                        <Route path="" element={<UserProfile />} />
-                        <Route path="address" element={<Address />} />
-                        <Route path="orders" element={<Orders />} />
-                        <Route path="edit" element={<UserEdit />} />
-                        <Route path="change-password" element={<ChangePassword />} />
-                    </Route>
-                </Route>
-                <Route path="checkoutsuccess" element={
-                    <LoginRoute>
-                        <SuccessMessage />
-                    </LoginRoute>
-                } />
-                <Route path="/admin" element={
-                    <AdminRoute>
-                        <LayoutAdmin />
-                    </AdminRoute>
-                }>
-                    <Route index element={<Statistics />} />
-                    <Route path="products">
-                        <Route index element={<ProductList />} />
-                        <Route path="add" element={<ProductForm />} />
-                        <Route path="edit/:id" element={<ProductForm />} />
-                        <Route path="detail/:id" element={<ProductForm />} />
-                    </Route>
-                    <Route path="categories">
-                        <Route index element={<CategorytList />} />
-                        <Route path="add" element={<CategorytForm />} />
-                        <Route path="edit/:id" element={<CategorytForm />} />
-                    </Route>
-                    <Route path="users">
-                        <Route index element={<UserList />} />
-                        <Route path="add" element={<UserForm />} />
-                        <Route path="edit/:id" element={<UserForm />} />
-                    </Route>
-                     <Route path="orders">
-            <Route index element={<OrderAdmin />} />
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<LayoutWebsite />}>
+          <Route index element={<Home />} />
+          <Route path="detail/:id" element={<SingleProduct />} />
+          <Route path="about" element={<About />} />
+          <Route
+            path="cart"
+            element={
+              <LoginRoute>
+                <CartPage />
+              </LoginRoute>
+            }
+          />
+          <Route
+            path="checkout"
+            element={
+              <LoginRoute>
+                <CheckoutPage />
+              </LoginRoute>
+            }
+          />
+          <Route path="shop" element={<AllProductPage />} />
+          <Route
+            path="/profile"
+            element={
+              <LoginRoute>
+                <Profile />
+              </LoginRoute>
+            }
+          >
+            <Route path="" element={<UserProfile />} />
+            <Route path="address" element={<Address />} />
+            <Route path="orders">
+            <Route index element={<Orders />} />
+            <Route path="detail/:id" element={<OrderDetail />} />
+            </Route>
+
+          
+            <Route path="edit" element={<UserEdit />} />
+            <Route path="change-password" element={<ChangePassword />} />
+          </Route>
+        </Route>
+        <Route
+          path="checkoutsuccess"
+          element={
+            <LoginRoute>
+              <SuccessMessage />
+            </LoginRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <LayoutAdmin />
+            </AdminRoute>
+          }
+        >
+          <Route index element={<Statistics />} />
+          <Route path="products">
+            <Route index element={<ProductList />} />
+            <Route path="add" element={<ProductForm />} />
+            <Route path="edit/:id" element={<ProductForm />} />
+            <Route path="detail/:id" element={<ProductForm />} />
+          </Route>
+          <Route path="categories">
+            <Route index element={<CategorytList />} />
+            <Route path="add" element={<CategorytForm />} />
+            <Route path="edit/:id" element={<CategorytForm />} />
+          </Route>
+          <Route path="users">
+            <Route index element={<UserList />} />
+            <Route path="add" element={<UserForm />} />
+            <Route path="edit/:id" element={<UserForm />} />
+          </Route>
+          <Route path="orders">
+            <Route index element={<OrderAdmin/>} />
             <Route path=":id" element={<DetailOrder />} />
           </Route>
-                    <Route path="attribute">
-                        <Route index element={<AttributeList />} />
-                        <Route path="add" element={<AttributeAdd />} />
-                        <Route path="add/:id/value" element={<AttributeAddValue />} />
-                        <Route path="edit/:id" element={<AttributeEdit />} />
-                        <Route path="edit/:id/value" element={<AttributeEditValue />} />
-                        <Route path="edit/details/:id/value" element={<AttributeEditValueDetail />} />
-                        <Route path="detail/:id" element={<AttributeDetails />} />
-                    </Route>
-                </Route>
-                <Route path="*" element={<NotfoundPage />} />
-            </Routes>
-        </>
-    );
-}
+          <Route path="attribute">
+            <Route index element={<AttributeList />} />
+            <Route path="add" element={<AttributeAdd />} />
+            <Route path="add/:id/value" element={<AttributeAddValue />} />
+            <Route path="edit/:id" element={<AttributeEdit />} />
+            <Route path="edit/:id/value" element={<AttributeEditValue />} />
+            <Route path="detail/:id" element={<AttributeDetails />} />
+          </Route>
+          <Route path="brands">
+            <Route index element={<BrandList />} />
+            <Route path="add" element={<BrandForm />} />
+            <Route path="edit/:id" element={<BrandForm />} />
+          </Route>
+        </Route>
+        <Route path="*" element={<NotfoundPage />} />
+      </Routes>
+    </>
+  );
+};
 
 export default Router;
