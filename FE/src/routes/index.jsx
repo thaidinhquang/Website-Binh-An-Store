@@ -12,7 +12,6 @@ import ProductForm from "../components/Admin/Product/ProductForm";
 import AllProductPage from "../components/Product/AllProductPage";
 import UserForm from "../components/Admin/Users/UserForm";
 import SuccessMessage from "../components/CheckoutPage/SuccessMessage";
-// import AdminOrders from "../components/Admin/order/Orders";
 import Statistics from "../components/Admin/Stats";
 import NotfoundPage from "../components/layout/Notfound";
 import { Profile } from "../components/Profile/Profile";
@@ -33,9 +32,8 @@ import AttributeDetails from "../components/Admin/Attribute/AttributeDetails";
 import BrandList from "../components/Admin/Brand/BrandList";
 import BrandForm from "../components/Admin/Brand/BrandForm";
 import OrderDetail from "../components/Profile/Order/OrderDetail";
-import OrderAdmin from './../components/Admin/order/Orders';
-import DetailOrder from "../components/Admin/order/DetailOrder";
-
+import OrderAdmin from "../components/Admin/order/Orders";
+import DetailOrder from './../components/Admin/order/DetailOrder';
 const Router = () => {
   return (
     <>
@@ -115,7 +113,7 @@ const Router = () => {
             <Route path="edit/:id" element={<UserForm />} />
           </Route>
           <Route path="orders">
-            <Route index element={<OrderAdmin />} />
+            <Route index element={<OrderAdmin/>} />
             <Route path=":id" element={<DetailOrder />} />
           </Route>
           <Route path="attribute">

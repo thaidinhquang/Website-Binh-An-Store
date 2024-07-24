@@ -2,6 +2,7 @@ import { populate } from "dotenv";
 import Category from "../models/Category.js";
 import Brand from "../models/Brand.js";
 import Product from "../models/Product.js";
+// import asyncHandler from 'express-async-handler'
 
 export const getAllProduct = async (req, res, next) => {
   try {
@@ -86,8 +87,7 @@ export const createProduct = async (req, res, next) => {
 
     const data = await Product.create(req.body);
     await Category.findByIdAndUpdate(data.category, { $push: { products: data._id } });
-    await Brand.findByIdAndUpdate(data.brand, { $push: { products: data._id } });
-    return !data ? res.status(400).json({ message: "Create product failed!" }) : res.status(200).json({ data, message: "Create product successfully"})
+    return !data ? res.status(400).json({ message: "Thêm sản phẩm thất bại!" }) : res.status(200).json({ data, message: "Thêm sản phẩm thành công!"})
   } catch (error) {
     next(error)
   }
@@ -105,7 +105,7 @@ export const updateProduct = async (req, res, next) => {
     }
 
     const data = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    return !data ? res.status(400).json({ message: "Update product failed!" }) : res.status(200).json({ data, message: "Update product successfully"})
+    return !data ? res.status(400).json({ message: "Cập nhật sản phẩm thất bại!" }) : res.status(200).json({ data, message: "Cập nhật sản phẩm thành công!"})
   } catch (error) {
     next(error)
   }

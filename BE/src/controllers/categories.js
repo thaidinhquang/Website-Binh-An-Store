@@ -3,7 +3,7 @@ import Category from "../models/Category.js";
 export const createCategory = async (req, res, next) => {
   try {
     const data = await Category.create(req.body);
-    return !data ? res.status(400).json({ message: "Create category failed!" }) : res.status(200).json({ data, message: "Create category successfully"})
+    return !data ? res.status(400).json({ message: "Thêm danh mục thất bại!" }) : res.status(200).json({ data, message: "Thêm danh mục thành công!"})
   } catch (error) {
     next(error)
   }
@@ -12,7 +12,7 @@ export const createCategory = async (req, res, next) => {
 export const updateCategory = async (req, res, next) => {
   try {
     const data = await Category.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    return !data ? res.status(400).json({ message: "Update category failed!" }) : res.status(200).json({ data, message: "Update category successfully"})
+    return !data ? res.status(400).json({ message: "Cập nhật danh mục thất bại!" }) : res.status(200).json({ data, message: "Cập nhật danh mục thành công!"})
   } catch (error) {
     next(error)
   }

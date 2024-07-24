@@ -4,6 +4,7 @@ import { productValid } from "../validations/productValid.js";
 import { checkRequestBody } from "../middlewares/checkRequestBody.js";
 import { checkPermission } from "../middlewares/checkPermission.js";
 
+
 const routerProduct = Router();
 routerProduct.get("/", getAllProduct);
 routerProduct.get("/:id", getDetailProductPopulate);
@@ -13,4 +14,5 @@ routerProduct.delete("/restore/:id", checkPermission('restore_product'), restore
 routerProduct.use(checkRequestBody(productValid))
 routerProduct.post("/", checkPermission('create_product'), createProduct);
 routerProduct.put("/:id", checkPermission('update_product'), updateProduct);
+
 export default routerProduct;
