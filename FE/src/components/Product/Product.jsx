@@ -17,10 +17,10 @@ const ProductCard = ({ product, mutate, isPending }) => {
   // Fetch attributes data
   
 
-  const handleAddToCart = () => {
+  // const handleAddToCart = () => {
 
-    mutate({ productId: product._id, quantity:1, });
-  };
+  //   mutate({ productId: product._id, quantity:1, });
+  // };
 
   return (
     <div key={product._id} className="product-card-one bg-white relative group overflow-hidden shadow-md">

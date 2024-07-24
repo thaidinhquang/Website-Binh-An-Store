@@ -1,22 +1,34 @@
-import { Column } from "@ant-design/plots";
+import { useState } from 'react';
+import { Column } from '@ant-design/plots';
+import { DatePicker } from 'antd';
+import dayjs from 'dayjs';
 
 const OrdersByDayChart = ({ stats }) => {
-  const data = stats
-    ? stats?.stats?.map((item) => ({
-        day: item.day,
-        amount: item.totalAmount,
-      }))
-    : [];
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  const handleDateChange = (date, dateString) => {
+    setSelectedDate(date ? dayjs(dateString).format('YYYY-MM-DD') : null);
+  };
+
+  // Filter and format the data based on the selected date
+  const filteredData = stats?.stats
+    .filter(item => {
+      if (!selectedDate) return true; // Show all data if no date is selected
+      const itemDate = dayjs(`${item.year}-${item.month}-${item.day}`).format('YYYY-MM-DD');
+      return itemDate === selectedDate;
+    })
+    .map(item => ({
+      day: `${item.year}-${item.month}-${item.day}`,
+      amount: item.totalAmount,
+    })) || [];
+
+  console.log(filteredData);
+
   const config = {
-    data,
-    xField: "day",
-    yField: "amount",
-    style: {
-      fill: () => {
-        return "#2989FF";
-      },
-      maxWidth: 100,
-    },
+    data: filteredData,
+    xField: 'day',
+    yField: 'amount',
+    color: '#2989FF',
     label: {
       text: (originData) => {
         const val = parseFloat(originData.amount);
@@ -25,8 +37,21 @@ const OrdersByDayChart = ({ stats }) => {
       offset: 10,
     },
     legend: false,
+    xAxis: {
+      tickInterval: 1,
+    },
   };
-  return <Column {...config} />;
+
+  return (
+    <div>
+      <DatePicker
+        onChange={handleDateChange}
+        format='YYYY-MM-DD'
+        placeholder='Select a date'
+      />
+      <Column {...config} />
+    </div>
+  );
 };
 
 export default OrdersByDayChart;

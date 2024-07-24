@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import { useTanstackMutation, useTanstackQuery } from "../../common/hooks/useTanstackQuery";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -107,31 +107,30 @@ const ProductView = ({ className }) => {
             </div>
 
             {/* Display attributes */}
-            <div className="my-9">
-              {attributesLoading ? (
-                <p>Loading attributes...</p>
-              ) : (
-                productAttributes?.map((attr) => (
-                  <div key={attr._id}>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                      {attr.name}
-                    </label>
-                    <div className="my-2">
-                      {attr.values.map((value) => (
-                        <Button
-                          key={value._id}
-                          className="m-1"
-                          type={selectedAttributes[attr._id] === value._id ? "primary" : "default"}
-                          onClick={() => handleAttributeSelect(attr._id, value._id)}
-                        >
-                          {value.name}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                ))
-              )}
+             <div className="my-9">
+      {attributesLoading ? (
+        <p>Loading attributes...</p>
+      ) : (
+        productAttributes?.map((attr) => (
+          <div key={attr._id}>
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              {attr.name}
+            </label>
+            <div className="my-2">
+              {attr.values.map((value) => (
+                <Button
+                  key={value._id}
+                  className={`m-1 p-6 border ${selectedAttributes[attr._id] === value._id ? "border-blue-500 bg-blue-500 text-white" : "border-gray-300"} hover:border-red-500`}
+                  onClick={() => handleAttributeSelect(attr._id, value._id)}
+                >
+                  {value.name}
+                </Button>
+              ))}
             </div>
+          </div>
+        ))
+      )}
+    </div>
 
             <div data-aos="fade-up" className="quantity-card-wrapper w-full flex items-center h-[50px] space-x-[10px] mb-[30px]">
               <div className="w-[120px] h-full px-[26px] flex items-center border border-qgray-border">

@@ -1,6 +1,15 @@
-import React from "react";
+
 import { Descriptions } from "antd";
 import moment from "moment";
+
+
+const formatPrice = (price) => {
+  if (price === undefined || price === null) return "0 VND";
+  return new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND'
+  }).format(price);
+};
 
 const OrderStatus = ({ order }) => {
   const items = [
@@ -23,24 +32,25 @@ const OrderStatus = ({ order }) => {
     {
       key: "3",
       label: "Cước phí vận chuyển",
-      children: <p>{order?.shippingFee} VND</p>,
+      children: <p>{formatPrice(order?.shippingFee)}</p>,
     },
     {
       key: "4",
       label: "VAT",
-      children: <p>{order?.tax ? `${order?.tax} %` : "10%"}</p>,
+      children: <p>{order?.tax ? `${order?.tax} %` : "0%"}</p>,
     },
     {
       key: "5",
       label: "Tổng tiền thanh toán",
-      children: <p>{`${order?.totalPrice} VND`}</p>,
+      children: <p>{formatPrice(order?.totalPrice)}</p>,
     },
     {
       key: "6",
       label: "Ngày đặt hàng",
-      children: <p>{moment(order?.createdAt).format("DD/MM/YYYY")}</p>,
+      children: <p>{moment(order?.createdAt).format(" HH:mm:ss DD/MM/YYYY")}</p>,
     },
   ];
+
   return (
     <Descriptions
       title="Phí và dịch vụ"
