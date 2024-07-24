@@ -75,6 +75,13 @@ const ProductView = ({ className }) => {
     mutate({ productId: product._id, quantity, attributesId: attributesArray });
   };
 
+
+   const getStatus = (createdAt) => {
+    const creationDate = new Date(createdAt);
+    const now = new Date();
+    const twoDays = 2 * 24 * 60 * 60 * 1000; // milliseconds in 2 days
+    return now - creationDate <= twoDays ? 0 : 1;
+  };
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading product details</p>;
 
@@ -86,7 +93,8 @@ const ProductView = ({ className }) => {
             <div className="w-full h-[600px] border border-qgray-border flex justify-center items-center overflow-hidden relative mb-3">
               <img src={product.image} alt={product.name} className="object-contain w-full" />
               <div className="w-[80px] h-[80px] rounded-full bg-qyellow text-qblack flex justify-center items-center text-xl font-medium absolute left-[30px] top-[30px]">
-                <span>-50%</span>
+                <span>{getStatus(product.createdAt) === 0 ? "New" : ""}
+        </span>
               </div>
             </div>
           </div>
@@ -99,7 +107,7 @@ const ProductView = ({ className }) => {
 
             <div data-aos="fade-up" className="flex space-x-2 items-center mb-7">
               <span className="text-sm font-500 text-qgray line-through mt-2">
-                {formatPrice(product?.price)}
+                {formatPrice(product?.priceOld)}
               </span>
               <span className="text-2xl font-500 text-qred">
                 {formatPrice(product?.price)}

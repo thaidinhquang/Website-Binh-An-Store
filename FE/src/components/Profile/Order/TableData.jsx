@@ -85,7 +85,7 @@ const TableData = ({ orders, setPage }) => {
                 <CancelModal order={_record} />
               </>
             )}
-            {status === ORDER_STATUS.DONE && (
+            {status === ORDER_STATUS.DELIVERED && (
               <Button onClick={(e) => handleFinish(e, _record.key)}>
                 Nhận hàng
               </Button>

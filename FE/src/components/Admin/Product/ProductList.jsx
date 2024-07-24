@@ -5,7 +5,6 @@ import { Link, useLocation } from "react-router-dom";
 import Pageination from "../../UI/Pagination";
 import { useHookSearch } from "../../../common/hooks/useSearch";
 import { useForm } from "react-hook-form";
-import { Space } from "antd";
 
 const ProductList = () => {
   const search = new URLSearchParams(useLocation().search);
@@ -16,6 +15,7 @@ const ProductList = () => {
   const form = useForm();
   const useSearch = useHookSearch();
   const { data, isLoading, refetch } = useTanstackQuery('products', { active, page, sort, name })
+  console.log(data)
   const { mutate } = useTanstackMutation({
     path: `products`,
     action: "DELETE",
@@ -31,6 +31,13 @@ const ProductList = () => {
       style: 'currency',
       currency: 'VND'
     }).format(price);
+  };
+
+  const getStatus = (createdAt) => {
+    const creationDate = new Date(createdAt);
+    const now = new Date();
+    const twoDays = 2 * 24 * 60 * 60 * 1000; // milliseconds in 2 days
+    return now - creationDate <= twoDays ? 0 : 1;
   };
 
   useEffect(() => {
@@ -51,9 +58,7 @@ const ProductList = () => {
   if (isLoading) return <p>Loading...</p>
   return (
     <>
-    <Space className="font-semibold text-lg rounded-md bg-[#E9E9E9] w-full p-4">
-    Danh sách sản phẩm
-  </Space>
+      <div>Danh sách sản phẩm</div>
       <div className="my-8 flex justify-between">
         <Link to={`/admin/products/add`}
           className="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
@@ -103,11 +108,23 @@ const ProductList = () => {
                   <img src={product.image} width={80} className=" rounded-lg" alt="" />
                 </th>
                 <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  <p className="inline-block">{product.name}</p>
+                  <p className="inline-block">{product.name}</p> <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${getStatus(product.createdAt) === 0 ? 'text-white bg-green-500' : 'text-transparent bg-transparent'}`}>
+                  {getStatus(product.createdAt) === 0 ? "New" : ""}
+                </span>
                   {isUserEditing(product._id)}
                 </th>
-                <th className="px-6 py-4">{formatPrice(product.price)}</th>
-
+         
+                <th className="px-6 py-4">
+                {product.priceOld ? (
+                  <div className="flex items-center space-x-2">
+                    <span className="text-gray-500 line-through">{formatPrice(product.priceOld)}</span>
+                    <span className="text-red-600 font-semibold">{formatPrice(product.price)}</span>
+                  </div>
+                ) : (
+                  <span className="text-red-600 font-semibold">{formatPrice(product.price)}</span>
+                )}
+              </th>
+              
                 <th className="px-6 py-4">{product.countInStock}</th>
                 <th className="px-6 py-4">
                   <div className="dropdown dropdown-hover dropdown-bottom dropdown-end">
