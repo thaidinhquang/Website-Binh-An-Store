@@ -6,7 +6,7 @@ import TableData from "./TableData.jsx";
 import FilterStatus from "./FilterStatus.jsx";
 import { ORDER_STATUS } from "../../../constants/order.js";
 
-const Orders = () => {
+const OrderAdmin = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [limit, setLimit] = useState(10);
@@ -82,4 +82,4 @@ const Orders = () => {
   );
 };
 
-export default Orders;
+export default OrderAdmin;

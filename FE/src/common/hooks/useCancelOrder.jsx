@@ -5,10 +5,15 @@ export const useCancelOrder = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (orderId) =>
-      await axiosCustom.patch(`http://localhost:8000/api/orders/cancel`, {
-        orderId,
-      }),
+    mutationFn: async ({ orderId, description }) => {
+      return await axiosCustom.patch(
+        `http://localhost:8000/api/orders/cancel`,
+        {
+          orderId: orderId,
+          content: description,
+        }
+      );
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["orders"],
