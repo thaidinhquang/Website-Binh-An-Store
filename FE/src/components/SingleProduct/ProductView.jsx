@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTanstackMutation, useTanstackQuery } from "../../common/hooks/useTanstackQuery";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import instance from "../../config/axios";
-import { Button } from "antd";
+import { Button, Input, message } from "antd";
 
 const ProductView = ({ className }) => {
   const formatPrice = (price) => {
@@ -41,24 +41,17 @@ const ProductView = ({ className }) => {
     action: "CREATE",
   });
 
-  // useEffect(() => {
-  //   if (productAttributes) {
-  //     const defaultAttributes = {};
-  //     productAttributes.forEach(attr => {
-  //       if (attr.values.length > 0) {
-  //         defaultAttributes[attr._id] = attr.values[0]._id;
-  //       }
-  //     });
-  //     setSelectedAttributes(defaultAttributes);
-  //   }
-  // }, [productAttributes]);
-
   const handleIncrement = () => {
-    setQuantity(prevQuantity => prevQuantity + 1);
+    setQuantity(prevQuantity => Math.min(prevQuantity + 1, 5));
   };
 
   const handleDecrement = () => {
     setQuantity(prevQuantity => Math.max(prevQuantity - 1, 1));
+  };
+
+  const handleQuantityChange = (e) => {
+    const value = parseInt(e.target.value, 10);
+    setQuantity(value);
   };
 
   const handleAttributeSelect = (attrId, valueId) => {
@@ -139,7 +132,14 @@ const ProductView = ({ className }) => {
                   <button onClick={handleDecrement} type="button" className="text-base text-qgray">
                     -
                   </button>
-                  <span className="text-qblack">{quantity}</span>
+                  <Input
+                    type="number"
+                    value={quantity}
+                    onChange={handleQuantityChange}
+                    className="text-center w-full "
+                    min={1}
+                    max={5}
+                  />
                   <button onClick={handleIncrement} type="button" className="text-base text-qgray">
                     +
                   </button>
