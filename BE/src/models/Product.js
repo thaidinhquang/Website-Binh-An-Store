@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
 
 const reviewSchema = new mongoose.Schema({
+  name: {
+      type: String,
+      required: [true, "name is require"],
+    },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
