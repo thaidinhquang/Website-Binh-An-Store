@@ -17,7 +17,7 @@ const Pageination = ({ data }) => {
                         total={data?.totalDocs}
                         showSizeChanger={false}
                         pageSize={data?.limit}
-                        defaultCurrent={data?.page}
+                        current={data?.page}
                         onChange={(page) => changePage(page)}
                     />
                 )}
