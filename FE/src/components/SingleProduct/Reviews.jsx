@@ -65,7 +65,7 @@ export default function Reviews({
                   </div>
                   <div>
                     <p className="text-[18px] font-medium text-qblack">
-                      {review.name}
+                      {review.name || review.email} 
                     </p>
                     <p className="text-[13px] font-normal text-qgray">
                       {review.user.location}
