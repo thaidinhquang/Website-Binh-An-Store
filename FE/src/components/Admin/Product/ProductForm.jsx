@@ -28,10 +28,10 @@ const ProductForm = () => {
         queryKey: ["ATTRIBUTE"],
         queryFn: async () => {
             const { data } = await instance.get(`/attributes`,  { active: true } );
-            return data;
+            return data.filter(attr => attr.active);
         },
     });
-
+    
     const { data: brand } = useTanstackQuery(`brands`,{
 
         active: true
