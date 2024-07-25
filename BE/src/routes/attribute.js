@@ -8,6 +8,8 @@ import {
     getAllAttributes,
     getAttributeById,
     getValueAttributeById,
+    restoreAttribute,
+    restoreValueAttribute,
     updateAttribute,
     updateValueAttribute,
 } from "../controllers/attribute.js";
@@ -40,6 +42,13 @@ routerAtrribute.delete("/:id", deleteAttribute);
 
 // Route để xóa giá trị cho thuộc tính đã tồn tại
 routerAtrribute.delete("/:id/values",getUser, deleteValueAttribute);
+
+
+
+routerAtrribute.delete("/restore/:id/values",getUser, restoreValueAttribute);
+
+
+routerAtrribute.delete("/restore/:id",getUser, restoreAttribute);
 
 
 

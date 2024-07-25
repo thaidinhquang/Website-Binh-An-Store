@@ -146,3 +146,26 @@ export const deleteValueAttribute = async (req, res, next) => {
         next(error);
     }
 };
+
+
+
+// Controller để khôi phục một thuộc tính
+export const restoreAttribute = async (req, res, next) => {
+    try {
+        const attribute = await Attribute.findByIdAndUpdate(req.params.id, { active: true }, { new: true });
+        return !attribute ? res.status(400).json({ message: "Khôi phục thất bại!" }) : res.status(200).json({ data: attribute, message: "Khôi phục thành công!" });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Controller để khôi phục một giá trị của thuộc tính
+export const restoreValueAttribute = async (req, res, next) => {
+    try {
+        const value = await ValueAttributeModel.findByIdAndUpdate(req.params.id, { active: true }, { new: true });
+        return !value ? res.status(400).json({ message: "Khôi phục thất bại!" }) : res.status(200).json({ data: value, message: "Khôi phục thành công!" });
+    } catch (error) {
+        next(error);
+    }
+  };
+  
