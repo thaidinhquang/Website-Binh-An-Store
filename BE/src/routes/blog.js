@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { checkRequestBody } from "../middlewares/checkRequestBody.js";
 import { createBlog, getAllBlogs, getOneBlogById, removeBlog, restoreBlog, updateBlog } from "../controllers/blog.js";
-import { BlogValid } from "../validations/blogValid.js";
-
+import { BlogValid } from "../validations/blog.js";
+import { checkPermission } from "../middlewares/checkPermission.js";
 
 const routerBlog = Router();
 

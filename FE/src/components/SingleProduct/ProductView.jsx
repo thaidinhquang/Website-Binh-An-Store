@@ -133,7 +133,7 @@ const ProductView = ({ className }) => {
                     -
                   </button>
                   <Input
-                    type="number"
+                    type="text"
                     value={quantity}
                     onChange={handleQuantityChange}
                     className="text-center w-full "
