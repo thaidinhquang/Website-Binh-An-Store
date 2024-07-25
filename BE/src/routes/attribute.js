@@ -49,4 +49,11 @@ routerAtrribute.delete("/restore/:id/values",getUser, restoreValueAttribute);
 routerAtrribute.delete("/restore/:id",getUser, restoreAttribute);
 
 
+routerAtrribute.delete("/restore/:id/values",getUser, restoreValueAttribute);
+
+
+routerAtrribute.delete("/restore/:id",getUser, restoreAttribute);
+
+
+
 export default routerAtrribute;
