@@ -1,6 +1,7 @@
 import Product from "../models/Product.js";
 
 
+
 export const createProductReview = async (req, res) => {
   try {
     const productId  = req.params.id
@@ -87,3 +88,38 @@ export const getProductReviews = async (req, res) => {
     });
   }
 };
+
+
+
+
+export const deleteProductReview = async (req, res) => {
+  try {
+    const productId  = req.params.id
+    // Tìm sản phẩm theo ID
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    // Tìm index của review cần xóa
+    const reviewIndex = product.reviews.findIndex(review => review._id.toString() === req.params.reviewId);
+    if (reviewIndex === -1) {
+      return res.status(404).json({ message: "Review not found" });
+    }
+
+    // Xóa review khỏi mảng reviews
+    product.reviews.splice(reviewIndex, 1);
+
+    // Cập nhật số lượng review và rating trung bình
+    product.numReviews = product.reviews.length;
+    product.rating = product.reviews.reduce((acc, review) => acc + review.rating, 0) / product.numReviews;
+
+    // Lưu sản phẩm sau khi đã xóa review
+    await product.save();
+
+    res.json({ message: "Review deleted" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
