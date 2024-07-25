@@ -20,6 +20,7 @@ export const createProductReview = async (req, res) => {
     }
     // review object
     const review = {
+      email:req.user.email,
       name: req.user.name,
       rating: Number(rating),
       comment,
