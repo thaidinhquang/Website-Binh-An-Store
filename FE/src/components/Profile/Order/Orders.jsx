@@ -1,12 +1,12 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { useOrders_by_user } from "../../../common/hooks/useOrders";
+import { useQueryClient } from "@tanstack/react-query";
+import { Space, Input } from "antd";
+import { useOrders_by_user } from "../../../common/hooks/useOrders.jsx";
+import TableData from "./TableData.jsx";
+import FilterStatus from "./FilterStatus.jsx";
 
-import { Input, Space } from "antd";
-import FilterStatus from "./FilterStatus";
-import TableData from "./TableData";
 
-const Orders = () => {
+const OrderProfile = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [limit, setLimit] = useState(10);
@@ -45,6 +45,7 @@ const Orders = () => {
       />
 
       <Space className="mt-[1rem]">
+       
         <Space>
           <Input
             placeholder="Tìm kiếm khách hàng..."
@@ -67,4 +68,4 @@ const Orders = () => {
   );
 };
 
-export default Orders;
+export default OrderProfile;
