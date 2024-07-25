@@ -10,30 +10,22 @@ const ProductsFilter = () => {
     return location.search.includes(id);
   };
   const changeCategory = (newCategories) => {
-    const handle = setTimeout(() => {
-      const searchParams = new URLSearchParams(location.search);
-      searchParams.set('categories', newCategories);
-      navigate(`?${searchParams.toString()}`);
-    }, 500);
-    return () => clearTimeout(handle);
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set('categories', newCategories);
+    navigate(`?${searchParams.toString()}`);
   };
   const addCategory = (newCategoryId) => {
-    const handle = setTimeout(() => {
-      const searchParams = new URLSearchParams(location.search);
-      const categoriesParam = searchParams.get('categories');
-      const categories = categoriesParam ? categoriesParam.split(',') : [];
-      if (categories.includes(newCategoryId)) {
-        const updatedCategories = categories.filter(id => id !== newCategoryId);
-        searchParams.set('categories', updatedCategories.join(','));
-      } else {
-        categories.push(newCategoryId);
-        searchParams.set('categories', categories.join(','));
-      }
-  
-      navigate(`?${searchParams.toString()}`);
-    }, 500);
-  
-    return () => clearTimeout(handle);
+    const searchParams = new URLSearchParams(location.search);
+    const categoriesParam = searchParams.get('categories');
+    const categories = categoriesParam ? categoriesParam.split(',') : [];
+    if (categories.includes(newCategoryId)) {
+      const updatedCategories = categories.filter(id => id !== newCategoryId);
+      searchParams.set('categories', updatedCategories.join(','));
+    } else {
+      categories.push(newCategoryId);
+      searchParams.set('categories', categories.join(','));
+    }
+    navigate(`?${searchParams.toString()}`);
   };
   if (isLoading) return <p>Loading...</p>;
   return (

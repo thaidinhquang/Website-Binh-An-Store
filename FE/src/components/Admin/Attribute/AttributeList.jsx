@@ -9,7 +9,6 @@ const AttributeList = () => {
         queryKey: ["ATTRIBUTE"],
         queryFn: async () => {
           const { data } = await instance.get(`/attributes`);
-          console.log(data)
           return data;
         },
       });

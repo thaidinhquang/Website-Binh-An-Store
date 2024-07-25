@@ -54,7 +54,6 @@ export const useTanstackMutation = ({
         return data.active ? await axiosDelete(`${path}/${data._id}`) : await axiosDelete(`${path}/restore/${data._id}`);
       } else if (action === "UPLOAD") {
         const url = await uploadFileCloudinary(data)
-        console.log(url);
         return url;
       }
       return null;

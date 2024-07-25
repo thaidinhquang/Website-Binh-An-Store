@@ -19,7 +19,6 @@ export default function Reviews({
 
   // Fetch product data including reviews
   const { data: product } = useTanstackQuery(`/products/${id}`);
-console.log(product)
   if (!product) {
     return <div>Loading...</div>;
   }

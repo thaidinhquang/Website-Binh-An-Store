@@ -34,6 +34,7 @@ import BrandForm from "../components/Admin/Brand/BrandForm";
 import OrderDetail from "../components/Profile/Order/OrderDetail";
 import OrderAdmin from "../components/Admin/order/Orders";
 import DetailOrder from './../components/Admin/order/DetailOrder';
+import Wishlist from "../components/Wishlist/Wishlist";
 const Router = () => {
   return (
     <>
@@ -47,6 +48,14 @@ const Router = () => {
             element={
               <LoginRoute>
                 <CartPage />
+              </LoginRoute>
+            }
+          />
+          <Route
+            path="wishlist"
+            element={
+              <LoginRoute>
+                <Wishlist />
               </LoginRoute>
             }
           />

@@ -22,7 +22,6 @@ const AttributeEdit = () => {
     queryKey: ["ATTRIBUTE_DETAIL", id],
     queryFn: async () => {
       const { data } = await instance.get(`/attributes/${id}`);
-      console.log(data)
       reset(data); // Populate form with fetched data
       return data;
     },
