@@ -8,10 +8,14 @@ import {
     getAllAttributes,
     getAttributeById,
     getValueAttributeById,
+    restoreAttribute,
+    restoreAttributeDetail,
+    restoreValueAttribute,
     updateAttribute,
     updateValueAttribute,
 } from "../controllers/attribute.js";
 
+import {getUser} from "../middlewares/getUser.js"
 const routerAtrribute = Router();
 // Route để tạo mới một thuộc tính
 routerAtrribute.post("/", createAttribute);
@@ -39,6 +43,11 @@ routerAtrribute.delete("/:id", deleteAttribute);
 
 // Route để xóa giá trị cho thuộc tính đã tồn tại
 routerAtrribute.delete("/:id/values", deleteValueAttribute);
+
+routerAtrribute.delete("/restore/:id/values",getUser, restoreValueAttribute);
+
+
+routerAtrribute.delete("/restore/:id",getUser, restoreAttribute);
 
 
 
