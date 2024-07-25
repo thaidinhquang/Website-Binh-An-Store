@@ -34,6 +34,8 @@ import BrandForm from "../components/Admin/Brand/BrandForm";
 import OrderDetail from "../components/Profile/Order/OrderDetail";
 import OrderAdmin from "../components/Admin/order/Orders";
 import DetailOrder from './../components/Admin/order/DetailOrder';
+import AllBlogPage from "../components/Blog/AllBlogPage";
+
 const Router = () => {
   return (
     <>
@@ -59,6 +61,7 @@ const Router = () => {
             }
           />
           <Route path="shop" element={<AllProductPage />} />
+          <Route path="blogs" element={<AllBlogPage />} />
           <Route
             path="/profile"
             element={
@@ -70,11 +73,9 @@ const Router = () => {
             <Route path="" element={<UserProfile />} />
             <Route path="address" element={<Address />} />
             <Route path="orders">
-            <Route index element={<Orders />} />
-            <Route path="detail/:id" element={<OrderDetail />} />
+              <Route index element={<Orders />} />
+              <Route path="detail/:id" element={<OrderDetail />} />
             </Route>
-
-          
             <Route path="edit" element={<UserEdit />} />
             <Route path="change-password" element={<ChangePassword />} />
           </Route>
@@ -113,7 +114,7 @@ const Router = () => {
             <Route path="edit/:id" element={<UserForm />} />
           </Route>
           <Route path="orders">
-            <Route index element={<OrderAdmin/>} />
+            <Route index element={<OrderAdmin />} />
             <Route path=":id" element={<DetailOrder />} />
           </Route>
           <Route path="attribute">

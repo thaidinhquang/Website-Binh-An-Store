@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import { Server } from "socket.io";
 import { listenEvent } from "./controllers/order.js";
+import routerBlog from "./routes/blog.js";
 
 const app = express();
 dotenv.config();
@@ -34,6 +35,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
+app.use("/api/blogs", routerBlog);
 
 app.use((req, res, next) => {
   const error = new Error("Not found");
