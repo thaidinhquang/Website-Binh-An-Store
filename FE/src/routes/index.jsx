@@ -31,6 +31,7 @@ import AttributeEdit from "../components/Admin/Attribute/AttributeEdit";
 import AttributeEditValue from "../components/Admin/Attribute/AttributeEditValue";
 import AttributeDetails from "../components/Admin/Attribute/AttributeDetails";
 import AttributeEditValueDetail from "../components/Admin/Attribute/AttributeEditValueDetail";
+import OrderAdmin from './../components/Admin/order/Orders';
 const Router = () => {
     return (
         <>
@@ -89,9 +90,10 @@ const Router = () => {
                         <Route path="add" element={<UserForm />} />
                         <Route path="edit/:id" element={<UserForm />} />
                     </Route>
-                    <Route path="orders">
-                        <Route index element={<AdminOrders />} />
-                    </Route>
+                     <Route path="orders">
+            <Route index element={<OrderAdmin />} />
+            <Route path=":id" element={<DetailOrder />} />
+          </Route>
                     <Route path="attribute">
                         <Route index element={<AttributeList />} />
                         <Route path="add" element={<AttributeAdd />} />

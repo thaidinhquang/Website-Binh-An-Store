@@ -1,4 +1,4 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 import paginate from "mongoose-paginate-v2";
 import { ORDER_STATUS, PAYMENT_METHOD } from "../constants/order.js";
 import { ROLES } from "../constants/Role.js";
@@ -39,6 +39,9 @@ const OrderItemSchema = new mongoose.Schema(
 
 const orderSchema = new mongoose.Schema(
   {
+    code: {
+      type: String,
+    },
     userId: {
       type: String,
       ref: "User",
@@ -99,8 +102,8 @@ const orderSchema = new mongoose.Schema(
         ORDER_STATUS.CONFIRMED,
         ORDER_STATUS.SHIPPING,
         ORDER_STATUS.DELIVERED,
-        ORDER_STATUS.DONE,
         ORDER_STATUS.CANCELLED,
+        ORDER_STATUS.DONE,
       ],
     },
   },
@@ -110,6 +113,14 @@ const orderSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+orderSchema.pre("save", { document: true, query: false }, function (next) {
+  let obj = this;
+  if (obj.isNew) {
+    obj.code = obj._id.toString();
+  }
+  next();
+});
 
 orderSchema.plugin(paginate);
 
