@@ -16,7 +16,6 @@ const ProductCard = ({ limit, pagination, className }) => {
   const name = search.get('name') || '';
   const categories = search.get('categories') || '';
   const { data, isLoading, refetch } = useTanstackQuery('products', { limit, active: true, page, sort, name, categories });
-  console.log(data);
   const { mutate, isPending } = useTanstackMutation({ path: `cart/add-item`, action: "CREATE" });
   const { data: wishlistProducts } = useTanstackQuery('wishlist/products');
   const { mutate: addToWishlist } = useTanstackMutation({ path: `wishlist/add`, action: "CREATE" });
@@ -42,7 +41,7 @@ const ProductCard = ({ limit, pagination, className }) => {
   return (
     <>
       <div className={className}>
-        {data.docs.map((product) => (
+        {data?.docs.map((product) => (
           <div key={product._id} className="product-card-one bg-white relative group overflow-hidden shadow-md">
             <div className="product-card-img h-80 overflow-hidden">
               <img

@@ -12,6 +12,9 @@ const Wishlist = () => {
         refetch();
     }, [page]);
     if (isLoading) return <p>Đang tải...</p>;
+    if(!data?.docs?.length) {
+        return <p>Không có sản phẩm nào</p>;
+    }
     return (
         <div className="mx-auto container px-4 md:px-6 2xl:px-0 py-12 flex justify-center items-center">
             <div className="flex flex-col jusitfy-start items-start">
