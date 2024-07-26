@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
-import Arrow from '../icons/Arrow';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTanstackQuery } from '../../common/hooks/useTanstackQuery';
+import Arrow from '../icons/Arrow';
 
 const Navbar = ({ className }) => {
   const [categoryToggle, setToggle] = useState(false);
@@ -9,6 +10,10 @@ const Navbar = ({ className }) => {
   // if (categoryToggle && getItems > 0) {
   //   setSize(`${40 * getItems}px`);
   // }
+
+  const { data} = useTanstackQuery('categories')
+  const categories = data?.docs || [];
+  
   const handler = () => {
     setToggle(!categoryToggle);
   };
@@ -33,7 +38,7 @@ const Navbar = ({ className }) => {
           <div className="w-full h-full relative">
             <div className="w-full h-full flex justify-between items-center">
               <div className="category-and-nav flex xl:space-x-7 space-x-3 items-center">
-                {/* <div className="category w-[270px] h-[53px] bg-white px-5 rounded-t-md mt-[6px] relative">
+                <div className="category w-[270px] h-[53px] bg-white px-5 rounded-t-md mt-[6px] relative">
                   <button
                     onClick={handler}
                     type="button"
@@ -77,8 +82,10 @@ const Navbar = ({ className }) => {
                     style={{ height: `${elementsSize} ` }}
                   >
                     <ul className="categories-list">
-                      <li className="category-item">
-                        <a href="#">
+                      {categories.map((category) => (
+
+                      <li key={category._id} className="category-item">
+                        <Link to={`/shop`}>
                           <div className=" flex justify-between items-center px-5 h-10 bg-white hover:bg-qh2-green transition-all duration-300 ease-in-out cursor-pointer text-qblack hover:text-white">
                             <div className="flex items-center space-x-6">
                               <span>
@@ -101,7 +108,7 @@ const Navbar = ({ className }) => {
                                 </svg>
                               </span>
                               <span className="text-xs font-400">
-                                Mobile & Laptops
+                                {category.name}
                               </span>
                             </div>
                             <div>
@@ -132,9 +139,10 @@ const Navbar = ({ className }) => {
                               </span>
                             </div>
                           </div>
-                        </a>
+                        </Link>
                       </li>
-                      <li className="category-item">
+                      ))}
+                      {/* <li className="category-item">
                         <a href="#">
                           <div className="flex justify-between items-center px-5 h-10 bg-white hover:bg-qh2-green transition-all duration-300 ease-in-out cursor-pointer text-qblack hover:text-white">
                             <div className="flex items-center space-x-6">
@@ -466,14 +474,14 @@ const Navbar = ({ className }) => {
                             </div>
                           </div>
                         </a>
-                      </li>
+                      </li> */}
 
 
 
 
                     </ul>
                   </div>
-                </div> */}
+                </div>
                 <div className="nav">
                   <ul className="nav-wrapper flex xl:space-x-10 space-x-5">
                     <li className="relative">
