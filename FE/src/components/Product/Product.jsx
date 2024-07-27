@@ -1,12 +1,29 @@
 
-import { Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import instance from '../../config/axios';
+import { Link, useLocation } from 'react-router-dom';
 import QuickViewIco from '../icons/QuickViewIco';
-import Compair from '../icons/Compair';
 import ThinLove from '../icons/ThinLove';
+import { useTanstackMutation, useTanstackQuery } from '../../common/hooks/useTanstackQuery';
+import Pageination from '../UI/Pagination';
+import { useContext, useEffect, useMemo } from 'react';
+import { AuthContext } from "../Auth/core/Auth";
 
-const ProductCard = ({ product, mutate, isPending }) => {
+const ProductCard = ({ limit, pagination, className }) => {
+  const { currentUser } = useContext(AuthContext);
+  const location = useLocation();
+  const search = useMemo(() => new URLSearchParams(location.search), [location.search]);
+  const page = search.get('page') || 1;
+  const sort = search.get('sort') || '';
+  const name = search.get('name') || '';
+  const categories = search.get('categories') || '';
+  const { data, isLoading, refetch } = useTanstackQuery('products', { limit, active: true, page, sort, name, categories });
+  const { mutate, isPending } = useTanstackMutation({ path: `cart/add-item`, action: "CREATE" });
+  const { data: wishlistProducts } = useTanstackQuery('wishlist/products');
+  const { mutate: addToWishlist } = useTanstackMutation({ path: `wishlist/add`, action: "CREATE" });
+  const { mutate: removeFromWishlist } = useTanstackMutation({ path: `wishlist/remove`, action: "CREATE" });
+  useEffect(() => {
+    refetch();
+  }, [search]);
+
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
@@ -20,6 +37,74 @@ const ProductCard = ({ product, mutate, isPending }) => {
     return now - creationDate <= twoDays ? 0 : 1;
   };
 
+<<<<<<< HEAD
+  const checkProductInWishlist = (product) => {
+    return wishlistProducts?.findIndex((item) => item.productId === product._id) !== -1;
+  };
+  if (isLoading) return <p>Đang tải...</p>;
+  if (!data?.docs?.length) {
+    return <p>Không có sản phẩm nào</p>;
+  }
+  return (
+    <>
+      <div className={className}>
+        {data?.docs.map((product) => (
+          <div key={product._id} className="product-card-one bg-white relative group overflow-hidden shadow-md">
+            <div className="product-card-img h-80 overflow-hidden">
+              <img
+                className="w-full h-[300px]"
+                src={product.image}
+                alt=""
+              />
+            </div>
+            <div className="product-card-details px-[30px] pb-[80px] relative">
+              <div className="absolute w-full h-10 px-[30px] left-0 top-40 group-hover:top-[85px] transition-all duration-300 ease-in-out">
+                <Link to={`/detail/${product._id}`} className={isPending ? "blue-btn" : "yellow-btn"}>
+                  <div className="flex items-center space-x-3">
+                    <span>{isPending ? "..." : "Xem chi tiết"}</span>
+                  </div>
+                </Link>
+              </div>
+              <Link to={`/detail/${product._id}`}>
+                <p className="title mb-2 text-[15px] font-600 text-qblack leading-[24px] line-clamp-2 hover:text-blue-600">
+                  {product.name}
+                </p>
+              </Link>
+              <p className="price">
+                <span className="main-price text-qgray line-through text-[18px]">
+                  {formatPrice(product.price)}
+                </span>
+                <span className="offer-price text-qred font-600 text-[18px] ml-2">
+                  {formatPrice(product.price)}
+                </span>
+              </p>
+            </div>
+            <div className="quick-access-btns flex flex-col space-y-2 absolute group-hover:right-4 -right-10 top-20 transition-all duration-300 ease-in-out">
+              <Link to={`/detail/${product._id}`}>
+                <span className="w-10 h-10 flex justify-center items-center bg-primarygray rounded">
+                  <QuickViewIco />
+                </span>
+              </Link>
+              <button onClick={() => {
+                if (currentUser) {
+                  if (checkProductInWishlist(product)) {
+                    removeFromWishlist({ productId: product._id });
+                  } else {
+                    addToWishlist({ productId: product._id });
+                  }
+                } else {
+                  alert('Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích');
+                }
+              }}>
+                <span className="w-10 h-10 flex justify-center items-center bg-primarygray rounded">
+                  {checkProductInWishlist(product) ? <ThinLove /> : <ThinLove />}
+                </span>
+              </button>
+            </div>
+          </div>
+        ))
+        }
+=======
   // Fetch attributes data
   
 
@@ -72,22 +157,10 @@ const ProductCard = ({ product, mutate, isPending }) => {
   )}
 </p>
 
+>>>>>>> 02108c5c5fabe8f905de34ea27fccbefb3657a56
       </div>
-      <div className="quick-access-btns flex flex-col space-y-2 absolute group-hover:right-4 -right-10 top-20 transition-all duration-300 ease-in-out">
-        <Link to={`/detail/${product._id}`}>
-          <span className="w-10 h-10 flex justify-center items-center bg-primarygray rounded">
-            <QuickViewIco />
-          </span>
-        </Link>
-        <a href="#">
-          <span className="w-10 h-10 flex justify-center items-center bg-primarygray rounded">
-            <ThinLove />
-          </span>
-        </a>
-       
-      </div>
-    </div>
+      {pagination && <Pageination data={data} />}
+    </>
   );
-};
-
+}
 export default ProductCard;

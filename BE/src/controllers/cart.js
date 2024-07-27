@@ -21,7 +21,7 @@ export const addItemToCart = async (req, res, next) => {
     try {
         const userId = req.user._id;
         const { productId, quantity, attributesId } = req.body;
-        
+
         if (quantity <= 0) {
             return res.status(400).json({ message: "Số lượng phải lớn hơn 0" });
         }
@@ -36,8 +36,8 @@ export const addItemToCart = async (req, res, next) => {
                 products: [{ productId, quantity, attributesId }]
             });
         } else {
-            const productIndex = cart.products.findIndex(product => 
-                product.productId.toString() === productId && 
+            const productIndex = cart.products.findIndex(product =>
+                product.productId.toString() === productId &&
                 JSON.stringify(product.attributesId) === JSON.stringify(attributesId)
             );
             if (productIndex !== -1) {
@@ -69,7 +69,7 @@ export const removeItemFromCart = async (req, res, next) => {
             return res.status(404).json({ message: "Không tìm thấy giỏ hàng" });
         }
 
-        const productIndex = cart.products.findIndex(product => 
+        const productIndex = cart.products.findIndex(product =>
             product.productId.toString() === productId
         );
         if (productIndex === -1) {
@@ -98,7 +98,7 @@ export const updateItemInCart = async (req, res, next) => {
             return res.status(404).json({ message: "Cart not found" });
         }
 
-        const productIndex = cart.products.findIndex(product => 
+        const productIndex = cart.products.findIndex(product =>
             product.productId.toString() === productId
         );
         if (productIndex === -1) {
@@ -144,7 +144,7 @@ export const getCartCount = async (req, res, next) => {
             return res.status(404).json({ message: "Không tìm thấy giỏ hàng" });
         }
         const count = cart.products.reduce((acc, product) => acc + product.quantity, 0);
-        return res.status(200).json({ count });
+        return res.status(200).json({ data: count });
     } catch (error) {
         next(error);
     }
@@ -178,7 +178,7 @@ export const increeaseItemQuantity = async (req, res, next) => {
         }
         cart.products[productIndex].quantity++;
         await cart.save();
-        return res.status(200).json({ cart, message: "Tăng số lượng mặt hàng thành công"});
+        return res.status(200).json({ cart, message: "Tăng số lượng mặt hàng thành công" });
     } catch (error) {
         next(error);
     }
@@ -202,7 +202,7 @@ export const decreaseItemQuantity = async (req, res, next) => {
             cart.products[productIndex].quantity--;
         }
         await cart.save();
-        return res.status(200).json({ cart, message: "Giảm số lượng mặt hàng thành công"});
+        return res.status(200).json({ cart, message: "Giảm số lượng mặt hàng thành công" });
     } catch (error) {
         next(error);
     }

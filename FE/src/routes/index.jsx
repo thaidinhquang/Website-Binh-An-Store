@@ -32,9 +32,13 @@ import BrandList from "../components/Admin/Brand/BrandList";
 import BrandForm from "../components/Admin/Brand/BrandForm";
 import OrderAdmin from "../components/Admin/order/Orders";
 import DetailOrder from './../components/Admin/order/DetailOrder';
+<<<<<<< HEAD
+import Wishlist from "../components/Wishlist/Wishlist";
+=======
 import OrderProfile from "../components/Profile/Order/Orders";
 import DetailOrderUser from "../components/Profile/Order/DetailOrder";
 
+>>>>>>> 02108c5c5fabe8f905de34ea27fccbefb3657a56
 const Router = () => {
   return (
     <>
@@ -48,6 +52,14 @@ const Router = () => {
             element={
               <LoginRoute>
                 <CartPage />
+              </LoginRoute>
+            }
+          />
+          <Route
+            path="wishlist"
+            element={
+              <LoginRoute>
+                <Wishlist />
               </LoginRoute>
             }
           />
