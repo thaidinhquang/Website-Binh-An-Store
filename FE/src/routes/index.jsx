@@ -35,6 +35,8 @@ import OrderDetail from "../components/Profile/Order/OrderDetail";
 import OrderAdmin from "../components/Admin/order/Orders";
 import DetailOrder from './../components/Admin/order/DetailOrder';
 import AllBlogPage from "../components/Blog/AllBlogPage";
+import BlogList from "../components/Admin/Blog/BlogList";
+import BlogForm from "../components/Admin/Blog/BlogForm";
 
 const Router = () => {
   return (
@@ -130,6 +132,9 @@ const Router = () => {
             <Route path="add" element={<BrandForm />} />
             <Route path="edit/:id" element={<BrandForm />} />
           </Route>
+          <Route path="blogs" element={<BlogList />} />
+          <Route path="blogs/add" element={<BlogForm />} />
+          <Route path="blogs/edit/:id" element={<BlogForm />} />
         </Route>
         <Route path="*" element={<NotfoundPage />} />
       </Routes>

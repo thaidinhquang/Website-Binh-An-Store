@@ -23,10 +23,17 @@ export const getOneBlogById = async (req, res) => {
 
 // Tạo một bài blog mới
 export const createBlog = async (req, res) => {
+  const { title, content, image } = req.body;
+
+  // Kiểm tra xem tất cả các trường cần thiết có tồn tại không
+  if (!title || !content) {
+    return res.status(400).json({ message: "Title and content are required." });
+  }
+
   const blog = new Blog({
-    title: req.body.title,
-    content: req.body.content,
-    image: req.body.image,
+    title,
+    content,
+    image,
   });
 
   try {
@@ -60,7 +67,7 @@ export const removeBlog = async (req, res) => {
     const blog = await Blog.findById(req.params.id);
     if (!blog) return res.status(404).json({ message: "Blog not found" });
 
-    await blog.remove();
+    await blog.deleteOne();
     res.json({ message: "Deleted Blog" });
   } catch (err) {
     res.status(500).json({ message: err.message });

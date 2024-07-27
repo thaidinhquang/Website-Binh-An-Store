@@ -11,6 +11,7 @@ import attribute from "./attribute.js";
 import routerReview from "./review.js";
 import routerBrand from "./brand.js";
 import routerAtrribute from "./attribute.js";
+import routerBlog from "./blog.js";
 
 const router = Router();
 
@@ -23,8 +24,9 @@ router.use("/users", routerUser);
 router.use("/orders", routerOrder);
 router.use("/stats", routerStats);
 router.use("/attributes", attribute);
-router.use("/reviews", routerReview );
+router.use("/reviews", routerReview);
 router.use("/attributes", routerAtrribute);
-router.use("/brands", routerBrand )
+router.use("/brands", routerBrand);
+router.use("/blogs", routerBlog)
 
 export default router;

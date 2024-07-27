@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import Blog from './Blog';
-import axios from 'axios';
+import Blog from "./Blog";
+import axios from "axios";
 import React from "react";
 
 const AllBlogPage = () => {
@@ -10,11 +10,11 @@ const AllBlogPage = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/blogs');
+        const response = await axios.get("http://localhost:8000/api/blogs");
         setBlogs(response.data);
         setIsLoading(false);
       } catch (error) {
-        console.error('Error fetching blogs:', error);
+        console.error("Error fetching blogs:", error);
         setIsLoading(false);
       }
     };
@@ -42,15 +42,17 @@ const AllBlogPage = () => {
             <div className="blogs-sorting w-full bg-white md:h-[70px] flex md:flex-row flex-col md:space-y-0 space-y-5 md:justify-between md:items-center p-[30px] mb-[40px]">
               <div>
                 <p className="font-400 text-[13px]">
-                  <span className="text-qgray"> Showing</span> 1–12 of {blogs.length}{" "}
-                  results
+                  <span className="text-qgray"> Showing</span> 1–12 of{" "}
+                  {blogs.length} results
                 </p>
               </div>
             </div>
             <div className="grid xl:grid-cols-3 sm:grid-cols-2 grid-cols-1  xl:gap-[30px] gap-5 mb-[40px]">
-              {blogs.length > 0 ? blogs.map((blog: any) => (
-                <Blog key={blog._id} blog={blog} />
-              )) : <p>No blogs found</p>}
+              {blogs.length > 0 ? (
+                blogs.map((blog: any) => <Blog key={blog._id} blog={blog} />)
+              ) : (
+                <p>No blogs found</p>
+              )}
             </div>
             <div className="w-full h-[164px] overflow-hidden mb-[40px]">
               <img
@@ -60,7 +62,7 @@ const AllBlogPage = () => {
               />
             </div>
             <div className="grid xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 xl:gap-[30px] gap-5 mb-[40px]">
-              { }
+              {}
             </div>
           </div>
         </div>

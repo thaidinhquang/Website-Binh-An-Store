@@ -4,6 +4,12 @@
         "i": "concurrently \"cd be && npm i\" \"cd fe && npm i\""
     },
     "dependencies": {
-        "concurrently": "^8.2.2"
+        "concurrently": "^8.2.2",
+        "markdown-it": "^14.1.0",
+        "quill": "^2.0.2",
+        "react-quill": "^2.0.0",
+        "slate": "^0.103.0",
+        "slate-history": "^0.100.0",
+        "slate-react": "^0.107.1"
     }
 }

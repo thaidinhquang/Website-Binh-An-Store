@@ -1,3 +1,5 @@
+import { axiosGet } from "../../config/axios";
+
 const fetchData = async () => {
     setIsLoading(true);
     const data = await axiosGet('/auth', token);
@@ -13,7 +15,7 @@ export function UserProvider({ children }) {
         fetchData();
     }, [token]);
 
-    if (isLoading) return <div>Loading...</div>
+    if (isLoading) return <div>Loading...</div>;
 
     return (
         <UserContext.Provider value={user}>
