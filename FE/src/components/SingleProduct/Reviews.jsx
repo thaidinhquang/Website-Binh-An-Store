@@ -1,29 +1,54 @@
 import { useParams } from "react-router-dom";
-
 import StarRating from "../UI/StarRating";
 import Star from "../icons/Star";
-import { useTanstackQuery } from "../../common/hooks/useTanstackQuery";
+import { useTanstackQuery, useTanstackMutation } from "../../common/hooks/useTanstackQuery";
 
 export default function Reviews({
-  // comments,
   rating,
   ratingHandler,
   message,
   messageHandler,
-  reviewAction,
   hoverRating,
   hoverHandler,
-  reviewLoading,
 }) {
   const { id } = useParams();
+  const { data: product, isLoading: isProductLoading } = useTanstackQuery(`/products/${id}`);
 
+<<<<<<< HEAD
   // Fetch product data including reviews
   const { data: product } = useTanstackQuery(`/products/${id}`);
   if (!product) {
+=======
+  const { mutate: submitReview, isLoading: isReviewLoading } = useTanstackMutation({
+    path: `reviews/${id}`,
+    action: "CREATE",
+    toastMessage: "Submitting review...",
+    invalidateQueries: true,
+  });
+
+  if (isProductLoading) {
+>>>>>>> 02108c5c5fabe8f905de34ea27fccbefb3657a56
     return <div>Loading...</div>;
   }
 
   const { reviews } = product;
+
+  const handleSubmitReview = () => {
+    const reviewData = {
+      rating,
+      comment: message,
+      productId: id,
+    };
+
+    submitReview(reviewData, {
+      onSuccess: () => {
+        console.log("Review submitted successfully!");
+      },
+      onError: (error) => {
+        console.error("Error submitting review:", error);
+      },
+    });
+  };
 
   return (
     <div className="review-wrapper w-full">
@@ -46,17 +71,17 @@ export default function Reviews({
                   </div>
                   <div>
                     <p className="text-[18px] font-medium text-qblack">
-                      {review.name} {/* Assuming user object has name */}
+                      {review.name || review.email} 
                     </p>
                     <p className="text-[13px] font-normal text-qgray">
-                      {review.user.location} {/* Assuming user object has location */}
+                      {review.user.location}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
                   <div className="flex">
-                    {Array.from(Array(review.rating), () => (
-                      <span key={Math.random()}>
+                    {Array.from(Array(review.rating), (x, i) => (
+                      <span key={i}>
                         <Star />
                       </span>
                     ))}
@@ -122,14 +147,15 @@ export default function Reviews({
 
           <div className="flex justify-end">
             <button
-              onClick={reviewAction}
+              onClick={handleSubmitReview}
               type="button"
               className="black-btn w-[300px] h-[50px]  flex justify-center"
+              disabled={isReviewLoading}
             >
               <span className="flex space-x-1 items-center h-full">
                 <span className="text-sm font-semibold">Submit Review</span>
-                {reviewLoading && (
-                  <span className="w-5 " style={{ transform: "scale(0.3)" }}>
+                {isReviewLoading && (
+                  <span className="w-5" style={{ transform: "scale(0.3)" }}>
                     {/* Loading spinner */}
                   </span>
                 )}

@@ -15,6 +15,7 @@ const ProductList = () => {
   const form = useForm();
   const useSearch = useHookSearch();
   const { data, isLoading, refetch } = useTanstackQuery('products', { active, page, sort, name })
+  console.log(data)
   const { mutate } = useTanstackMutation({
     path: `products`,
     action: "DELETE",
@@ -30,6 +31,13 @@ const ProductList = () => {
       style: 'currency',
       currency: 'VND'
     }).format(price);
+  };
+
+  const getStatus = (createdAt) => {
+    const creationDate = new Date(createdAt);
+    const now = new Date();
+    const twoDays = 2 * 24 * 60 * 60 * 1000; // milliseconds in 2 days
+    return now - creationDate <= twoDays ? 0 : 1;
   };
 
   useEffect(() => {
@@ -100,11 +108,23 @@ const ProductList = () => {
                   <img src={product.image} width={80} className=" rounded-lg" alt="" />
                 </th>
                 <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  <p className="inline-block">{product.name}</p>
+                  <p className="inline-block">{product.name}</p> <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${getStatus(product.createdAt) === 0 ? 'text-white bg-green-500' : 'text-transparent bg-transparent'}`}>
+                  {getStatus(product.createdAt) === 0 ? "New" : ""}
+                </span>
                   {isUserEditing(product._id)}
                 </th>
-                <th className="px-6 py-4">{formatPrice(product.price)}</th>
-
+         
+                <th className="px-6 py-4">
+                {product.priceOld ? (
+                  <div className="flex items-center space-x-2">
+                    <span className="text-gray-500 line-through">{formatPrice(product.priceOld)}</span>
+                    <span className="text-red-600 font-semibold">{formatPrice(product.price)}</span>
+                  </div>
+                ) : (
+                  <span className="text-red-600 font-semibold">{formatPrice(product.price)}</span>
+                )}
+              </th>
+              
                 <th className="px-6 py-4">{product.countInStock}</th>
                 <th className="px-6 py-4">
                   <div className="dropdown dropdown-hover dropdown-bottom dropdown-end">

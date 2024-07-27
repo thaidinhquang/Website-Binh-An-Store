@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import { useTanstackMutation, useTanstackQuery } from "../../common/hooks/useTanstackQuery";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -75,6 +75,13 @@ const ProductView = ({ className }) => {
     mutate({ productId: product._id, quantity, attributesId: attributesArray });
   };
 
+
+   const getStatus = (createdAt) => {
+    const creationDate = new Date(createdAt);
+    const now = new Date();
+    const twoDays = 2 * 24 * 60 * 60 * 1000; // milliseconds in 2 days
+    return now - creationDate <= twoDays ? 0 : 1;
+  };
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error loading product details</p>;
 
@@ -86,7 +93,8 @@ const ProductView = ({ className }) => {
             <div className="w-full h-[600px] border border-qgray-border flex justify-center items-center overflow-hidden relative mb-3">
               <img src={product.image} alt={product.name} className="object-contain w-full" />
               <div className="w-[80px] h-[80px] rounded-full bg-qyellow text-qblack flex justify-center items-center text-xl font-medium absolute left-[30px] top-[30px]">
-                <span>-50%</span>
+                <span>{getStatus(product.createdAt) === 0 ? "New" : ""}
+        </span>
               </div>
             </div>
           </div>
@@ -99,7 +107,7 @@ const ProductView = ({ className }) => {
 
             <div data-aos="fade-up" className="flex space-x-2 items-center mb-7">
               <span className="text-sm font-500 text-qgray line-through mt-2">
-                {formatPrice(product?.price)}
+                {formatPrice(product?.priceOld)}
               </span>
               <span className="text-2xl font-500 text-qred">
                 {formatPrice(product?.price)}
@@ -107,31 +115,30 @@ const ProductView = ({ className }) => {
             </div>
 
             {/* Display attributes */}
-            <div className="my-9">
-              {attributesLoading ? (
-                <p>Loading attributes...</p>
-              ) : (
-                productAttributes?.map((attr) => (
-                  <div key={attr._id}>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                      {attr.name}
-                    </label>
-                    <div className="my-2">
-                      {attr.values.map((value) => (
-                        <Button
-                          key={value._id}
-                          className="m-1"
-                          type={selectedAttributes[attr._id] === value._id ? "primary" : "default"}
-                          onClick={() => handleAttributeSelect(attr._id, value._id)}
-                        >
-                          {value.name}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                ))
-              )}
+             <div className="my-9">
+      {attributesLoading ? (
+        <p>Loading attributes...</p>
+      ) : (
+        productAttributes?.map((attr) => (
+          <div key={attr._id}>
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              {attr.name}
+            </label>
+            <div className="my-2">
+              {attr.values.map((value) => (
+                <Button
+                  key={value._id}
+                  className={`m-1 p-6 border ${selectedAttributes[attr._id] === value._id ? "border-blue-500 bg-blue-500 text-white" : "border-gray-300"} hover:border-red-500`}
+                  onClick={() => handleAttributeSelect(attr._id, value._id)}
+                >
+                  {value.name}
+                </Button>
+              ))}
             </div>
+          </div>
+        ))
+      )}
+    </div>
 
             <div data-aos="fade-up" className="quantity-card-wrapper w-full flex items-center h-[50px] space-x-[10px] mb-[30px]">
               <div className="w-[120px] h-full px-[26px] flex items-center border border-qgray-border">

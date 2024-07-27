@@ -19,7 +19,9 @@ const ProductForm = () => {
 
     const { currentUser } = useContext(AuthContext);
     const { data } = id ? useTanstackQuery(`products/${id}`) : { data: null };
-    const { data: category } = useTanstackQuery(`categories`);
+    const { data: category } = useTanstackQuery(`categories`,{
+        active: true
+    });
     
     const { data: attribute } = useQuery({
         queryKey: ["ATTRIBUTE"],
@@ -29,14 +31,10 @@ const ProductForm = () => {
         },
     });
 
-    const { data: brand } = useQuery({
-        queryKey: ["BRAND"],
-        queryFn: async () => {
-            const { data } = await instance.get(`/brands`);
-            return data?.data?.docs;
-        },
-    });
+    const { data: brand } = useTanstackQuery(`brands`,{
 
+        active: true
+    });
     useEffect(() => {
         if (id) {
             const userEditingPost = { id: currentUser?._id, post_id: id, fullname: currentUser?.email };
@@ -94,15 +92,27 @@ const ProductForm = () => {
 
                     <div>
                         <label className="block text-gray-700 text-sm font-bold mb-2">
-                            Giá Sản Phẩm
+                            Giá Cũ
                         </label>
                         <input
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                            {...form.register("price", { required: 'Product price is required', min: { value: 0, message: 'Product price must be greater than 0' }, pattern: { value: /^[0-9]+$/, message: 'Product price must be a number' } })}
+                            {...form.register("priceOld", { required: 'Product price is required', min: { value: 0, message: 'Product price must be greater than 0' }, pattern: { value: /^[0-9]+$/, message: 'Product price must be a number' } })}
                             type="number"
                         />
-                        {form.formState.errors.price && <span className="text-red-500">{form.formState.errors.price.message}</span>}
+                        {form.formState.errors.priceOld && <span className="text-red-500">{form.formState.errors.priceOld.message}</span>}
                     </div>
+
+                    <div>
+                    <label className="block text-gray-700 text-sm font-bold mb-2">
+                        Giá Mới
+                    </label>
+                    <input
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                        {...form.register("price", { required: 'Product price is required', min: { value: 0, message: 'Product price must be greater than 0' }, pattern: { value: /^[0-9]+$/, message: 'Product price must be a number' } })}
+                        type="number"
+                    />
+                    {form.formState.errors.price && <span className="text-red-500">{form.formState.errors.price.message}</span>}
+                </div>
 
                     <div>
                         <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -208,7 +218,7 @@ const ProductForm = () => {
                             {...form.register("brand", { required: 'Nhãn hàng không được để trống' })}
                         >
                         
-                            {brand?.length > 0 ? brand.map((brand) => (
+                            {brand?.docs.length > 0 ? brand?.docs.map((brand) => (
                                 <option key={brand._id} value={brand._id}>
                                     {brand.name}
                                 </option>

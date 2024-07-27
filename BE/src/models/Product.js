@@ -2,6 +2,9 @@ import mongoose from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
 
 const reviewSchema = new mongoose.Schema({
+  email: {
+      type: String,
+    },
   name: {
       type: String,
       required: [true, "name is require"],
@@ -23,6 +26,10 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    priceOld: {
+      type: Number,
+      required: true,
+    },
     price: {
       type: Number,
       required: true,
@@ -33,7 +40,11 @@ const productSchema = new mongoose.Schema(
     image: {
       type: String,
     },
-
+    status:{
+      type: Number,
+      enum: [0, 1],
+      default: 0,
+    },
     gallery: {
       type: Array,
     },
