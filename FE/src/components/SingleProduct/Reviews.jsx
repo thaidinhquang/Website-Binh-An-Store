@@ -14,11 +14,6 @@ export default function Reviews({
   const { id } = useParams();
   const { data: product, isLoading: isProductLoading } = useTanstackQuery(`/products/${id}`);
 
-<<<<<<< HEAD
-  // Fetch product data including reviews
-  const { data: product } = useTanstackQuery(`/products/${id}`);
-  if (!product) {
-=======
   const { mutate: submitReview, isLoading: isReviewLoading } = useTanstackMutation({
     path: `reviews/${id}`,
     action: "CREATE",
@@ -27,7 +22,7 @@ export default function Reviews({
   });
 
   if (isProductLoading) {
->>>>>>> 02108c5c5fabe8f905de34ea27fccbefb3657a56
+
     return <div>Loading...</div>;
   }
 
