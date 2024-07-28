@@ -14,6 +14,9 @@ export const getAllProduct = async (req, res, next) => {
       populate:'brand'
     };
     let query = {};
+    if (req.query.id) {
+      query._id = req.query.id;
+    }
     if (req.query.name) {
       query.name = { $regex: new RegExp(req.query.name, 'i') };
     }
@@ -30,6 +33,10 @@ export const getAllProduct = async (req, res, next) => {
     }
     if (req.query.active) {
       query.active = req.query.active;
+    }
+    
+    if (req.query.id) {
+      query._id = req.query.id;
     }
     const data = await Product.paginate(query, options);
     return !data ? res.status(400).json({ message: "Khong tim thay san pham nao!" }) : res.status(200).json({ data, message: "Get all product successfully"});
