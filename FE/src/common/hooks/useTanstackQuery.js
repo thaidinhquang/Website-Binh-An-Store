@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { axiosDelete, axiosGet, axiosPatch, axiosPost, axiosPut } from "../../config/axios";
 import { useForm } from "react-hook-form";
