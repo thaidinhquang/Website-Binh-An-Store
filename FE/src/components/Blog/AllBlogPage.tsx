@@ -1,71 +1,106 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Blog from "./Blog";
 import axios from "axios";
-import React from "react";
+import { Spin, Row, Col, Typography, Pagination } from 'antd';
 
-const AllBlogPage = () => {
-  const [blogs, setBlogs] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+const { Title, Text } = Typography;
+
+const AllBlogPage: React.FC = () => {
+  const [blogs, setBlogs] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalBlogs, setTotalBlogs] = useState<number>(0);
+  const pageSize = 9;
 
   useEffect(() => {
     const fetchBlogs = async () => {
+      setIsLoading(true);
       try {
-        const response = await axios.get("http://localhost:8000/api/blogs");
-        setBlogs(response.data);
-        setIsLoading(false);
+        const response = await axios.get(`http://localhost:8000/api/blogs?page=${currentPage}&limit=${pageSize}`);
+        console.log("API Response:", response.data);
+        if (Array.isArray(response.data)) {
+          setBlogs(response.data);
+          setTotalBlogs(response.data.length);
+        } else {
+          console.error("Unexpected API response structure:", response.data);
+          setBlogs([]);
+          setTotalBlogs(0);
+        }
       } catch (error) {
         console.error("Error fetching blogs:", error);
+        setBlogs([]);
+        setTotalBlogs(0);
+      } finally {
         setIsLoading(false);
       }
     };
 
     fetchBlogs();
-  }, []);
+  }, [currentPage]);
 
-  if (isLoading) return <p>Loading...</p>;
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  if (isLoading) return <Spin size="large" className="flex justify-center items-center h-screen" />;
 
   return (
-    <div className="blogs-page-wrapper w-full">
-      <div className="container-x mx-auto">
-        <div className="w-full lg:flex lg:space-x-[30px]">
-          <div className="lg:w-[270px]">
-            {/* Add any filters or categories for blogs here */}
-            <div className="w-full hidden lg:block h-[295px]">
-              <img
-                src={`/assets/images/ads-5.png`}
-                alt=""
-                className="w-full h-full object-contain"
-              />
-            </div>
-          </div>
-          <div className="flex-1">
-            <div className="blogs-sorting w-full bg-white md:h-[70px] flex md:flex-row flex-col md:space-y-0 space-y-5 md:justify-between md:items-center p-[30px] mb-[40px]">
-              <div>
-                <p className="font-400 text-[13px]">
-                  <span className="text-qgray"> Showing</span> 1–12 of{" "}
-                  {blogs.length} results
-                </p>
+    <div className="bg-gray-100 min-h-screen py-12">
+      <div className="container mx-auto px-4">
+        <Title level={2} className="text-center mb-8">Our Blog</Title>
+        <Row gutter={[24, 24]}>
+          <Col xs={24} lg={6}>
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <Title level={4} className="mb-4">Categories</Title>
+              {/* Add categories here */}
+              <div className="mt-8">
+                <img
+                  src={`/assets/images/ads-5.png`}
+                  alt="Advertisement"
+                  className="w-full rounded-lg"
+                />
               </div>
             </div>
-            <div className="grid xl:grid-cols-3 sm:grid-cols-2 grid-cols-1  xl:gap-[30px] gap-5 mb-[40px]">
-              {blogs.length > 0 ? (
-                blogs.map((blog: any) => <Blog key={blog._id} blog={blog} />)
-              ) : (
-                <p>No blogs found</p>
-              )}
+          </Col>
+          <Col xs={24} lg={18}>
+            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+              <Text>
+                Showing {blogs.length > 0 ? `${(currentPage - 1) * pageSize + 1}-${Math.min(currentPage * pageSize, totalBlogs)}` : '0'} of {totalBlogs} results
+              </Text>
             </div>
-            <div className="w-full h-[164px] overflow-hidden mb-[40px]">
+            <Row gutter={[24, 24]}>
+              {blogs.length > 0 ? (
+                blogs.map((blog: any) => (
+                  <Col xs={24} sm={12} xl={8} key={blog._id}>
+                    <Blog blog={blog} />
+                  </Col>
+                ))
+              ) : (
+                <Col span={24}>
+                  <Text>No blogs found</Text>
+                </Col>
+              )}
+            </Row>
+            {totalBlogs > pageSize && (
+              <div className="mt-8 flex justify-center">
+                <Pagination
+                  current={currentPage}
+                  total={totalBlogs}
+                  pageSize={pageSize}
+                  onChange={handlePageChange}
+                  showSizeChanger={false}
+                />
+              </div>
+            )}
+            <div className="mt-8">
               <img
                 src={`/assets/images/ads-6.png`}
-                alt=""
-                className="w-full h-full object-contain"
+                alt="Advertisement"
+                className="w-full rounded-lg"
               />
             </div>
-            <div className="grid xl:grid-cols-3 sm:grid-cols-2 grid-cols-1 xl:gap-[30px] gap-5 mb-[40px]">
-              {}
-            </div>
-          </div>
-        </div>
+          </Col>
+        </Row>
       </div>
     </div>
   );

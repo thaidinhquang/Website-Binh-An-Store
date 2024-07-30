@@ -37,6 +37,8 @@ import DetailOrder from './../components/Admin/order/DetailOrder';
 import AllBlogPage from "../components/Blog/AllBlogPage";
 import BlogList from "../components/Admin/Blog/BlogList";
 import BlogForm from "../components/Admin/Blog/BlogForm";
+import DetailBlogPage from "../components/Blog/DetailBlogPage";
+import BlogEdit from "../components/Admin/Blog/BlogEdit";
 
 const Router = () => {
   return (
@@ -64,6 +66,7 @@ const Router = () => {
           />
           <Route path="shop" element={<AllProductPage />} />
           <Route path="blogs" element={<AllBlogPage />} />
+          <Route path="/blogs/:id" element={<DetailBlogPage />} />
           <Route
             path="/profile"
             element={
@@ -134,7 +137,7 @@ const Router = () => {
           </Route>
           <Route path="blogs" element={<BlogList />} />
           <Route path="blogs/add" element={<BlogForm />} />
-          <Route path="blogs/edit/:id" element={<BlogForm />} />
+          <Route path="blogs/edit/:id" element={<BlogEdit />} />
         </Route>
         <Route path="*" element={<NotfoundPage />} />
       </Routes>

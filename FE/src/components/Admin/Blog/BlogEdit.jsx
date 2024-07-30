@@ -1,32 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import MDEditor from '@uiw/react-md-editor';
 import { uploadFileCloudinary } from "../../../common/libs/uploadImageCloud";
-import { Button, Input, Form } from 'antd';
+import { Button, Input, Form, Spin } from 'antd';
 import instance from "../../../config/axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
-const BlogForm = () => {
+const BlogEdit = () => {
     const navigate = useNavigate();
+    const { id } = useParams();
     const [content, setContent] = useState("");
-    const [image, setImage] = useState('https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg');
+    const [image, setImage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    const { control, handleSubmit, setValue, formState: { errors } } = useForm();
+    const { control, handleSubmit, setValue, reset, formState: { errors } } = useForm();
+
+    // Query để lấy dữ liệu blog
+    const { data: blogData, isLoading: isFetchingBlog } = useQuery({
+        queryKey: ['blog', id],
+        queryFn: async () => {
+            const { data } = await instance.get(`/blogs/${id}`);
+            return data;
+        },
+    });
+
+    useEffect(() => {
+        if (blogData) {
+            reset({
+                title: blogData.title,
+                // Thêm các trường khác nếu cần
+            });
+            setContent(blogData.content);
+            setImage(blogData.image);
+        }
+    }, [blogData, reset]);
 
     const mutation = useMutation({
         mutationFn: async (blogData) => {
-            const { data } = await instance.post(`/blogs`, blogData);
+            const { data } = await instance.put(`/blogs/${id}`, blogData);
             return data;
         },
         onSuccess: () => {
-            toast.success("Blog đã được thêm thành công!");
+            toast.success("Blog đã được cập nhật thành công!");
             navigate("/admin/blogs");
         },
         onError: (error) => {
-            console.error("Error adding blog:", error);
-            toast.error(error.response?.data?.message || "Không thể thêm blog");
+            console.error("Error updating blog:", error);
+            toast.error(error.response?.data?.message || "Không thể cập nhật blog");
         },
     });
 
@@ -43,7 +65,10 @@ const BlogForm = () => {
     });
 
     const onSubmit = (data) => {
-        mutation.mutate({ ...data, content, image });
+        setIsLoading(true);
+        mutation.mutate({ ...data, content, image }, {
+            onSettled: () => setIsLoading(false)
+        });
     };
 
     const handleImageChange = async ({ target }) => {
@@ -54,9 +79,13 @@ const BlogForm = () => {
         }
     };
 
+    if (isFetchingBlog) {
+        return <Spin size="large" />;
+    }
+
     return (
         <div className="p-4 bg-white rounded-lg shadow">
-            <h1 className="text-2xl font-bold mb-4">Thêm thông tin Blog</h1>
+            <h1 className="text-2xl font-bold mb-4">Sửa thông tin Blog</h1>
             <div className="flex justify-end mb-4">
                 <Link to="/admin/blogs">
                     <Button type="default">Quay lại</Button>
@@ -71,7 +100,7 @@ const BlogForm = () => {
                                 <button type="button"
                                     onClick={() => document.getElementById('file')?.click()}
                                     className="py-3.5 px-7 text-base font-medium text-indigo-100 focus:outline-none bg-[#202142] rounded-lg border border-indigo-200 hover:bg-indigo-900 focus:z-10 focus:ring-4 focus:ring-indigo-200 ">
-                                    Chọn ảnh
+                                    Chọn ảnh mới
                                 </button>
                                 <input 
                                     type="file" 
@@ -110,10 +139,10 @@ const BlogForm = () => {
                             <Button 
                                 type="primary" 
                                 htmlType="submit" 
-                                loading={mutation.isPending || uploadMutation.isPending}
-                                disabled={mutation.isPending || uploadMutation.isPending}
+                                loading={isLoading || mutation.isPending || uploadMutation.isPending}
+                                disabled={isLoading || mutation.isPending || uploadMutation.isPending}
                             >
-                                {mutation.isPending ? "Đang Thêm..." : "Thêm"}
+                                {isLoading || mutation.isPending ? "Đang Cập nhật..." : "Cập nhật"}
                             </Button>
                         </Form.Item>
                     </div>
@@ -123,4 +152,4 @@ const BlogForm = () => {
     );
 }
 
-export default BlogForm;
+export default BlogEdit;

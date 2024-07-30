@@ -72,6 +72,18 @@ const DashBoard = () => {
                       </Link>
                     </div>
                     <div className="item group">
+                    <Link to="/admin/blogs">
+                      <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
+                        <span>
+                          <Product />
+                        </span>
+                        <span className=" font-normal text-base">
+                         Quản lý Blog
+                        </span>
+                      </div>
+                    </Link>
+                  </div>
+                    <div className="item group">
                       <Link to="/admin/orders">
                         <div className="flex space-x-3 items-center text-qgray hover:text-qblack">
                           <span>
