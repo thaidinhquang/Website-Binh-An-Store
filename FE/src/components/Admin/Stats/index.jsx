@@ -33,7 +33,7 @@ const Statistics = () => {
     }
   };
 
-  const stats = statsData?.data && statsData?.data?.data;
+  const stats = statsData?.data && statsData?.data?.metadata;
 
   return (
     <div className="w-full h-full bg-gray-100 p-6"> {/* Added bg-gray-100 and p-6 */}
