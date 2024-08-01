@@ -10,8 +10,7 @@ const ProductForm = () => {
     const location = useLocation().pathname.split('/')[3];
     const { id } = useParams();
     const [image, setImage] = useState('https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg');
-    const [selectedAttribute1, setSelectedAttribute1] = useState('');
-    const [selectedAttribute2, setSelectedAttribute2] = useState('');
+    const [attributes, setAttributes] = useState([{ _id: "" }]); // State to manage attributes
 
     const { form, onSubmit } = useTanstackMutation({
         path: `products`,
@@ -21,7 +20,6 @@ const ProductForm = () => {
     const { currentUser } = useContext(AuthContext);
     const { data } = id ? useTanstackQuery(`products/not-populate/${id}`) : { data: null };
     const { data: category } = useTanstackQuery(`categories`,{
-
         active: true
     });
     const { data: attribute } = useQuery({
@@ -33,7 +31,6 @@ const ProductForm = () => {
     });
     
     const { data: brand } = useTanstackQuery(`brands`,{
-
         active: true
     });
 
@@ -47,8 +44,9 @@ const ProductForm = () => {
         if (data) {
             form.reset(data);
             setImage(data.image);
-            setSelectedAttribute1(data.attributes?.[0] || '');
-            setSelectedAttribute2(data.attributes?.[1] || '');
+            // Map attribute IDs to attribute objects
+            const mappedAttributes = data.attributes.map(attrId => ({ _id: attrId }));
+            setAttributes(mappedAttributes);
         }
     }, [data]);
 
@@ -67,9 +65,26 @@ const ProductForm = () => {
         }
     }, [location, currentUser, id]);
 
-    // Filter options
-    const filteredOptions1 = attribute?.filter(att => att._id !== selectedAttribute2) || [];
-    const filteredOptions2 = attribute?.filter(att => att._id !== selectedAttribute1) || [];
+    const addAttribute = () => {
+        setAttributes([...attributes, { _id: "" }]);
+    };
+
+    const removeAttribute = (index) => {
+        const newAttributes = attributes.filter((_, i) => i !== index);
+        setAttributes(newAttributes);
+        form.setValue(`attributes`, newAttributes);
+    };
+
+    const handleAttributeChange = (index, value) => {
+        const newAttributes = [...attributes];
+        newAttributes[index]._id = value;
+        setAttributes(newAttributes);
+        form.setValue(`attributes[${index}]._id`, value);
+    };
+
+    const isAttributeSelected = (id) => {
+        return attributes.some(attr => attr._id === id);
+    };
 
     return (
         <div className="min-h-screen bg-gray-100 p-6">
@@ -124,6 +139,7 @@ const ProductForm = () => {
                                 {...form.register("name", { required: 'Product name is required', minLength: { value: 6, message: 'Product name must be at least 6 characters' } })}
                                 disabled={location === 'detail'}
                                 type="text"
+                                defaultValue={data?.name || ""} // Set default value
                             />
                             {form.formState.errors.name && <span className="text-red-500">{form.formState.errors.name.message}</span>}
                         </div>
@@ -136,6 +152,7 @@ const ProductForm = () => {
                             {...form.register("priceOld", { required: 'Product price is required', min: { value: 0, message: 'Product price must be greater than 0' }, pattern: { value: /^[0-9]+$/, message: 'Product price must be a number' } })}
                             disabled={location === 'detail'}
                             type="number"
+                            defaultValue={data?.priceOld || ""} // Set default value
                         />
                         {form.formState.errors.priceOld && <span className="text-red-500">{form.formState.errors.priceOld.message}</span>}
                     </div>
@@ -149,6 +166,7 @@ const ProductForm = () => {
                                 {...form.register("price", { required: 'Product price is required', min: { value: 0, message: 'Product price must be greater than 0' }, pattern: { value: /^[0-9]+$/, message: 'Product price must be a number' } })}
                                 disabled={location === 'detail'}
                                 type="number"
+                                defaultValue={data?.price || ""} // Set default value
                             />
                             {form.formState.errors.price && <span className="text-red-500">{form.formState.errors.price.message}</span>}
                         </div>
@@ -161,6 +179,7 @@ const ProductForm = () => {
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:cursor-not-allowed"
                                 {...form.register("slug", { required: 'Slug không được để trống' })}
                                 disabled={location === 'detail'}
+                                defaultValue={data?.slug || ""} // Set default value
                             />
                             {form.formState.errors.slug && <span className="text-red-500">{form.formState.errors.slug.message}</span>}
                         </div>
@@ -173,6 +192,7 @@ const ProductForm = () => {
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:cursor-not-allowed"
                                 {...form.register("countInStock", { required: 'Số lượng không được để trống' })}
                                 disabled={location === 'detail'}
+                                defaultValue={data?.countInStock || ""} // Set default value
                             />
                             {form.formState.errors.countInStock && <span className="text-red-500">{form.formState.errors.countInStock.message}</span>}
                         </div>
@@ -185,6 +205,7 @@ const ProductForm = () => {
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:cursor-not-allowed"
                                 {...form.register("category", { required: 'Category không được để trống' })}
                                 disabled={location === 'detail'}
+                                defaultValue={data?.category || ""} // Set default value
                             >
                                 {category?.docs?.length > 0 ? category.docs.map((cate) => (
                                     <option key={cate._id} value={cate._id}>
@@ -192,53 +213,38 @@ const ProductForm = () => {
                                     </option>
                                 )) : <option value="">Không có danh mục</option>}
                             </select>
+                             {form.formState.errors.category && <span className="text-red-500">{form.formState.errors.category.message}</span>}
                         </div>
 
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2">
-                                Thuộc tính 1
-                            </label>
-                            <select
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:cursor-not-allowed"
-                                {...form.register("attributes[0]", { required: 'Attribute 1 không được để trống' })}
-                                value={selectedAttribute1}
-                                onChange={(e) => {
-                                    setSelectedAttribute1(e.target.value);
-                                    form.setValue("attributes[0]", e.target.value);
-                                }}
-                                disabled={location === 'detail'}
-                            >
-                       
-                                {filteredOptions1.length > 0 ? filteredOptions1.map((att) => (
-                                    <option key={att._id} value={att._id}>
-                                        {att.name}
-                                    </option>
-                                )) : <option value="">Không có thuộc tính</option>}
-                            </select>
-                        </div>
-
-                        <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2">
-                                Thuộc tính 2
-                            </label>
-                            <select
-                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:cursor-not-allowed"
-                                {...form.register("attributes[1]", { required: 'Attribute 2 không được để trống' })}
-                                value={selectedAttribute2}
-                                onChange={(e) => {
-                                    setSelectedAttribute2(e.target.value);
-                                    form.setValue("attributes[1]", e.target.value);
-                                }}
-                                disabled={location === 'detail'}
-                            >
-                           
-                                {filteredOptions2.length > 0 ? filteredOptions2.map((att) => (
-                                    <option key={att._id} value={att._id}>
-                                        {att.name}
-                                    </option>
-                                )) : <option value="">Không có thuộc tính</option>}
-                            </select>
-                        </div>
+                      {attributes.map((attr, index) => (
+    <div className="mb-4" key={index}>
+        <label className="block text-gray-700 text-sm font-bold mb-2">
+            Thuộc tính {index + 1}
+        </label>
+        <div className="flex items-center">
+            <select
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:cursor-not-allowed"
+                {...form.register(`attributes[${index}]._id`, { required: `Attribute ${index + 1} không được để trống` })}
+                value={attr._id}
+                onChange={(e) => handleAttributeChange(index, e.target.value)}
+                disabled={location === 'detail'}
+            >
+                {attribute?.length > 0 ? attribute.map((att) => (
+                    <option key={att._id} value={att._id} disabled={isAttributeSelected(att._id)}>
+                        {att.name}
+                    </option>
+                )) : <option value="">Không có thuộc tính</option>}
+            </select>
+            <button type="button" onClick={() => removeAttribute(index)} className="ml-2 py-1 px-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg focus:outline-none focus:ring-4 focus:ring-red-300">
+                Xóa
+            </button>
+        </div>
+        {form.formState.errors.attributes && <span className="text-red-500">{form.formState.errors.attributes.message}</span>}
+    </div>
+))}
+                        <button type="button" onClick={addAttribute} className="mb-4 py-2 px-4 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg focus:outline-none focus:ring-4 focus:ring-green-300">
+                            Thêm Thuộc Tính
+                        </button>
 
                         <div className="mb-4">
                             <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -248,8 +254,8 @@ const ProductForm = () => {
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:cursor-not-allowed"
                                 {...form.register("brand", { required: 'Nhãn hàng không được để trống' })}
                                 disabled={location === 'detail'}
+                                defaultValue={data?.brand || ""} // Set default value
                             >
-                            
                                 {brand?.docs.length > 0 ? brand.docs.map((brand) => (
                                     <option key={brand._id} value={brand._id}>
                                         {brand.name}
@@ -268,6 +274,7 @@ const ProductForm = () => {
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:cursor-not-allowed"
                                 {...form.register("description")}
                                 disabled={location === 'detail'}
+                                defaultValue={data?.description || ""} // Set default value
                             ></textarea>
                         </div>
 
