@@ -2,7 +2,6 @@ import Stripe from "stripe";
 import Order from "../models/Order.js";
 import { ORDER_STATUS } from "../constants/order.js";
 import { ROLES } from "../constants/Role.js";
-import mongoose from "mongoose";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -331,5 +330,53 @@ export const finishAnOrder = async (req, res) => {
     });
   } catch (error) {
     return console.log("Something went wrong.", error);
+  }
+};
+
+/**
+ * ADMIN
+ */
+
+// @GET report ORDER BY ADMIN
+export const getReportOrders = async (req, res) => {
+  var date = new Date();
+  const limit = req.query.limit ? +req.query.limit : 10;
+  const sortDemention = req.query.sort ? +req.query.sort : -1;
+  const startDate = req.query.startDate
+    ? new Date(req.query.startDate)
+    : new Date(date.getFullYear(), date.getMonth(), 1);
+  const endDate = req.query.endDate
+    ? new Date(req.query.endDate)
+    : new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+  try {
+    const orders = await Order.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: startDate, $lte: endDate },
+        },
+      },
+      { $unwind: "$items" }, // Deconstruct the items array
+      {
+        $group: {
+          _id: "$items.productId",
+          totalQuantity: { $sum: "$items.quantity" },
+          productName: { $first: "$items.name" },
+          productPrice: { $first: "$items.price" },
+          productImage: { $first: "$items.image" },
+        },
+      },
+
+      { $sort: { totalQuantity: sortDemention } }, // Sort by totalQuantity in descending order
+      { $limit: limit }, // Limit to top N products
+    ]);
+
+    return res.status(200).json({
+      message: "OK",
+      success: true,
+      data: orders,
+    });
+  } catch (error) {
+    console.log("Something went wrong.", error);
   }
 };

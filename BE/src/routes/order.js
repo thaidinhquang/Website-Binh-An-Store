@@ -8,6 +8,7 @@ import {
   getAllOrders,
   getAllOrdersByUser,
   getOrderDetails,
+  getReportOrders
 } from "../controllers/order.js";
 import { getUser } from "../middlewares/getUser.js";
 import { checkPermission } from "../middlewares/checkPermission.js";
@@ -19,6 +20,7 @@ router.post("/create-checkout-session", getUser, checkoutSession);
 router.post("/", getUser, createOrder);
 router.get("/", getUser, getAllOrders);
 router.get("/by_user", getUser, getAllOrdersByUser);
+router.get("/report", getUser, getReportOrders);
 router.get("/:orderId", getUser, getOrderDetails);
 router.patch("/cancel", getUser, cancelOrder);
 router.patch("/confirm", getUser, confirmedOrder);
