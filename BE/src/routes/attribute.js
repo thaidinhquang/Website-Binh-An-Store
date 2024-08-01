@@ -1,4 +1,3 @@
-
 import { Router } from "express";
 import {
     createAttribute,
@@ -15,45 +14,39 @@ import {
 } from "../controllers/attribute.js";
 import { getUser } from "../middlewares/getUser.js";
 
-const routerAtrribute = Router();
+const routerAttribute = Router();
+
 // Route để tạo mới một thuộc tính
-routerAtrribute.post("/",getUser, createAttribute);
+routerAttribute.post("/", getUser, createAttribute);
 
 // Route để thêm giá trị cho thuộc tính đã tồn tại
-routerAtrribute.post("/:id/values",getUser, createValueAttribute);
+routerAttribute.post("/:id/values", getUser, createValueAttribute);
 
 // Route để lấy tất cả các thuộc tính
-routerAtrribute.get("/", getAllAttributes);
+routerAttribute.get("/", getAllAttributes);
 
 // Route để lấy một thuộc tính theo ID
-routerAtrribute.get("/:id", getAttributeById);
+routerAttribute.get("/:id", getAttributeById);
 
 // Route để lấy giá trị một thuộc tính theo ID
-routerAtrribute.get("/:id/values", getValueAttributeById);
+routerAttribute.get("/:id/values", getValueAttributeById);
 
 // Route để cập nhật một thuộc tính theo ID
-routerAtrribute.put("/:id",getUser, updateAttribute);
+routerAttribute.put("/:id", getUser, updateAttribute);
 
 // Route để sửa giá trị cho thuộc tính đã tồn tại
-routerAtrribute.put("/:id/values",getUser, updateValueAttribute);
+routerAttribute.put("/:id/values", getUser, updateValueAttribute);
 
 // Route để xóa một thuộc tính theo ID
-routerAtrribute.delete("/:id", deleteAttribute);
+routerAttribute.delete("/:id", getUser, deleteAttribute);
 
 // Route để xóa giá trị cho thuộc tính đã tồn tại
-routerAtrribute.delete("/:id/values",getUser, deleteValueAttribute);
+routerAttribute.delete("/:id/values", getUser, deleteValueAttribute);
 
-routerAtrribute.delete("/restore/:id/values",getUser, restoreValueAttribute);
+// Route để khôi phục một thuộc tính
+routerAttribute.patch("/restore/:id", getUser, restoreAttribute);
 
+// Route để khôi phục giá trị cho thuộc tính
+routerAttribute.patch("/restore/:id/values", getUser, restoreValueAttribute);
 
-routerAtrribute.delete("/restore/:id",getUser, restoreAttribute);
-
-
-routerAtrribute.delete("/restore/:id/values",getUser, restoreValueAttribute);
-
-
-routerAtrribute.delete("/restore/:id",getUser, restoreAttribute);
-
-
-
-export default routerAtrribute;
+export default routerAttribute;

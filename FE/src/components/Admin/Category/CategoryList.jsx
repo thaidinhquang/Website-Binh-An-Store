@@ -10,11 +10,11 @@ const CategoryList = () => {
   const search = new URLSearchParams(useLocation().search);
   const page = search.get('page') || 1;
   const sort = search.get('sort') || '';
-  const name = search.get('name') || '';
+  const query = search.get('query') || '';
   const active = search.get('active') || '';
   const form = useForm();
   const useSearch = useHookSearch();
-  const { data, isLoading, refetch } = useTanstackQuery('categories', { active, page, sort, name })
+  const { data, isLoading, refetch } = useTanstackQuery('categories', { active, page, sort, query })
   const { mutate } = useTanstackMutation({
     path: `categories`,
     action: "DELETE",
@@ -26,7 +26,7 @@ const CategoryList = () => {
   };
 
   useEffect(() => {
-    form.reset({ name, sort, page, active });
+    form.reset({ query, sort, page, active });
     const handleUserEditing = (data) => {
       setListUserOnEditRoute(data);
     };
@@ -36,7 +36,7 @@ const CategoryList = () => {
 
   useEffect(() => {
     refetch()
-  }, [active, page, sort, name]);
+  }, [active, page, sort, query]);
 
   const searchForm = (data) => {
     useSearch(data, '/admin/categories')
@@ -59,8 +59,8 @@ const CategoryList = () => {
               <input
                 type="text"
                 className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                placeholder="Tìm kiếm danh mục..."
-                {...form.register('name')}
+                placeholder="Tìm kiếm theo tên hoặc ID danh mục..."
+                {...form.register('query')}
               />
             </div>
             <div className="w-full md:w-1/5 px-3 mb-4 md:mb-0">
@@ -78,8 +78,8 @@ const CategoryList = () => {
                 className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               >
                 <option value="">Tất cả</option>
-                <option value={true}>Đang hoạt động</option>
-                <option value={false}>Không hoạt động</option>
+                <option value="true">Đang hoạt động</option>
+                <option value="false">Không hoạt động</option>
               </select>
             </div>
             <div className="w-full md:w-1/5 px-3">

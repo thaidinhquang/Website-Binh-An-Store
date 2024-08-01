@@ -2,7 +2,7 @@ import { populate } from "dotenv";
 import Category from "../models/Category.js";
 import Brand from "../models/Brand.js";
 import Product from "../models/Product.js";
-// import asyncHandler from 'express-async-handler'
+import mongoose from 'mongoose';
 
 export const getAllProduct = async (req, res, next) => {
   try {
@@ -15,11 +15,14 @@ export const getAllProduct = async (req, res, next) => {
         { path: 'brand' },
         { path: 'attributes', populate: { path: 'values', select: 'name price quantity active' }  }
       ]
-
     };
     let query = {};
-    if (req.query.name) {
-      query.name = { $regex: new RegExp(req.query.name, 'i') };
+    if (req.query.query) {
+      if (mongoose.Types.ObjectId.isValid(req.query.query)) {
+        query._id = new mongoose.Types.ObjectId(req.query.query);
+      } else {
+        query.name = { $regex: new RegExp(req.query.query, 'i') };
+      }
     }
     if (req.query.slug) {
       query.slug = { $regex: new RegExp(req.query.slug, 'i') };
@@ -29,7 +32,7 @@ export const getAllProduct = async (req, res, next) => {
       query.category = { $in: categoryIds };
     } 
     if (req.query.brand) {
-      const brandIds = req.query.category.split(',');
+      const brandIds = req.query.brand.split(',');
       query.brand = { $in: brandIds };
     }
     if (req.query.attributes) {
@@ -37,10 +40,10 @@ export const getAllProduct = async (req, res, next) => {
       query.attributes = { $in: attributesIds };
     } 
     if (req.query.active) {
-      query.active = req.query.active;
+      query.active = req.query.active === 'true';
     }
     const data = await Product.paginate(query, options);
-    return !data ? res.status(400).json({ message: "Khong tim thay san pham nao!" }) : res.status(200).json({ data, message: "Get all product successfully"});
+    return !data ? res.status(400).json({ message: "Không tìm thấy sản phẩm nào!" }) : res.status(200).json({ data, message: "Lấy danh sách sản phẩm thành công"});
   } catch (error) {
     next(error);
   }
@@ -57,7 +60,6 @@ export const getDetailProductPopulate = async (req, res, next) => {
     next(error)
   }
 };
-
 
 export const getDetailProduct = async (req, res, next) => {
   try {

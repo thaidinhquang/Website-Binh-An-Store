@@ -10,12 +10,11 @@ const BrandList = () => {
   const search = new URLSearchParams(useLocation().search);
   const page = search.get('page') || 1;
   const sort = search.get('sort') || '';
-  const name = search.get('name') || '';
-  const id = search.get('_id') || '';
+  const query = search.get('query') || '';
   const active = search.get('active') || '';
   const form = useForm();
   const useSearch = useHookSearch();
-  const { data, isLoading, refetch } = useTanstackQuery('brands', { active, page, sort, name, id })
+  const { data, isLoading, refetch } = useTanstackQuery('brands', { active, page, sort, query })
   const { mutate } = useTanstackMutation({
     path: `brands`,
     action: "DELETE",
@@ -26,7 +25,7 @@ const BrandList = () => {
     return user ? <span className="inline-block px-2 py-1 text-xs font-semibold text-white bg-red-500 rounded-full ml-2">{user} đang chỉnh sửa</span> : '';
   };
   useEffect(() => {
-    form.reset({ name, sort, page, active, id });
+    form.reset({ query, sort, page, active });
     const handleUserEditing = (data) => {
       setListUserOnEditRoute(data);
     };
@@ -35,7 +34,7 @@ const BrandList = () => {
   }, []);
   useEffect(() => {
     refetch()
-  }, [active, page, sort, name, id]);
+  }, [active, page, sort, query]);
 
   const searchForm = (data) => {
     useSearch(data, '/admin/brands')
@@ -58,8 +57,8 @@ const BrandList = () => {
               <input
                 type="text"
                 className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                placeholder="Tìm kiếm theo tên, mã nhãn hàng"
-                {...form.register('name')}
+                placeholder="Tìm kiếm theo tên hoặc ID nhãn hàng..."
+                {...form.register('query')}
               />
             </div>
             <div className="w-full md:w-1/5 px-3 mb-4 md:mb-0">
@@ -77,8 +76,8 @@ const BrandList = () => {
                 className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               >
                 <option value="">Tất cả</option>
-                <option value={true}>Đang hoạt động</option>
-                <option value={false}>Không hoạt động</option>
+                <option value="true">Đang hoạt động</option>
+                <option value="false">Không hoạt động</option>
               </select>
             </div>
             <div className="w-full md:w-1/5 px-3">
