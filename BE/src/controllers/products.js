@@ -10,8 +10,12 @@ export const getAllProduct = async (req, res, next) => {
       page: req.query.page ? +req.query.page : 1,
       limit: req.query.limit ? +req.query.limit : 10,
       sort: req.query.sort ? req.query.sort : { createdAt: -1 },
-      populate: 'category',
-      populate:'brand'
+      populate: [
+        { path: 'category' },
+        { path: 'brand' },
+        { path: 'attributes', populate: { path: 'values', select: 'name price quantity active' }  }
+      ]
+
     };
     let query = {};
     if (req.query.name) {
@@ -28,6 +32,10 @@ export const getAllProduct = async (req, res, next) => {
       const brandIds = req.query.category.split(',');
       query.brand = { $in: brandIds };
     }
+    if (req.query.attributes) {
+      const attributesIds = req.query.attributes.split(',');
+      query.attributes = { $in: attributesIds };
+    } 
     if (req.query.active) {
       query.active = req.query.active;
     }
@@ -40,7 +48,10 @@ export const getAllProduct = async (req, res, next) => {
 
 export const getDetailProductPopulate = async (req, res, next) => {
   try {
-    const data = await Product.findById(req.params.id).populate("category","brand");
+    const data = await Product.findById(req.params.id).populate("category").populate("brand")  .populate({
+      path: 'attributes',
+      populate: { path: 'values', select: 'name price quantity active' } 
+    });
     return !data ? res.status(400).json({ message: "Khong tim thay san pham!" }) : res.status(200).json({ data })
   } catch (error) {
     next(error)
