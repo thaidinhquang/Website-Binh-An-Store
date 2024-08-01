@@ -13,8 +13,8 @@ const Statistics = () => {
   const { data: statsData } = useTotalStatistics();
   const { data: orderStats } = useOrdersStatistics();
   const [sort, setSort] = useState(-1);
-  const [fromDate, setFromDate1] = useState("");
-  const [toDate, setToDate1] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
 
   const { data, isLoading, refetch } = useTanstackQuery('orders/report', {
     limit: 10, sort: sort, startDate: fromDate??"", endDate: toDate??""
@@ -26,10 +26,10 @@ const Statistics = () => {
 
   const onChange = (dateDate, dateString, type) => {
     if(type == "fromDate"){
-      setFromDate(dateDate);
+      setFromDate(dateString);
     }
     if(type == "toDate"){
-      setToDate(dateDate)
+      setToDate(dateString)
     }
   };
 
