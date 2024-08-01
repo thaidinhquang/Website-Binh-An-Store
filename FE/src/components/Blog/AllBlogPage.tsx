@@ -1,12 +1,24 @@
 import React, { useEffect, useState } from "react";
-import Blog from "./Blog";
+import { Link } from "react-router-dom";
 import axios from "axios";
-import { Spin, Row, Col, Typography, Pagination } from 'antd';
+import { Spin, Row, Col, Typography, Pagination, Card, Tag, Space, message } from 'antd';
+import { CalendarOutlined, UserOutlined, EyeOutlined } from '@ant-design/icons';
+import ReactMarkdown from 'react-markdown';
 
-const { Title, Text } = Typography;
+const { Title, Text, Paragraph } = Typography;
+
+interface Blog {
+  _id: string;
+  title: string;
+  content: string;
+  image: string;
+  createdAt: string;
+  author: string;
+  tags: string[];
+}
 
 const AllBlogPage: React.FC = () => {
-  const [blogs, setBlogs] = useState<any[]>([]);
+  const [blogs, setBlogs] = useState<Blog[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalBlogs, setTotalBlogs] = useState<number>(0);
@@ -25,11 +37,13 @@ const AllBlogPage: React.FC = () => {
           console.error("Unexpected API response structure:", response.data);
           setBlogs([]);
           setTotalBlogs(0);
+          message.error("Failed to load blogs. Unexpected data structure.");
         }
       } catch (error) {
         console.error("Error fetching blogs:", error);
         setBlogs([]);
         setTotalBlogs(0);
+        message.error("Failed to load blogs. Please try again later.");
       } finally {
         setIsLoading(false);
       }
@@ -42,6 +56,17 @@ const AllBlogPage: React.FC = () => {
     setCurrentPage(page);
   };
 
+  const formatDate = (dateString: string) => {
+    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  const truncateMarkdown = (content: string, maxLength: number) => {
+    if (content.length <= maxLength) return content;
+    const truncated = content.substr(0, content.lastIndexOf(' ', maxLength));
+    return truncated + '...';
+  };
+
   if (isLoading) return <Spin size="large" className="flex justify-center items-center h-screen" />;
 
   return (
@@ -50,7 +75,7 @@ const AllBlogPage: React.FC = () => {
         <Title level={2} className="text-center mb-8">Our Blog</Title>
         <Row gutter={[24, 24]}>
           <Col xs={24} lg={6}>
-            <div className="bg-white p-6 rounded-lg shadow-md">
+            <Card className="shadow-md">
               <Title level={4} className="mb-4">Categories</Title>
               {/* Add categories here */}
               <div className="mt-8">
@@ -60,26 +85,61 @@ const AllBlogPage: React.FC = () => {
                   className="w-full rounded-lg"
                 />
               </div>
-            </div>
+            </Card>
           </Col>
           <Col xs={24} lg={18}>
-            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+            <Card className="shadow-md mb-6">
               <Text>
-                Showing {blogs.length > 0 ? `${(currentPage - 1) * pageSize + 1}-${Math.min(currentPage * pageSize, totalBlogs)}` : '0'} of {totalBlogs} results
+                Showing {blogs.length} of {totalBlogs} results
               </Text>
-            </div>
+            </Card>
             <Row gutter={[24, 24]}>
-              {blogs.length > 0 ? (
-                blogs.map((blog: any) => (
-                  <Col xs={24} sm={12} xl={8} key={blog._id}>
-                    <Blog blog={blog} />
-                  </Col>
-                ))
-              ) : (
-                <Col span={24}>
-                  <Text>No blogs found</Text>
+              {blogs.map((blog: Blog) => (
+                <Col xs={24} sm={12} xl={8} key={blog._id}>
+                  <Card
+                    hoverable
+                    cover={
+                      <img
+                        alt={blog.title}
+                        src={blog.image}
+                        className="h-48 object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.onerror = null;
+                          target.src = '/assets/images/fallback-image.jpg';
+                        }}
+                      />
+                    }
+                    className="shadow-md h-full flex flex-col"
+                  >
+                    <Card.Meta
+                      title={<Link to={`/blog/${blog._id}`} className="text-lg font-semibold hover:text-blue-600">{blog.title}</Link>}
+                      description={
+                        <>
+                          <div className="text-gray-500 prose prose-sm max-w-none">
+                            <ReactMarkdown>
+                              {truncateMarkdown(blog.content, 150)}
+                            </ReactMarkdown>
+                          </div>
+                          <Space className="mt-2" size={[0, 8]} wrap>
+                            {blog.tags && blog.tags.map(tag => (
+                              <Tag key={tag} color="blue">{tag}</Tag>
+                            ))}
+                          </Space>
+                          <div className="mt-4 flex justify-between items-center text-sm text-gray-500">
+                            <span><CalendarOutlined className="mr-1" /> {formatDate(blog.createdAt)}</span>
+                            <span><UserOutlined className="mr-1" /> {blog.author}</span>
+                          </div>
+                        </>
+                      }
+                    />
+                    <Link to={`/blogs/${blog._id}`} className="mt-4 inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
+                      Xem Thêm
+                      <EyeOutlined className="ml-2" />
+                    </Link>
+                  </Card>
                 </Col>
-              )}
+              ))}
             </Row>
             {totalBlogs > pageSize && (
               <div className="mt-8 flex justify-center">
