@@ -14,6 +14,9 @@ export const checkoutSession = async (req, res) => {
       product_data: {
         name: item.name,
         images: [item.image ?? ""],
+        metadata: {
+          productId: item.productId,
+        },
       },
       unit_amount: item.price,
       tax_behavior: "exclusive",
@@ -78,11 +81,13 @@ export const createStripeOrder = async (session) => {
           ...item,
           image: product.images[0] ?? "",
           name: product.name,
+          productId: product.metadata.productId,
         });
       }
     }
 
     const dataItems = detailedLineItems.map((item) => ({
+      productId: item.productId,
       name: item.name,
       quantity: item.quantity,
       price: item.amount_total,
