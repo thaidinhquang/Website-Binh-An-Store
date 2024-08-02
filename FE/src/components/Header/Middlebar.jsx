@@ -22,7 +22,7 @@ const Middlebar = ({ className }) => {
             <div className="flex justify-between items-center h-full">
               <div>
                 <Link to={'/'}>
-                  <span className="text-lg font-semibold ml-2 text-gray-800">Bình An</span>
+                <h1 className="text-[22px] font-bold text-qblack italic">Bình An Store</h1>
                 </Link>
               </div>
               {/* <div className="w-[517px] h-[44px]">
