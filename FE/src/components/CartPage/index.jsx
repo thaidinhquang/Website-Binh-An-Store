@@ -7,8 +7,6 @@ import BreadcrumbCom from "../UI/BreadcrumbCom";
 import PageTitle from "../UI/PageTitle";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../Auth/core/Auth";
-import { useQuery } from "@tanstack/react-query";
-import instance from "../../config/axios";
 
 
 
@@ -16,13 +14,7 @@ const CartPage = ({ cart = true, className }) => {
   const [isLoadingItem, setIsLoadingItem] = useState(false);
   const [items, setItems] = useState([]);
   const { data, isLoading } = useTanstackQuery("cart");
-  const { data: attributes, isLoading: attributesLoading } = useQuery({
-    queryKey: ["attributes"],
-    queryFn: async () => {
-      const { data } = await instance.get(`/attributes`);
-      return data;
-    },
-  });
+
   const {
     data: cartTotal,
     isLoading: isLoadingCartTotal,
@@ -137,10 +129,10 @@ const CartPage = ({ cart = true, className }) => {
           </div>
         </div>
       ) : (
-        <div className="cart-page-wrapper w-full bg-white pb-[60px]">
+        <div className="cart-page-wrapper w-full  bg-white pb-[60px]">
           <div className="w-full">
             <PageTitle
-              title="Your Cart"
+              title="Giỏ hàng"
               breadcrumb={[
                 { name: "home", path: "/" },
                 { name: "cart", path: "/cart" },
@@ -178,16 +170,17 @@ const CartPage = ({ cart = true, className }) => {
                         {!data.products.length ? (
                           <tr>
                             <td colSpan="6" className="text-center py-4">
-                              No product in cart
+                              Không có sản phẩm !
                             </td>
                           </tr>
                         ) : (
                           data.products.map((item, index) => {
-                            const productAttributes = attributes?.flatMap(attr =>
-                              attr.values.filter(value =>
-                                item.attributesId.includes(value._id)
+                            const productAttributes = item.attributesId.map(attr => ({
+                              ...attr,
+                              values: attr.values.map(valueId =>
+                                item.valuesId.find(value => value._id === valueId)
                               )
-                            );
+                            }));
                             return (
                             <tr
                               key={index}
@@ -211,25 +204,19 @@ const CartPage = ({ cart = true, className }) => {
                                     />
                                   </div>
                                   <div className="flex-1 flex flex-col">
-                                  <p className="font-medium text-[15px] text-qblack">
-                                  
-                                  
-                                  {item.productId.name}
-                                  {attributesLoading ? (
-                                    <p>...</p>
-                                  ) : (
+                                    <p className="font-medium text-[15px] text-qblack">
+                                      {item.productId.name}
+                                    </p>
                                     <div>
-                                      {productAttributes?.length > 0 ? (
-                                        <p className="mt-2 text-gray-500 text-sm">
-                                          {productAttributes.map(attr => attr.name).join(", ")}
-                                        </p>
-                                      ) : (
-                                        <p>No attributes available</p>
-                                      )}
+                                      {productAttributes.map(attr => (
+                                        <div key={attr._id}>
+                                          <p className="mt-2 text-gray-500 text-sm">
+                                            {attr.name}, {attr.values.map(val => val?.name)}
+                                          </p>
+                                        </div>
+                                      ))}
                                     </div>
-                                  )}
-                                  </p>
-                                </div>
+                                  </div>
                                 </div>
                               </td>
 

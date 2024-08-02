@@ -1,22 +1,13 @@
 import { Link } from "react-router-dom";
 import { useTanstackMutation, useTanstackQuery } from "../../common/hooks/useTanstackQuery";
-import { useQuery } from "@tanstack/react-query";
-import instance from "../../config/axios";
 import { useState, useEffect } from "react";
 
 const Cart = ({ className, type }) => {
-  const { data: cartData, isLoading: isLoadingCart, isError: isCartError } = useTanstackQuery('cart');
-  const { data: cartTotal, isLoading: isLoadingCartTotal } = useTanstackQuery('cart/total');
+  const { data: cartData } = useTanstackQuery('cart');
+  const { data: cartTotal } = useTanstackQuery('cart/total');
   const { mutate: removeProduct } = useTanstackMutation({
     path: `cart/remove-item`,
     action: "CREATE",
-  });
-  const { data: attributes, isLoading: attributesLoading, isError: attributesError } = useQuery({
-    queryKey: ["attributes"],
-    queryFn: async () => {
-      const { data } = await instance.get(`/attributes`);
-      return data;
-    },
   });
 
   const [products, setProducts] = useState([]);
@@ -39,14 +30,6 @@ const Cart = ({ className, type }) => {
     }).format(price);
   };
 
-  if (isLoadingCart || isLoadingCartTotal || attributesLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isCartError || attributesError) {
-    return <div>Error loading cart data</div>;
-  }
-
   return (
     <div>
       <div
@@ -64,12 +47,6 @@ const Cart = ({ className, type }) => {
                 </li>
               ) : (
                 products.map((item, index) => {
-                  const productAttributes = attributes?.flatMap(attr =>
-                    attr.values.filter(value =>
-                      item.attributesId.includes(value._id)
-                    )
-                  );
-
                   return (
                     <li className="w-full h-full flex justify-between" key={index}>
                       <div className="flex space-x-[6px] justify-center items-center px-4 my-[20px]">
@@ -79,25 +56,17 @@ const Cart = ({ className, type }) => {
                             className="w-full h-full object-cover"
                             alt={item.productId.name}
                           />
-                          
                         </div>
                         <div className="flex-1 flex flex-col justify-center">
                           <p className="title mb-2 text-[13px] font-600 text-qblack leading-4 line-clamp-2 hover:text-blue-600">
                             {item.productId.name}
                             <span className="text-gray-400"> * {item.quantity}</span>
-                            {attributesLoading ? (
-                              <p>...</p>
-                            ) : (
-                              <p>
-                                {productAttributes?.length > 0 ? (
-                                  <p className="mt-2 text-gray-500 text-xs">
-                                    {productAttributes.map(attr => attr.name).join(", ")}
-                                  </p>
-                                ) : (
-                                  <p></p>
-                                )}
-                              </p>
-                            )}
+                            <p className="mt-2 text-gray-500 text-xs">
+                              {item.attributesId.map(attr => attr.name).join(", ")}
+                            </p>
+                            <p className="mt-1 text-gray-500 text-xs">
+                              {item.valuesId.map(val => val.name).join(", ")}
+                            </p>
                           </p>
                           <p className="price">
                             <span className="offer-price text-qred font-600 text-[15px] ">

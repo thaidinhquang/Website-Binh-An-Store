@@ -21,7 +21,11 @@ const cartSchema = new Schema(
                     required: true,
                     min:1
                 },
-                attributesId:{
+               attributesId: {
+                    type: [String],
+                    required: true,
+                },
+                valuesId: {
                     type: [String],
                     required: true,
                 },

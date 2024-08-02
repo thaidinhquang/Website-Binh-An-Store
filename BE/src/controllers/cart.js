@@ -3,7 +3,19 @@ import Cart from "../models/Cart.js";
 export const getCartByUserId = async (req, res, next) => {
     try {
         const userId = req.user._id;
-        let cart = await Cart.findOne({ userId }).populate("products.productId");
+        let cart = await Cart.findOne({ userId })
+            .populate({
+                path: "products.productId",
+                model: "Product",
+            })
+            .populate({
+                path: "products.attributesId",
+                model: "Attribute",
+            })
+            .populate({
+                path: "products.valuesId",
+                model: "ValueAttribute",
+            });
 
         if (!cart) {
             cart = new Cart({ userId, products: [] });
@@ -17,33 +29,32 @@ export const getCartByUserId = async (req, res, next) => {
 }
 
 
+
 export const addItemToCart = async (req, res, next) => {
     try {
         const userId = req.user._id;
-        const { productId, quantity, attributesId } = req.body;
+        const { productId, quantity, attributesId, valuesId } = req.body;
         
         if (quantity <= 0) {
             return res.status(400).json({ message: "Số lượng phải lớn hơn 0" });
-        }
-        if (!attributesId || !Array.isArray(attributesId) || attributesId.length === 0) {
-            return res.status(400).json({ message: "Bạn phải chọn ít nhất một thuộc tính" });
         }
 
         let cart = await Cart.findOne({ userId });
         if (!cart) {
             cart = new Cart({
                 userId,
-                products: [{ productId, quantity, attributesId }]
+                products: [{ productId, quantity, attributesId, valuesId }]
             });
         } else {
             const productIndex = cart.products.findIndex(product => 
                 product.productId.toString() === productId && 
-                JSON.stringify(product.attributesId) === JSON.stringify(attributesId)
+                JSON.stringify(product.attributesId) === JSON.stringify(attributesId) &&
+                JSON.stringify(product.valuesId) === JSON.stringify(valuesId)
             );
             if (productIndex !== -1) {
                 cart.products[productIndex].quantity += quantity;
             } else {
-                cart.products.push({ productId, quantity, attributesId });
+                cart.products.push({ productId, quantity, attributesId, valuesId });
             }
         }
 
@@ -87,7 +98,7 @@ export const removeItemFromCart = async (req, res, next) => {
 export const updateItemInCart = async (req, res, next) => {
     try {
         const userId = req.user._id;
-        const { productId, quantity, attributesId } = req.body;
+        const { productId, quantity, attributesId, valuesId } = req.body;
 
         if (quantity <= 0) {
             return res.status(400).json({ message: "Số lượng phải lớn hơn 0" });
@@ -109,9 +120,27 @@ export const updateItemInCart = async (req, res, next) => {
         if (attributesId) {
             cart.products[productIndex].attributesId = attributesId;
         }
+        if (valuesId) {
+            cart.products[productIndex].valuesId = valuesId;
+        }
 
         await cart.save();
-        return res.status(200).json({ cart, message: "Mặt hàng được cập nhật vào giỏ hàng thành công" });
+
+        const updatedCart = await Cart.findOne({ userId })
+            .populate({
+                path: "products.productId",
+                model: "Product",
+            })
+            .populate({
+                path: "products.attributesId",
+                model: "Attribute",
+            })
+            .populate({
+                path: "products.valuesId",
+                model: "ValueAttribute",
+            });
+
+        return res.status(200).json({ data: updatedCart, message: "Mặt hàng được cập nhật vào giỏ hàng thành công" });
     } catch (error) {
         next(error);
     }
