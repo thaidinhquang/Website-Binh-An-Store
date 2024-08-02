@@ -114,11 +114,12 @@ const handleAddToCart = (event) => {
 
               <img src={product.image} alt={product.name} className="object-contain w-full" />
 
-              <div className="w-[80px] h-[80px] rounded-full bg-qyellow text-qblack flex justify-center items-center text-xl font-medium absolute left-[30px] top-[30px]">
+             {getStatus(product.createdAt) === 0 && (
+  <div className="w-[80px] h-[80px] rounded-full bg-qyellow text-qblack flex justify-center items-center text-xl font-medium absolute left-[30px] top-[30px]">
+    New
+  </div>
+)}
 
-                <span>{getStatus(product.createdAt) === 0 ? "New" : ""}</span>
-
-              </div>
 
             </div>
 
