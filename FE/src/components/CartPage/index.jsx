@@ -43,8 +43,11 @@ const CartPage = ({ cart = true, className }) => {
   const { currentUser } = useContext(AuthContext);
 
   const calculateTotalPrice = (item) => {
-    return item.productId.price * item.quantity;
+    const basePrice = item.productId.price * item.quantity;
+    const valuesPrice = item.valuesId.reduce((total, value) => total + value.price, 0) * item.quantity;
+    return basePrice + valuesPrice;
   };
+  
 
   const updateProduct = (product, action) => {
     const productId = product.productId._id;

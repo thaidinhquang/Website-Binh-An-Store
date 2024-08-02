@@ -23,11 +23,16 @@ const Cart = ({ className, type }) => {
     setProducts((prevProducts) => prevProducts.filter(item => item.productId._id !== productId));
   };
 
+  const calculateTotalPrice = (item) => {
+    const basePrice = item.productId.price * item.quantity;
+    const valuesPrice = item.valuesId.reduce((total, value) => total + value.price, 0) * item.quantity;
+    return basePrice + valuesPrice;
+  };
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
       currency: 'VND'
-    }).format(price);
+    }).format(price); 
   };
 
   return (
@@ -58,19 +63,19 @@ const Cart = ({ className, type }) => {
                           />
                         </div>
                         <div className="flex-1 flex flex-col justify-center">
-                          <p className="title mb-2 text-[13px] font-600 text-qblack leading-4 line-clamp-2 hover:text-blue-600">
+                          <div className="title mb-2 text-[13px] font-600 text-qblack leading-4 line-clamp-2 hover:text-blue-600">
                             {item.productId.name}
                             <span className="text-gray-400"> * {item.quantity}</span>
-                            <p className="mt-2 text-gray-500 text-xs">
+                            <div className="mt-2 text-gray-500 text-xs">
                               {item.attributesId.map(attr => attr.name).join(", ")}
-                            </p>
-                            <p className="mt-1 text-gray-500 text-xs">
+                            </div>
+                            <div className="mt-1 text-gray-500 text-xs">
                               {item.valuesId.map(val => val.name).join(", ")}
-                            </p>
-                          </p>
+                            </div>
+                          </div>
                           <p className="price">
                             <span className="offer-price text-qred font-600 text-[15px] ">
-                              {formatPrice(item.productId.price)}
+                            {formatPrice(calculateTotalPrice(item))}
                             </span>
                           </p>
                         </div>

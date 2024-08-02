@@ -182,16 +182,24 @@ export const getCartCount = async (req, res, next) => {
 export const getCartTotal = async (req, res, next) => {
     try {
         const userId = req.user._id;
-        const cart = await Cart.findOne({ userId }).populate("products.productId");
+        const cart = await Cart.findOne({ userId }).populate("products.productId").populate("products.valuesId");
         if (!cart) {
             return res.status(404).json({ message: "Không tìm thấy giỏ hàng" });
         }
-        const total = cart.products.reduce((acc, product) => acc + product.productId.price * product.quantity, 0);
+
+        // Tính tổng giá của giỏ hàng bao gồm cả giá của valuesId
+        const total = cart.products.reduce((acc, product) => {
+            const productPrice = product.productId.price;
+            const valuesPrice = product.valuesId.reduce((sum, value) => sum + value.price, 0);
+            return acc + (productPrice + valuesPrice) * product.quantity;
+        }, 0);
+
         return res.status(200).json({ data: total });
     } catch (error) {
         next(error);
     }
 }
+
 
 export const increeaseItemQuantity = async (req, res, next) => {
     try {
