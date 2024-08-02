@@ -37,7 +37,7 @@ import Wishlist from "../components/Wishlist/Wishlist";
 
 import OrderProfile from "../components/Profile/Order/Orders";
 import DetailOrderUser from "../components/Profile/Order/DetailOrder";
-import ReviewsProduct from "../components/Reviews/Reviews";
+import ProductReviews from "../components/Reviews/SingleProduct";
 
 
 
@@ -49,7 +49,7 @@ const Router = () => {
           <Route index element={<Home />} />
           <Route path="detail/:id" element={<SingleProduct />} />
           <Route path="about" element={<About />} />
-          <Route path="review/:id" element={<ReviewsProduct/>} />
+          <Route path="review/:id" element={<ProductReviews/>} />
           <Route
             path="cart"
             element={
