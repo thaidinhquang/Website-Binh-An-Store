@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { axiosDelete, axiosGet, axiosPatch, axiosPost, axiosPut } from "../../config/axios";
 import { useForm } from "react-hook-form";
@@ -54,7 +54,6 @@ export const useTanstackMutation = ({
         return data.active ? await axiosDelete(`${path}/${data._id}`) : await axiosDelete(`${path}/restore/${data._id}`);
       } else if (action === "UPLOAD") {
         const url = await uploadFileCloudinary(data)
-        console.log(url);
         return url;
       }
       return null;

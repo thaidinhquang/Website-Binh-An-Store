@@ -21,8 +21,8 @@ const AttributeList = () => {
         queryKey: ["ATTRIBUTE", { active, page, sort, query }],
         queryFn: async () => {
             const { data } = await instance.get(`/attributes`, { params: { active, page, sort, query } });
-            console.log("API response:", data);
             return data;
+
         },
     });
 

@@ -4,16 +4,6 @@ import ViewMoreTitle from '../UI/ViewMoreTitle';
 import Product from './Product';
 
 const ProductNew = () => {
-  const { data, isLoading } = useTanstackQuery('products', {
-    limit: 4,
-    sort: '-createdAt',
-    active: true
-  });
-  const { mutate, isPending } = useTanstackMutation({
-    path: `cart/add-item`,
-    action: "CREATE",
-  });
-  if (isLoading) return <p>Loading...</p>;
   return (
     <div className="products-page-wrapper w-full">
       <div className="container-x mx-auto">
@@ -25,11 +15,7 @@ const ProductNew = () => {
         </div>
         <div className="w-full lg:flex lg:space-x-5">
           <div className="flex-1">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 mb-40">
-              {data?.docs?.length > 0 ? data.docs.map((product, index) => (
-                <Product key={product._id} product={product} mutate={mutate} isPending={isPending} />
-              )) : <p>Không có sản phẩm nào</p>}
-            </div>
+            <Product limit={4} className={'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 mb-40'} />
           </div>
         </div>
       </div>

@@ -36,6 +36,7 @@ const DashBoard = () => {
               { to: "/admin/orders", icon: <IcoCart />, text: "Quản lý đơn hàng" },
               { to: "/admin/attribute", icon: <IcoCart />, text: "Quản lý thuộc tính" },
               { to: "/admin/brands", icon: <IcoCart />, text: "Quản lý nhãn hàng" },
+              { to: "/admin/blogs", icon: <IcoCart />, text: "Quản lý blogs" },
               { to: "/", icon: <IcoLove />, text: "Website", textColor: "text-green-500" }
             ].map(({ to, icon, text, textColor = "text-qgray" }) => (
               <div

@@ -32,8 +32,19 @@ import BrandList from "../components/Admin/Brand/BrandList";
 import BrandForm from "../components/Admin/Brand/BrandForm";
 import OrderAdmin from "../components/Admin/order/Orders";
 import DetailOrder from './../components/Admin/order/DetailOrder';
+
+import Wishlist from "../components/Wishlist/Wishlist";
+
 import OrderProfile from "../components/Profile/Order/Orders";
 import DetailOrderUser from "../components/Profile/Order/DetailOrder";
+import ProductReviews from "../components/Reviews/SingleProduct";
+import DetailBlogPage from "../components/Blog/DetailBlogPage";
+import AllBlogPage from "../components/Blog/AllBlogPage";
+import BlogList from "../components/Admin/Blog/BlogList";
+import BlogForm from "../components/Admin/Blog/BlogForm";
+import BlogEdit from "../components/Admin/Blog/BlogEdit";
+
+
 
 const Router = () => {
   return (
@@ -43,11 +54,22 @@ const Router = () => {
           <Route index element={<Home />} />
           <Route path="detail/:id" element={<SingleProduct />} />
           <Route path="about" element={<About />} />
+          <Route path="review/:id" element={<ProductReviews/>} />
+          <Route path="blogs" element={<AllBlogPage />} />
+          <Route path="/blogs/:id" element={<DetailBlogPage />} />
           <Route
             path="cart"
             element={
               <LoginRoute>
                 <CartPage />
+              </LoginRoute>
+            }
+          />
+          <Route
+            path="wishlist"
+            element={
+              <LoginRoute>
+                <Wishlist />
               </LoginRoute>
             }
           />
@@ -130,6 +152,12 @@ const Router = () => {
             <Route path="add" element={<BrandForm />} />
             <Route path="edit/:id" element={<BrandForm />} />
           </Route>
+          <Route path="blogs">
+          <Route index element={<BlogList />} />
+          <Route path="add" element={<BlogForm />} />
+          <Route path="edit/:id" element={<BlogEdit />} />
+          </Route>
+          
         </Route>
         <Route path="*" element={<NotfoundPage />} />
       </Routes>

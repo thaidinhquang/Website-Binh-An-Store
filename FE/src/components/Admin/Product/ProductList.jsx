@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 import Pageination from "../../UI/Pagination";
 import { useHookSearch } from "../../../common/hooks/useSearch";
 import { useForm } from "react-hook-form";
+import { Space } from "antd";
 
 const ProductList = () => {
   const search = new URLSearchParams(useLocation().search);
@@ -12,9 +13,13 @@ const ProductList = () => {
   const sort = search.get('sort') || '';
   const query = search.get('query') || '';
   const active = search.get('active') || '';
+  const id = search.get('id') || '';
   const form = useForm();
   const useSearch = useHookSearch();
-  const { data, isLoading, refetch } = useTanstackQuery('products', { active, page, sort, query })
+
+  const { data, isLoading, refetch } = useTanstackQuery('products', { active, page, sort, name, id })
+  console.log(data)
+
   const { mutate } = useTanstackMutation({
     path: `products`,
     action: "DELETE",
@@ -40,7 +45,9 @@ const ProductList = () => {
   };
 
   useEffect(() => {
-    form.reset({ query, sort, page, active });
+
+    form.reset({ name, sort, page, active ,id });
+
     const handleUserEditing = (data) => {
       setListUserOnEditRoute(data);
     };
@@ -50,7 +57,9 @@ const ProductList = () => {
 
   useEffect(() => {
     refetch()
-  }, [active, page, sort, query]);
+
+  }, [active, page, sort, name,id]);
+
 
   const searchForm = (data) => {
     useSearch(data, '/admin/products')
@@ -59,6 +68,7 @@ const ProductList = () => {
   if (isLoading) return <div className="flex justify-center items-center h-screen"><div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div></div>;
 
   return (
+
     <div className="container mx-auto px-4 sm:px-8">
       <div className="py-8">
         <div className="flex flex-col md:flex-row justify-between items-center mb-6">
@@ -186,6 +196,7 @@ const ProductList = () => {
             <Pageination data={data} />
           </div>
         </div>
+
       </div>
     </div>
   );
