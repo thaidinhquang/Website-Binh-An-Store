@@ -9,6 +9,10 @@ const ValueAttributeSchema = new Schema(
             type: Number,
             // required: true,
         },
+        active: {
+            type: Boolean,
+            default: true,
+          },
         quantity: {
             type: Number,
             // required: true,
@@ -25,6 +29,10 @@ const AttributeSchema = new Schema(
             required: true,
             unique: true,
         },
+        active: {
+            type: Boolean,
+            default: true,
+          },
         values: [
             {
                 type: Schema.Types.ObjectId,

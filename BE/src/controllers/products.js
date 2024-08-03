@@ -14,14 +14,17 @@ export const getAllProduct = async (req, res, next) => {
       populate:'brand'
     };
     let query = {};
+    if (req.query.id) {
+      query._id = req.query.id;
+    }
     if (req.query.name) {
       query.name = { $regex: new RegExp(req.query.name, 'i') };
     }
     if (req.query.slug) {
       query.slug = { $regex: new RegExp(req.query.slug, 'i') };
     }
-    if (req.query.category) {
-      const categoryIds = req.query.category.split(',');
+    if (req.query.categories) {
+      const categoryIds = req.query.categories.split(',');
       query.category = { $in: categoryIds };
     } 
     if (req.query.brand) {
@@ -30,6 +33,10 @@ export const getAllProduct = async (req, res, next) => {
     }
     if (req.query.active) {
       query.active = req.query.active;
+    }
+    
+    if (req.query.id) {
+      query._id = req.query.id;
     }
     const data = await Product.paginate(query, options);
     return !data ? res.status(400).json({ message: "Khong tim thay san pham nao!" }) : res.status(200).json({ data, message: "Get all product successfully"});
@@ -60,7 +67,7 @@ export const getDetailProduct = async (req, res, next) => {
 export const deleteProduct = async (req, res, next) => {
   try {
     const data = await Product.findByIdAndUpdate(req.params.id, { active: false }, { new: true });
-    return !data ? res.status(400).json({ message: "Xoa that bai!" }) : res.status(200).json({ data, message: "Xoa thanh cong!"})
+    return !data ? res.status(400).json({ message: "Thất bại!" }) : res.status(200).json({ data, message: "Đã tắt trạng thái hoạt động của sản phẩm!"})
   } catch (error) {
     next(error)
   }
@@ -69,7 +76,7 @@ export const deleteProduct = async (req, res, next) => {
 export const restoreProduct = async (req, res, next) => {
   try {
     const data = await Product.findByIdAndUpdate(req.params.id, { active: true }, { new: true });
-    return !data ? res.status(400).json({ message: "Khoi phuc that bai!" }) : res.status(200).json({ data, message: "Khoi phuc thanh cong!"})
+    return !data ? res.status(400).json({ message: "Khoi phuc that bai!" }) : res.status(200).json({ data, message: "Đã bật trạng thái hoạt động của sản phẩm!"})
   } catch (error) {
     next(error)
   }

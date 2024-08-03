@@ -5,25 +5,20 @@ import User from "../models/User.js";
 // @Get total statistics
 export const commonStatistics = async (req, res) => {
   try {
-    let year = new Date().getFullYear();
-    let month = new Date().getMonth() + 1;
+    // Get the current year and month or use query parameters
+    const year = parseInt(req.query.year) || new Date().getFullYear();
+    const month = parseInt(req.query.month) || new Date().getMonth() + 1;
 
     const totalOrders = await Order.countDocuments();
     const totalProducts = await Product.countDocuments();
     const totalUsers = await User.countDocuments();
 
-    if (req.query.year) {
-      year = req.query.year;
-    }
-
-    if (req.query.month) {
-      month = req.query.month;
-    }
-
+    // Define the start and end dates for the query
     const startDate = new Date(`${year}-${month}-01`);
     const endDate = new Date(startDate);
     endDate.setMonth(endDate.getMonth() + 1);
 
+    // Aggregate order statistics by day
     const stats = await Order.aggregate([
       {
         $match: {
@@ -61,37 +56,32 @@ export const commonStatistics = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Statistics",
+      message: "Statistics retrieved successfully.",
       metadata: { totalOrders, totalProducts, totalUsers, stats },
     });
   } catch (error) {
-    return res.status(500).json({ message: "Something wen wrong..." });
+    console.error(error); // Log error for debugging
+    return res.status(500).json({ message: "An error occurred while retrieving statistics." });
   }
 };
 
-// @Get  orders statistics by months
+// @Get orders statistics by month
 export const orderStatisticsByMonth = async (req, res) => {
-  let year = new Date().getFullYear();
-
-  if (req.query.year) {
-    year = req.query.year;
-  }
+  const year = parseInt(req.query.year) || new Date().getFullYear();
 
   if (!year) {
-    return res.status(400).json({ message: "Year is required" });
+    return res.status(400).json({ message: "Year is required." });
   }
-
-  let matchCondition = {
-    createdAt: {
-      $gte: new Date(`${year}-01-01`),
-      $lt: new Date(`${year}-12-31`),
-    },
-  };
 
   try {
     const stats = await Order.aggregate([
       {
-        $match: matchCondition,
+        $match: {
+          createdAt: {
+            $gte: new Date(`${year}-01-01`),
+            $lt: new Date(`${year + 1}-01-01`),
+          },
+        },
       },
       {
         $group: {
@@ -117,15 +107,18 @@ export const orderStatisticsByMonth = async (req, res) => {
       },
     ]);
 
-    res
-      .status(200)
-      .json({ message: "Statistics", status: true, metadata: { stats } });
+    return res.status(200).json({
+      success: true,
+      message: "Monthly statistics retrieved successfully.",
+      metadata: { stats },
+    });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    console.error(error); // Log error for debugging
+    return res.status(500).json({ message: "An error occurred while retrieving monthly statistics." });
   }
 };
 
-//@Get orders statistics by year
+// @Get orders statistics by year
 export const ordersStatisticsByYear = async (req, res) => {
   try {
     const stats = await Order.aggregate([
@@ -147,10 +140,13 @@ export const ordersStatisticsByYear = async (req, res) => {
       },
     ]);
 
-    return res
-      .status(200)
-      .json({ message: "Statistics", status: true, metadata: { stats } });
+    return res.status(200).json({
+      success: true,
+      message: "Yearly statistics retrieved successfully.",
+      metadata: { stats },
+    });
   } catch (error) {
-    return res.status(500).json({ message: "Server error" });
+    console.error(error); // Log error for debugging
+    return res.status(500).json({ message: "An error occurred while retrieving yearly statistics." });
   }
 };

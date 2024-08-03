@@ -16,7 +16,6 @@ const AttributeDetails = () => {
       return response.data;
     },
   });
-  // console.log("Dữ liệu trả về từ API:", data);
   if (isLoading) return <div>Loading...</div>;
 
   // Đảm bảo rằng data và data.values không phải là null hoặc undefined

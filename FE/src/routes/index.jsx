@@ -17,7 +17,6 @@ import NotfoundPage from "../components/layout/Notfound";
 import { Profile } from "../components/Profile/Profile";
 import UserProfile from "../components/Profile/User/UserProfile";
 import Address from "../components/Profile/Address/Address";
-import Orders from "../components/Profile/Order/Orders";
 import ChangePassword from "../components/Profile/ChangePassword/ChangePassword";
 import UserEdit from "../components/Profile/User/UserEdit";
 import LayoutWebsite from "../components/layout/Website";
@@ -31,14 +30,21 @@ import AttributeEditValue from "../components/Admin/Attribute/AttributeEditValue
 import AttributeDetails from "../components/Admin/Attribute/AttributeDetails";
 import BrandList from "../components/Admin/Brand/BrandList";
 import BrandForm from "../components/Admin/Brand/BrandForm";
-import OrderDetail from "../components/Profile/Order/OrderDetail";
 import OrderAdmin from "../components/Admin/order/Orders";
 import DetailOrder from './../components/Admin/order/DetailOrder';
+
+import Wishlist from "../components/Wishlist/Wishlist";
+
+import OrderProfile from "../components/Profile/Order/Orders";
+import DetailOrderUser from "../components/Profile/Order/DetailOrder";
+import ProductReviews from "../components/Reviews/SingleProduct";
+import DetailBlogPage from "../components/Blog/DetailBlogPage";
 import AllBlogPage from "../components/Blog/AllBlogPage";
 import BlogList from "../components/Admin/Blog/BlogList";
 import BlogForm from "../components/Admin/Blog/BlogForm";
-import DetailBlogPage from "../components/Blog/DetailBlogPage";
 import BlogEdit from "../components/Admin/Blog/BlogEdit";
+
+
 
 const Router = () => {
   return (
@@ -48,11 +54,22 @@ const Router = () => {
           <Route index element={<Home />} />
           <Route path="detail/:id" element={<SingleProduct />} />
           <Route path="about" element={<About />} />
+          <Route path="review/:id" element={<ProductReviews/>} />
+          <Route path="blogs" element={<AllBlogPage />} />
+          <Route path="/blogs/:id" element={<DetailBlogPage />} />
           <Route
             path="cart"
             element={
               <LoginRoute>
                 <CartPage />
+              </LoginRoute>
+            }
+          />
+          <Route
+            path="wishlist"
+            element={
+              <LoginRoute>
+                <Wishlist />
               </LoginRoute>
             }
           />
@@ -65,8 +82,6 @@ const Router = () => {
             }
           />
           <Route path="shop" element={<AllProductPage />} />
-          <Route path="blogs" element={<AllBlogPage />} />
-          <Route path="/blogs/:id" element={<DetailBlogPage />} />
           <Route
             path="/profile"
             element={
@@ -78,9 +93,11 @@ const Router = () => {
             <Route path="" element={<UserProfile />} />
             <Route path="address" element={<Address />} />
             <Route path="orders">
-              <Route index element={<Orders />} />
-              <Route path="detail/:id" element={<OrderDetail />} />
+            <Route index element={<OrderProfile />} />
+            <Route path=":id" element={<DetailOrderUser />} />
             </Route>
+
+          
             <Route path="edit" element={<UserEdit />} />
             <Route path="change-password" element={<ChangePassword />} />
           </Route>
@@ -119,7 +136,7 @@ const Router = () => {
             <Route path="edit/:id" element={<UserForm />} />
           </Route>
           <Route path="orders">
-            <Route index element={<OrderAdmin />} />
+            <Route index element={<OrderAdmin/>} />
             <Route path=":id" element={<DetailOrder />} />
           </Route>
           <Route path="attribute">
@@ -135,9 +152,12 @@ const Router = () => {
             <Route path="add" element={<BrandForm />} />
             <Route path="edit/:id" element={<BrandForm />} />
           </Route>
-          <Route path="blogs" element={<BlogList />} />
-          <Route path="blogs/add" element={<BlogForm />} />
-          <Route path="blogs/edit/:id" element={<BlogEdit />} />
+          <Route path="blogs">
+          <Route index element={<BlogList />} />
+          <Route path="add" element={<BlogForm />} />
+          <Route path="edit/:id" element={<BlogEdit />} />
+          </Route>
+          
         </Route>
         <Route path="*" element={<NotfoundPage />} />
       </Routes>

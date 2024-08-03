@@ -12,7 +12,6 @@ const OrderDetail = () => {
     queryKey: ["ORDER_DETAILS", id],
     queryFn: async () => {
       const { data } = await instance.get(`orders/${id}`);
-      console.log(order);
       return data.metadata;
     },
   });
@@ -45,8 +44,6 @@ const OrderDetail = () => {
     },
     enabled: !!order?.items[0]?.name, // Only run query if order item name exists
   });
-
-  console.log(products);
   return (
     <div className=" mx-auto p-4 bg-white shadow-md rounded-lg">
       <Space className="font-semibold text-lg rounded-md bg-[#E9E9E9] w-full p-4">
