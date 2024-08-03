@@ -1,4 +1,3 @@
-import React from "react";
 import { Table } from "antd";
 
 const TableDataDetail = ({ order }) => {
@@ -13,6 +12,13 @@ const TableDataDetail = ({ order }) => {
           subTotal: item.quantity * item.price,
         }))
       : [];
+
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+    }).format(value);
+  };
 
   const columns = [
     {
@@ -34,13 +40,16 @@ const TableDataDetail = ({ order }) => {
       title: "Giá",
       dataIndex: "price",
       key: "price",
+      render: (text) => formatCurrency(text),
     },
     {
       title: "Tổng tiền",
       dataIndex: "subTotal",
       key: "subTotal",
+      render: (text) => formatCurrency(text),
     },
   ];
+
   return (
     <Table
       dataSource={dataSource}

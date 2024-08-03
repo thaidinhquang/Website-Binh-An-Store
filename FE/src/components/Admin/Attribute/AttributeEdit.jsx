@@ -22,7 +22,6 @@ const AttributeEdit = () => {
     queryKey: ["ATTRIBUTE_DETAIL", id],
     queryFn: async () => {
       const { data } = await instance.get(`/attributes/${id}`);
-      console.log(data)
       reset(data); // Populate form with fetched data
       return data;
     },
@@ -34,7 +33,7 @@ const AttributeEdit = () => {
       return data;
     },
     onSuccess: () => {
-      toast.success("attribute đã được thêm thành công!");
+      toast.success("Attribute đã được thêm thành công!");
       navigate("/admin/attribute");
     },
     onError: () => {

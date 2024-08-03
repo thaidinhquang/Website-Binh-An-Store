@@ -54,18 +54,19 @@ export const updateAttribute = async (req, res) => {
 };
 
 // Controller để xóa một thuộc tính
-export const deleteAttribute = async (req, res) => {
+// Controller để "xóa" (vô hiệu hóa) một thuộc tính
+export const deleteAttribute = async (req, res, next) => {
     try {
-        const attribute = await Attribute.findById(req.params.id);
+        const attribute = await Attribute.findByIdAndUpdate(req.params.id, { active: false }, { new: true });
         if (!attribute) {
             return res.status(404).json({ message: "Attribute not found" });
         }
-        await attribute.remove();
-        res.json({ message: "Attribute deleted" });
+        res.status(200).json({ data: attribute, message: "Attribute deactivated" });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        next(error);
     }
 };
+
 
 //==================================== VALUE ============================================
 
@@ -117,12 +118,14 @@ export const getValueAttributeById = async (req, res) => {
 // Controller để cập nhật một giá trị của thuộc tính
 export const updateValueAttribute = async (req, res) => {
     try {
-        const { name} = req.body;
+        const { name, price, quantity} = req.body;
         const value = await ValueAttributeModel.findById(req.params.id);
         if (!value) {
             return res.status(404).json({ message: "ValueAttribute not found" });
         }
         value.name = name;
+        value.price = price !== undefined ? price : value.price; // Cập nhật nếu có giá trị mới, giữ giá trị cũ nếu không có
+        value.quantity = quantity !== undefined ? quantity : value.quantity; // Cập nhật nếu có giá trị mới, giữ giá trị cũ nếu không có
         const updatedValue = await value.save();
         res.json(updatedValue);
     } catch (error) {
@@ -131,15 +134,38 @@ export const updateValueAttribute = async (req, res) => {
 };
 
 // Controller để xóa một giá trị của thuộc tính
-export const deleteValueAttribute = async (req, res) => {
+// Controller để "xóa" (vô hiệu hóa) một giá trị của thuộc tínhx
+export const deleteValueAttribute = async (req, res, next) => {
     try {
-        const value = await ValueAttributeModel.findById(req.params.id);
+        const value = await ValueAttributeModel.findByIdAndUpdate(req.params.id, { active: false }, { new: true });
         if (!value) {
             return res.status(404).json({ message: "ValueAttribute not found" });
         }
-        await value.remove();
-        res.json({ message: "ValueAttribute deleted" });
+        res.status(200).json({ data: value, message: "ValueAttribute deactivated" });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        next(error);
     }
 };
+
+
+
+// Controller để khôi phục một thuộc tính
+export const restoreAttribute = async (req, res, next) => {
+    try {
+        const attribute = await Attribute.findByIdAndUpdate(req.params.id, { active: true }, { new: true });
+        return !attribute ? res.status(400).json({ message: "Khôi phục thất bại!" }) : res.status(200).json({ data: attribute, message: "Khôi phục thành công!" });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Controller để khôi phục một giá trị của thuộc tính
+export const restoreValueAttribute = async (req, res, next) => {
+    try {
+        const value = await ValueAttributeModel.findByIdAndUpdate(req.params.id, { active: true }, { new: true });
+        return !value ? res.status(400).json({ message: "Khôi phục thất bại!" }) : res.status(200).json({ data: value, message: "Khôi phục thành công!" });
+    } catch (error) {
+        next(error);
+    }
+  };
+  

@@ -12,13 +12,11 @@ import ProductForm from "../components/Admin/Product/ProductForm";
 import AllProductPage from "../components/Product/AllProductPage";
 import UserForm from "../components/Admin/Users/UserForm";
 import SuccessMessage from "../components/CheckoutPage/SuccessMessage";
-// import AdminOrders from "../components/Admin/order/Orders";
 import Statistics from "../components/Admin/Stats";
 import NotfoundPage from "../components/layout/Notfound";
 import { Profile } from "../components/Profile/Profile";
 import UserProfile from "../components/Profile/User/UserProfile";
 import Address from "../components/Profile/Address/Address";
-import Orders from "../components/Profile/Order/Orders";
 import ChangePassword from "../components/Profile/ChangePassword/ChangePassword";
 import UserEdit from "../components/Profile/User/UserEdit";
 import LayoutWebsite from "../components/layout/Website";
@@ -32,9 +30,16 @@ import AttributeEditValue from "../components/Admin/Attribute/AttributeEditValue
 import AttributeDetails from "../components/Admin/Attribute/AttributeDetails";
 import BrandList from "../components/Admin/Brand/BrandList";
 import BrandForm from "../components/Admin/Brand/BrandForm";
-import OrderDetail from "../components/Profile/Order/OrderDetail";
-import OrderAdmin from './../components/Admin/order/Orders';
-import DetailOrder from "../components/Admin/order/DetailOrder";
+import OrderAdmin from "../components/Admin/order/Orders";
+import DetailOrder from './../components/Admin/order/DetailOrder';
+
+import Wishlist from "../components/Wishlist/Wishlist";
+
+import OrderProfile from "../components/Profile/Order/Orders";
+import DetailOrderUser from "../components/Profile/Order/DetailOrder";
+import ProductReviews from "../components/Reviews/SingleProduct";
+
+
 
 const Router = () => {
   return (
@@ -44,11 +49,20 @@ const Router = () => {
           <Route index element={<Home />} />
           <Route path="detail/:id" element={<SingleProduct />} />
           <Route path="about" element={<About />} />
+          <Route path="review/:id" element={<ProductReviews/>} />
           <Route
             path="cart"
             element={
               <LoginRoute>
                 <CartPage />
+              </LoginRoute>
+            }
+          />
+          <Route
+            path="wishlist"
+            element={
+              <LoginRoute>
+                <Wishlist />
               </LoginRoute>
             }
           />
@@ -72,8 +86,8 @@ const Router = () => {
             <Route path="" element={<UserProfile />} />
             <Route path="address" element={<Address />} />
             <Route path="orders">
-            <Route index element={<Orders />} />
-            <Route path="detail/:id" element={<OrderDetail />} />
+            <Route index element={<OrderProfile />} />
+            <Route path=":id" element={<DetailOrderUser />} />
             </Route>
 
           
@@ -115,7 +129,7 @@ const Router = () => {
             <Route path="edit/:id" element={<UserForm />} />
           </Route>
           <Route path="orders">
-            <Route index element={<OrderAdmin />} />
+            <Route index element={<OrderAdmin/>} />
             <Route path=":id" element={<DetailOrder />} />
           </Route>
           <Route path="attribute">

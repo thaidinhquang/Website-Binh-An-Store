@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import { Server } from "socket.io";
 import { listenEvent } from "./controllers/order.js";
+import { checkDeliveredOrderJob } from "./job/orderJob.js";
 
 const app = express();
 dotenv.config();
@@ -21,12 +22,18 @@ const io = new Server(server, {
     credentials: true,
   },
 });
+
 const { DB_URI, PORT } = process.env;
 
-await mongoose.connect(DB_URI).then(() => {
-  mongoose.set("strictQuery", false);
-  console.log("connect to database successfully");
-});
+await mongoose
+  .connect(DB_URI)
+  .then(() => {
+    mongoose.set("strictQuery", false);
+    console.log("connect to database successfully");
+  })
+  .then(() => {
+    checkDeliveredOrderJob();
+  });
 
 app.post("/webhook", express.raw({ type: "application/json" }), listenEvent);
 

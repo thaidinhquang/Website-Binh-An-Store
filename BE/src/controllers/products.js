@@ -2,6 +2,7 @@ import { populate } from "dotenv";
 import Category from "../models/Category.js";
 import Brand from "../models/Brand.js";
 import Product from "../models/Product.js";
+// import asyncHandler from 'express-async-handler'
 
 export const getAllProduct = async (req, res, next) => {
   try {
@@ -13,14 +14,17 @@ export const getAllProduct = async (req, res, next) => {
       populate:'brand'
     };
     let query = {};
+    if (req.query.id) {
+      query._id = req.query.id;
+    }
     if (req.query.name) {
       query.name = { $regex: new RegExp(req.query.name, 'i') };
     }
     if (req.query.slug) {
       query.slug = { $regex: new RegExp(req.query.slug, 'i') };
     }
-    if (req.query.category) {
-      const categoryIds = req.query.category.split(',');
+    if (req.query.categories) {
+      const categoryIds = req.query.categories.split(',');
       query.category = { $in: categoryIds };
     } 
     if (req.query.brand) {
@@ -29,6 +33,10 @@ export const getAllProduct = async (req, res, next) => {
     }
     if (req.query.active) {
       query.active = req.query.active;
+    }
+    
+    if (req.query.id) {
+      query._id = req.query.id;
     }
     const data = await Product.paginate(query, options);
     return !data ? res.status(400).json({ message: "Khong tim thay san pham nao!" }) : res.status(200).json({ data, message: "Get all product successfully"});
@@ -59,7 +67,7 @@ export const getDetailProduct = async (req, res, next) => {
 export const deleteProduct = async (req, res, next) => {
   try {
     const data = await Product.findByIdAndUpdate(req.params.id, { active: false }, { new: true });
-    return !data ? res.status(400).json({ message: "Xoa that bai!" }) : res.status(200).json({ data, message: "Xoa thanh cong!"})
+    return !data ? res.status(400).json({ message: "Thất bại!" }) : res.status(200).json({ data, message: "Đã tắt trạng thái hoạt động của sản phẩm!"})
   } catch (error) {
     next(error)
   }
@@ -68,7 +76,7 @@ export const deleteProduct = async (req, res, next) => {
 export const restoreProduct = async (req, res, next) => {
   try {
     const data = await Product.findByIdAndUpdate(req.params.id, { active: true }, { new: true });
-    return !data ? res.status(400).json({ message: "Khoi phuc that bai!" }) : res.status(200).json({ data, message: "Khoi phuc thanh cong!"})
+    return !data ? res.status(400).json({ message: "Khoi phuc that bai!" }) : res.status(200).json({ data, message: "Đã bật trạng thái hoạt động của sản phẩm!"})
   } catch (error) {
     next(error)
   }
@@ -86,8 +94,7 @@ export const createProduct = async (req, res, next) => {
 
     const data = await Product.create(req.body);
     await Category.findByIdAndUpdate(data.category, { $push: { products: data._id } });
-    await Brand.findByIdAndUpdate(data.brand, { $push: { products: data._id } });
-    return !data ? res.status(400).json({ message: "Create product failed!" }) : res.status(200).json({ data, message: "Create product successfully"})
+    return !data ? res.status(400).json({ message: "Thêm sản phẩm thất bại!" }) : res.status(200).json({ data, message: "Thêm sản phẩm thành công!"})
   } catch (error) {
     next(error)
   }
@@ -105,7 +112,7 @@ export const updateProduct = async (req, res, next) => {
     }
 
     const data = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    return !data ? res.status(400).json({ message: "Update product failed!" }) : res.status(200).json({ data, message: "Update product successfully"})
+    return !data ? res.status(400).json({ message: "Cập nhật sản phẩm thất bại!" }) : res.status(200).json({ data, message: "Cập nhật sản phẩm thành công!"})
   } catch (error) {
     next(error)
   }

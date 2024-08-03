@@ -9,7 +9,7 @@ export const signUp = async (req, res, next) => {
         const userExist = await User.findOne({ email });
         if (userExist) {
             return res.status(400).json({
-                message: "Email is already in use",
+                message: "Email đã được sử dụng",
             });
         }
 
@@ -21,7 +21,7 @@ export const signUp = async (req, res, next) => {
 
         const accessToken = token({ _id: user._id }, "365d");
         return res.status(201).json({
-            message: "Register successfully",
+            message: "Đăng ký thành công!",
             accessToken,
         });
     } catch (error) {
@@ -35,24 +35,24 @@ export const signIn = async (req, res, next) => {
         const userExist = await User.findOne({ email });
         if (!userExist) {
             return res.status(400).json({
-                message: "Email is not found",
+                message: "Email không tồn tại",
             });
         }
         if (userExist.active == false) {
             return res.status(400).json({
-                message: "User is not active",
+                message: "Người dùng không hoạt động",
             });
         }
         const checkPassword = await comparePassword(password, userExist.password);
         if (!checkPassword) {
             return res.status(400).json({
-                message: "Password is incorrect",
+                message: "Mật khẩu không đúng",
             });
         }
 
         const accessToken = token({ _id: userExist._id }, "365d");
         return res.status(200).json({
-            message: "Login successfully!",
+            message: "Đăng nhập thành công!",
             accessToken,
         });
     } catch (error) {
@@ -76,14 +76,14 @@ export const sendOTP = async (req, res, next) => {
         const email = req.body.email;
         if (!email) {
             return res.status(400).json({
-                message: "Email khong duoc de trong!",
+                message: "Email không được để trống!",
             });
         }
         const otp = Math.floor(100000 + Math.random() * 900000);
         const checkEmail = await User.findOne({ email });
         if (!checkEmail) {
             return res.status(400).json({
-                message: "Email khong ton tai!",
+                message: "Email không tồn tại!",
             });
         }
         const updateOTP = await User.findByIdAndUpdate(checkEmail.id, {
@@ -92,7 +92,7 @@ export const sendOTP = async (req, res, next) => {
         });
         if (!updateOTP) {
             return res.status(400).json({
-                message: "Co loi xay ra!",
+                message: "Có lỗi xảy ra!",
             });
         }
         if (sendEmail(checkEmail.email, "Đặt lại mật khẩu", `<div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
@@ -112,13 +112,13 @@ export const sendOTP = async (req, res, next) => {
     </div>
 </div>`)) {
             return res.status(200).json({
-                message: "Gui mail thanh cong!",
+                message: "Gửi email thành công!",
                 id: checkEmail.id,
             });
         }
         else {
             return res.status(400).json({
-                message: "Gui mail that bai!",
+                message: "Gửi email thất bại!",
             });
         }
     }
@@ -133,17 +133,17 @@ export const resetPassword = async (req, res, next) => {
         const checkUser = await User.findOne({ email });
         if (!checkUser) {
             return res.status(400).json({
-                message: "User khong ton tai!",
+                message: "Người dùng không tồn tại!",
             });
         }
         if (checkUser.otp === null || checkUser.otpCreatedAt === null) {
             return res.status(400).json({
-                message: "Ban chua gui OTP!",
+                message: "Bạn chưa gửi OTP!",
             });
         }
         if (checkUser.otp !== otp) {
             return res.status(400).json({
-                message: "OTP khong dung!",
+                message: "OTP không đúng!",
             });
         }
         const otpCreatedAt = new Date(checkUser.otpCreatedAt);
@@ -152,7 +152,7 @@ export const resetPassword = async (req, res, next) => {
         const diffMinutes = Math.floor((diff / 1000) / 60);
         if (diffMinutes > 60) {
             return res.status(400).json({
-                message: "OTP het han!",
+                message: "OTP đã hết hạn!",
             });
         }
         const hashPasswordUser = await hashPassword(password);
@@ -161,7 +161,7 @@ export const resetPassword = async (req, res, next) => {
         });
         if (!updatePassword) {
             return res.status(400).json({
-                message: "Co loi xay ra!",
+                message: "Có lỗi xảy ra!",
             });
         }
         const removeOTP = await User.findByIdAndUpdate(checkUser.id, {
@@ -170,12 +170,12 @@ export const resetPassword = async (req, res, next) => {
         });
         if (!removeOTP) {
             return res.status(400).json({
-                message: "Co loi xay ra!",
+                message: "Có lỗi xảy ra!",
             });
         }
         const accessToken = token({ _id: checkUser.id }, "365d");
         return res.status(201).json({
-            message: "Reset password thanh cong!",
+            message: "Đặt lại mật khẩu thành công!",
             accessToken,
         });
     }
@@ -191,7 +191,7 @@ export const changePassword = async (req, res, next) => {
         const checkPassword = await comparePassword(oldPassword, data.password);
         if (!checkPassword) {
             return res.status(400).json({
-                message: "Password cu khong dung!",
+                message: "Mật khẩu cũ không đúng!",
             });
         }
         const hashPasswordUser = await hashPassword(newPassword);
@@ -200,11 +200,11 @@ export const changePassword = async (req, res, next) => {
         });
         if (!updatePassword) {
             return res.status(400).json({
-                message: "Co loi xay ra!",
+                message: "Có lỗi xảy ra!",
             });
         }
         return res.status(200).json({
-            message: "Change password thanh cong!",
+            message: "Đổi mật khẩu thành công!",
         });
     }
     catch (error) {

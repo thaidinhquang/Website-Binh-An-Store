@@ -20,21 +20,21 @@ const ProductForm = () => {
     });
     const { currentUser } = useContext(AuthContext);
     const { data } = id ? useTanstackQuery(`products/not-populate/${id}`) : { data: null };
-    const { data: category } = useTanstackQuery(`categories`);
+    const { data: category } = useTanstackQuery(`categories`,{
+
+        active: true
+    });
     const { data: attribute } = useQuery({
         queryKey: ["ATTRIBUTE"],
         queryFn: async () => {
-            const { data } = await instance.get(`/attributes`);
-            return data;
+            const { data } = await instance.get(`/attributes`,  { active: true } );
+            return data.filter(attr => attr.active);
         },
     });
+    
+    const { data: brand } = useTanstackQuery(`brands`,{
 
-    const { data: brand } = useQuery({
-        queryKey: ["BRAND"],
-        queryFn: async () => {
-            const { data } = await instance.get(`/brands`);
-            return data?.data?.docs;
-        },
+        active: true
     });
 
     const { mutate, isPending } = useTanstackMutation({
@@ -127,10 +127,22 @@ const ProductForm = () => {
                             />
                             {form.formState.errors.name && <span className="text-red-500">{form.formState.errors.name.message}</span>}
                         </div>
+                        <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                            Giá Cũ
+                        </label>
+                        <input
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:cursor-not-allowed"
+                            {...form.register("priceOld", { required: 'Product price is required', min: { value: 0, message: 'Product price must be greater than 0' }, pattern: { value: /^[0-9]+$/, message: 'Product price must be a number' } })}
+                            disabled={location === 'detail'}
+                            type="number"
+                        />
+                        {form.formState.errors.priceOld && <span className="text-red-500">{form.formState.errors.priceOld.message}</span>}
+                    </div>
 
                         <div className="mb-4">
                             <label className="block text-gray-700 text-sm font-bold mb-2">
-                                Giá Sản Phẩm
+                                Giá Mới
                             </label>
                             <input
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:cursor-not-allowed"
@@ -238,7 +250,7 @@ const ProductForm = () => {
                                 disabled={location === 'detail'}
                             >
                             
-                                {brand?.length > 0 ? brand.map((brand) => (
+                                {brand?.docs.length > 0 ? brand.docs.map((brand) => (
                                     <option key={brand._id} value={brand._id}>
                                         {brand.name}
                                     </option>

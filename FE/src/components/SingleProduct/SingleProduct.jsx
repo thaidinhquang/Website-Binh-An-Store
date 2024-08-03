@@ -5,8 +5,9 @@ import Reviews from "./Reviews";
 import ProductView from "./ProductView";
 import { useParams } from "react-router-dom";
 
-import Product from "../icons/Product";
+
 import { useTanstackQuery } from "../../common/hooks/useTanstackQuery";
+import ProductNew from "../Product/ProductNew";
 
 const SingleProduct = () => {
   const [tab, setTab] = useState("des");
@@ -95,8 +96,8 @@ const SingleProduct = () => {
                 <BreadcrumbCom
                   paths={[
                     { name: "home", path: "/" },
-                    // { name: "single product", path: `/detail/${product?.name}` },
-                    // { name: product?.name, path: `/detail/${product?.name}` },
+                    { name: "shop", path: `` },
+                    { name: product?.name, path: `/detail/${id}` },
                   ]}
                 />
               </div>
@@ -191,10 +192,9 @@ const SingleProduct = () => {
             <div className="container-x mx-auto">
               <div className="w-full py-[60px]">
                 <h1 className="sm:text-3xl text-xl font-600 text-qblacktext leading-none mb-[30px]">
-                  Related Product
                 </h1>
                 
-                <Product/>
+                <ProductNew/>
               </div>
             </div>
           </div>

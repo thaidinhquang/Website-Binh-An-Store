@@ -1,47 +1,54 @@
-import { Link } from "react-router-dom";
-import { useCancelOrder } from "../../../common/hooks/useCancelOrder";
-// import { useConfirmOrder } from "../../../common/hooks/useConfirmOrder";
-import moment from "moment";
 import { Button, Pagination, Space, Table } from "antd";
+import moment from "moment";
+import { Link } from "react-router-dom";
+
+import { toast } from "react-toastify";
+
+import { useFinishOrder } from "../../../common/hooks/useFinishOrder";
 import { ORDER_STATUS } from "../../../constants/order";
+import CancelModal from "../../Admin/order/CancelModal";
 
 const TableData = ({ orders, setPage }) => {
-  // const confirmOrder = useConfirmOrder();
-  const cancelOrder = useCancelOrder();
+
+  const finishOrder = useFinishOrder();
 
   const dataSource = orders?.docs?.map((order) => ({
     key: order._id,
-    orderId: order?._id,
+    code: order?.code ?? order?._id,
     customer: order?.customerInfo?.name,
     paymentMethod: order?.paymentMethod?.toUpperCase(),
     orderStatus: order?.orderStatus?.toUpperCase(),
     createdAt: order?.createdAt,
     totalPrice: order?.totalPrice,
-    action: <Link to={`detail/${order._id}`}>Xem chi tiết</Link>,
+    action: <Link to={`/profile/orders/${order._id}`}>Xem chi tiết</Link>,
   }));
 
   const columns = [
     {
       title: "Mã đơn hàng",
-      dataIndex: "orderId",
-      key: "orderId",
-      // ellipsis: true,
+      dataIndex: "code",
+      key: "code",
+      ellipsis: true,
+      width: "15%",
     },
     {
       title: "Tên khách hàng",
       dataIndex: "customer",
       key: "customer",
+      width: "10%",
       sorter: (a, b) => a.customer.localeCompare(b.customer),
     },
     {
-      title: "Phương thức thanh toán",
+      title: "Thanh toán",
       dataIndex: "paymentMethod",
       key: "paymentMethod",
+      width: "10%",
     },
     {
       title: "Trạng thái",
       dataIndex: "orderStatus",
       key: "orderStatus",
+      width: "10%",
       render: (text) => {
         if (text === "DELIVERED") {
           return <span className="text-blue-500 font-semibold">{text}</span>;
@@ -58,25 +65,12 @@ const TableData = ({ orders, setPage }) => {
       dataIndex: "createdAt",
       key: "createdAt",
       defaultSortOrder: "descend",
+      width: "10%",
       sorter: (a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
       render: (value) => {
-        return moment(value).format("DD/MM/YYYY HH:mm:ss");
+        return moment(value).format(" HH:mm:ss DD/MM/YYYY");
       },
     },
-    {
-      title: "Tổng tiền",
-      dataIndex: "totalPrice",
-      key: "totalPrice",
-      render: (text) => {
-          // Format the totalPrice with currency symbol "vnd"
-          const formattedPrice = new Intl.NumberFormat('vi-VN', {
-              style: 'currency',
-              currency: 'VND'
-          }).format(text || 0);
-
-          return <span>{formattedPrice}</span>;
-      },
-  },
     {
       title: "Thao tác",
       dataIndex: "action",
@@ -84,13 +78,16 @@ const TableData = ({ orders, setPage }) => {
       width: "20%",
       render: (value, _record) => {
         const status = _record?.orderStatus?.toLowerCase();
-
         return (
           <Space>
-            
-          {status === ORDER_STATUS.PENDING && (
-              <Button onClick={() => cancelOrder.mutate(_record.orderId)}>
-                Hủy đơn hàng
+            {status === ORDER_STATUS.PENDING && (
+              <>
+                <CancelModal order={_record} />
+              </>
+            )}
+            {status === ORDER_STATUS.DELIVERED && (
+              <Button onClick={(e) => handleFinish(e, _record.key)}>
+                Nhận hàng
               </Button>
             )}
             <Button>{value}</Button>
@@ -99,6 +96,19 @@ const TableData = ({ orders, setPage }) => {
       },
     },
   ];
+
+  const handleFinish = (e, orderId) => {
+    e.preventDefault();
+
+    finishOrder.mutate(orderId, {
+      onSuccess: () => {
+        toast.success("Finish order successfully");
+      },
+      onError: () => {
+        toast.error("Finish order failed");
+      },
+    });
+  };
 
   return (
     <>
@@ -109,7 +119,7 @@ const TableData = ({ orders, setPage }) => {
         pagination={false}
         scroll={{
           y: 600,
-             }}
+        }}
       />
 
       <Space className="flex justify-end w-full mt-4">
