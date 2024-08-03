@@ -307,6 +307,58 @@ export const confirmedOrder = async (req, res) => {
   }
 };
 
+// @PATCH SHIPPING AN ORDER BY ADMIN
+export const shippingOrder = async (req, res) => {
+  try {
+    const foundedOrder = await Order.findById(req.body.orderId);
+    if (!foundedOrder) {
+      throw new Error(`Not found any order with id ${req.body.orderId}`);
+    }
+
+    if (foundedOrder.orderStatus !== ORDER_STATUS.CONFIRMED) {
+      throw new Error(
+        "This order is shipping status when it is confirmed by admin."
+      );
+    }
+
+    foundedOrder.orderStatus = ORDER_STATUS.SHIPPING;
+    await foundedOrder.save();
+
+    return res.status(200).json({
+      message: "This order is on delivery.",
+      success: true,
+    });
+  } catch (error) {
+    return console.log("Something went wrong.", error);
+  }
+};
+
+// @PATCH DELIVERED AN ORDER BY ADMIN
+
+export const deliveredOrder = async (req, res) => {
+  try {
+    const foundedOrder = await Order.findById(req.body.orderId);
+    if (!foundedOrder) {
+      throw new Error(`NOt found any order with id ${req.body.orderId}`);
+    }
+
+    if (foundedOrder.orderStatus !== ORDER_STATUS.SHIPPING) {
+      throw new Error(
+        "This order is delivered status if it is the previous shipping status."
+      );
+    }
+    foundedOrder.orderStatus = ORDER_STATUS.DELIVERED;
+    await foundedOrder.save();
+
+    return res.status(200).json({
+      message: "This order is delivered.",
+      success: true,
+    });
+  } catch (error) {
+    return console.log("Something went wrong.", error);
+  }
+};
+
 // @PATCH FINISH AN ORDER BY ADMIN
 export const finishAnOrder = async (req, res) => {
   try {

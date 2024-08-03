@@ -1,4 +1,3 @@
-import React from "react";
 import { Space, Steps } from "antd";
 import { FaUserCheck } from "react-icons/fa6";
 import { MdLocalShipping } from "react-icons/md";
@@ -24,7 +23,7 @@ const OrderProcessing = ({ order }) => {
     }
   };
   return (
-    <Space className="bg-[#ffff] w-full p-4 rounded-lg font-semibold border flex-col">
+    <Space className="bg-[#ffff] w-full p-4 rounded-lg font-semibold border flex-col flex">
       <Space className="flex flex-col">
         {order?.orderStatus === ORDER_STATUS.CANCELLED ? (
           <>
@@ -46,26 +45,26 @@ const OrderProcessing = ({ order }) => {
               {
                 title: "Đã đặt hàng",
                 icon: <CiUser />,
-                className: "text-primary w-[15rem]",
+                className: "text-primary mr-5",
               },
               {
                 title: "Chờ Xác nhận",
                 icon: <FaUserCheck />,
-                className: "text-primary w-[20rem]",
+                className: "text-primary mr-5",
               },
               {
                 title: "Đang giao hàng",
                 icon: <MdLocalShipping />,
-                className: "text-primary w-[20rem]",
+                className: "text-primary mr-5",
               },
               {
                 title: "Đã giao hàng",
-                className: "text-primary w-[20rem]",
+                className: "text-primary mr-5",
                 icon: <RiBillLine />,
               },
               {
                 title: "Hoàn thành",
-                className: "text-primary w-[20rem]",
+                className: "text-primary mr-5",
                 icon: <CiStar />,
               },
             ]}
