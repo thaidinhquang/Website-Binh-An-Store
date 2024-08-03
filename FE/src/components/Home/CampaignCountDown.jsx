@@ -1,14 +1,46 @@
-import { Link } from "react-router-dom";
-import CountDown from "../UI/CountDown";
-// import CountDown from "../Helpers/CountDown";
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+
+// Hook to calculate the remaining time
+function useCountDown(endDate) {
+  const calculateTimeLeft = () => {
+    const difference = new Date(endDate) - new Date();
+    let timeLeft = {};
+    
+    if (difference > 0) {
+      timeLeft = {
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+        minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
+        seconds: Math.floor((difference % (1000 * 60)) / 1000)
+      };
+    }
+    return timeLeft;
+  };
+
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [endDate]);
+
+  return timeLeft;
+}
 
 export default function CampaignCountDown({
   className,
-  lastDate,
   counterbg,
   appscreen,
 }) {
-  const { showDate, showHour, showMinute, showSecound } = CountDown(lastDate);
+  // Calculate the end date as 30 days from now
+  const endDate = new Date();
+  endDate.setDate(endDate.getDate() + 30);
+
+  const { days, hours, minutes, seconds } = useCountDown(endDate);
 
   return (
     <div>
@@ -23,47 +55,47 @@ export default function CampaignCountDown({
                 backgroundSize: "cover",
               }}
             >
-              <Link to="/flash-sale">
+              <Link to="/shop">
                 <div className="w-full xl:p-12 p-5">
                   <div className="countdown-wrapper w-full flex lg:justify-between justify-evenly mb-10">
                     <div className="countdown-item">
                       <div className="countdown-number sm:w-[100px] sm:h-[100px] w-[50px] h-[50px] rounded-full bg-white flex justify-center items-center">
                         <span className="font-700 sm:text-[30px] text-[14px] text-[#EB5757]">
-                          {showDate}
+                          {days || '0'}
                         </span>
                       </div>
                       <p className="sm:text-[18px] text-[12px] font-500 text-center leading-8">
-                        Days
+                        Ngày
                       </p>
                     </div>
                     <div className="countdown-item">
                       <div className="countdown-number sm:w-[100px] sm:h-[100px] w-[50px] h-[50px] rounded-full bg-white flex justify-center items-center">
                         <span className="font-700 sm:text-[30px] text-[14px] text-[#2F80ED]">
-                          {showHour}
+                          {hours || '0'}
                         </span>
                       </div>
                       <p className="sm:text-[18px] text-[12px] font-500 text-center leading-8">
-                        Hours
+                        Giờ
                       </p>
                     </div>
                     <div className="countdown-item">
                       <div className="countdown-number sm:w-[100px] sm:h-[100px] w-[50px] h-[50px] rounded-full bg-white flex justify-center items-center">
                         <span className="font-700 sm:text-[30px] text-[14px] text-[#219653]">
-                          {showMinute}
+                          {minutes || '0'}
                         </span>
                       </div>
                       <p className="sm:text-[18px] text-[12px] font-500 text-center leading-8">
-                        Minutes
+                        Phút
                       </p>
                     </div>
                     <div className="countdown-item">
                       <div className="countdown-number sm:w-[100px] sm:h-[100px] w-[50px] h-[50px] rounded-full bg-white flex justify-center items-center">
                         <span className="font-700 sm:text-[30px] text-[14px] text-[#EF5DA8]">
-                          {showSecound}
+                          {seconds || '0'}
                         </span>
                       </div>
                       <p className="sm:text-[18px] text-[12px] font-500 text-center leading-8">
-                        Seconds
+                        Giây
                       </p>
                     </div>
                   </div>
@@ -135,7 +167,7 @@ export default function CampaignCountDown({
                           width="170"
                           height="69"
                           src={`/assets/images/play-store.png`}
-                          alt=""
+                          alt="Play Store"
                         />
                       </a>
                     </div>
@@ -145,7 +177,7 @@ export default function CampaignCountDown({
                           width="170"
                           height="69"
                           src={`/assets/images/apple-store.png`}
-                          alt=""
+                          alt="Apple Store"
                         />
                       </Link>
                     </div>
@@ -154,7 +186,7 @@ export default function CampaignCountDown({
                 <div className="app-screen">
                   <img
                     src={appscreen || `/assets/images/app-screen.png`}
-                    alt=""
+                    alt="App Screen"
                   />
                 </div>
               </div>
