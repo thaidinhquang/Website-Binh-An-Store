@@ -23,9 +23,6 @@ const OrderProcessing = ({ order }) => {
         return 0;
     }
   };
-
-  console.log("order", currentStep());
-
   return (
     <Space className="bg-[#ffff] w-full p-4 rounded-lg font-semibold border flex-col">
       <Space className="flex flex-col">

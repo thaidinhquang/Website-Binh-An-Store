@@ -104,6 +104,7 @@ const CartPage = ({ cart = true, className }) => {
       let listItem = [];
       data.products.forEach((item) => {
         listItem.push({
+          productId : item.productId._id,
           name: item.productId.name,
           image: item.productId.image,
           price: item.productId.price,

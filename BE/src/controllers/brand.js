@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Brand from "../models/Brand.js";
 
 export const createBrand = async (req, res, next) => {
@@ -20,32 +21,32 @@ export const updateBrand = async (req, res, next) => {
 
 export const getAllBrand = async (req, res, next) => {
   try {
-    let sort = { createdAt: -1 }; // Default sort order
-    if (req.query.sort) {
-      const [key, value] = req.query.sort.split(':');
-      sort = { [key]: Number(value) };
-    }
     const options = {
       page: req.query.page ? +req.query.page : 1,
       limit: req.query.limit ? +req.query.limit : 10,
-      sort,
+      sort: req.query.sort ? req.query.sort : { createdAt: -1 },
     };
     let query = {};
-    if (req.query.name) {
-      query.name = { $regex: new RegExp(req.query.name, 'i') };
+    if (req.query.query) {
+      if (mongoose.Types.ObjectId.isValid(req.query.query)) {
+        query._id = new mongoose.Types.ObjectId(req.query.query);
+      } else {
+        query.name = { $regex: new RegExp(req.query.query, 'i') };
+      }
     }
     if (req.query.slug) {
       query.slug = { $regex: new RegExp(req.query.slug, 'i') };
     }
     if (req.query.active) {
-      query.active = req.query.active;
+      query.active = req.query.active === 'true';
     }
     const data = await Brand.paginate(query, options);
-    return !data ? res.status(400).json({ message: "Khong tim thay danh muc nao!" }) : res.status(200).json({ data })
+    return !data ? res.status(400).json({ message: "Không tìm thấy nhãn hàng nào!" }) : res.status(200).json({ data, message: "Lấy danh sách nhãn hàng thành công" });
   } catch (error) {
     next(error)
   }
 }
+
 
 export const getOneBrandById = async (req, res, next) => {
   try {

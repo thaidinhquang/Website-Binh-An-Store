@@ -3,19 +3,7 @@ import Cart from "../models/Cart.js";
 export const getCartByUserId = async (req, res, next) => {
     try {
         const userId = req.user._id;
-        let cart = await Cart.findOne({ userId })
-            .populate({
-                path: "products.productId",
-                model: "Product",
-            })
-            .populate({
-                path: "products.attributesId",
-                model: "Attribute",
-            })
-            .populate({
-                path: "products.valuesId",
-                model: "ValueAttribute",
-            });
+        let cart = await Cart.findOne({ userId }).populate("products.productId");
 
         if (!cart) {
             cart = new Cart({ userId, products: [] });
@@ -29,32 +17,33 @@ export const getCartByUserId = async (req, res, next) => {
 }
 
 
-
 export const addItemToCart = async (req, res, next) => {
     try {
         const userId = req.user._id;
-        const { productId, quantity, attributesId, valuesId } = req.body;
-        
+        const { productId, quantity, attributesId } = req.body;
+
         if (quantity <= 0) {
             return res.status(400).json({ message: "Số lượng phải lớn hơn 0" });
+        }
+        if (!attributesId || !Array.isArray(attributesId) || attributesId.length === 0) {
+            return res.status(400).json({ message: "Bạn phải chọn ít nhất một thuộc tính" });
         }
 
         let cart = await Cart.findOne({ userId });
         if (!cart) {
             cart = new Cart({
                 userId,
-                products: [{ productId, quantity, attributesId, valuesId }]
+                products: [{ productId, quantity, attributesId }]
             });
         } else {
-            const productIndex = cart.products.findIndex(product => 
-                product.productId.toString() === productId && 
-                JSON.stringify(product.attributesId) === JSON.stringify(attributesId) &&
-                JSON.stringify(product.valuesId) === JSON.stringify(valuesId)
+            const productIndex = cart.products.findIndex(product =>
+                product.productId.toString() === productId &&
+                JSON.stringify(product.attributesId) === JSON.stringify(attributesId)
             );
             if (productIndex !== -1) {
                 cart.products[productIndex].quantity += quantity;
             } else {
-                cart.products.push({ productId, quantity, attributesId, valuesId });
+                cart.products.push({ productId, quantity, attributesId });
             }
         }
 
@@ -80,7 +69,7 @@ export const removeItemFromCart = async (req, res, next) => {
             return res.status(404).json({ message: "Không tìm thấy giỏ hàng" });
         }
 
-        const productIndex = cart.products.findIndex(product => 
+        const productIndex = cart.products.findIndex(product =>
             product.productId.toString() === productId
         );
         if (productIndex === -1) {
@@ -98,7 +87,7 @@ export const removeItemFromCart = async (req, res, next) => {
 export const updateItemInCart = async (req, res, next) => {
     try {
         const userId = req.user._id;
-        const { productId, quantity, attributesId, valuesId } = req.body;
+        const { productId, quantity, attributesId } = req.body;
 
         if (quantity <= 0) {
             return res.status(400).json({ message: "Số lượng phải lớn hơn 0" });
@@ -109,7 +98,7 @@ export const updateItemInCart = async (req, res, next) => {
             return res.status(404).json({ message: "Cart not found" });
         }
 
-        const productIndex = cart.products.findIndex(product => 
+        const productIndex = cart.products.findIndex(product =>
             product.productId.toString() === productId
         );
         if (productIndex === -1) {
@@ -120,27 +109,9 @@ export const updateItemInCart = async (req, res, next) => {
         if (attributesId) {
             cart.products[productIndex].attributesId = attributesId;
         }
-        if (valuesId) {
-            cart.products[productIndex].valuesId = valuesId;
-        }
 
         await cart.save();
-
-        const updatedCart = await Cart.findOne({ userId })
-            .populate({
-                path: "products.productId",
-                model: "Product",
-            })
-            .populate({
-                path: "products.attributesId",
-                model: "Attribute",
-            })
-            .populate({
-                path: "products.valuesId",
-                model: "ValueAttribute",
-            });
-
-        return res.status(200).json({ data: updatedCart, message: "Mặt hàng được cập nhật vào giỏ hàng thành công" });
+        return res.status(200).json({ cart, message: "Mặt hàng được cập nhật vào giỏ hàng thành công" });
     } catch (error) {
         next(error);
     }
@@ -173,7 +144,7 @@ export const getCartCount = async (req, res, next) => {
             return res.status(404).json({ message: "Không tìm thấy giỏ hàng" });
         }
         const count = cart.products.reduce((acc, product) => acc + product.quantity, 0);
-        return res.status(200).json({ count });
+        return res.status(200).json({ data: count });
     } catch (error) {
         next(error);
     }
@@ -182,24 +153,16 @@ export const getCartCount = async (req, res, next) => {
 export const getCartTotal = async (req, res, next) => {
     try {
         const userId = req.user._id;
-        const cart = await Cart.findOne({ userId }).populate("products.productId").populate("products.valuesId");
+        const cart = await Cart.findOne({ userId }).populate("products.productId");
         if (!cart) {
             return res.status(404).json({ message: "Không tìm thấy giỏ hàng" });
         }
-
-        // Tính tổng giá của giỏ hàng bao gồm cả giá của valuesId
-        const total = cart.products.reduce((acc, product) => {
-            const productPrice = product.productId.price;
-            const valuesPrice = product.valuesId.reduce((sum, value) => sum + value.price, 0);
-            return acc + (productPrice + valuesPrice) * product.quantity;
-        }, 0);
-
+        const total = cart.products.reduce((acc, product) => acc + product.productId.price * product.quantity, 0);
         return res.status(200).json({ data: total });
     } catch (error) {
         next(error);
     }
 }
-
 
 export const increeaseItemQuantity = async (req, res, next) => {
     try {
@@ -215,7 +178,7 @@ export const increeaseItemQuantity = async (req, res, next) => {
         }
         cart.products[productIndex].quantity++;
         await cart.save();
-        return res.status(200).json({ cart, message: "Tăng số lượng mặt hàng thành công"});
+        return res.status(200).json({ cart, message: "Tăng số lượng mặt hàng thành công" });
     } catch (error) {
         next(error);
     }
@@ -239,7 +202,7 @@ export const decreaseItemQuantity = async (req, res, next) => {
             cart.products[productIndex].quantity--;
         }
         await cart.save();
-        return res.status(200).json({ cart, message: "Giảm số lượng mặt hàng thành công"});
+        return res.status(200).json({ cart, message: "Giảm số lượng mặt hàng thành công" });
     } catch (error) {
         next(error);
     }
