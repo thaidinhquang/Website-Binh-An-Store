@@ -1,6 +1,5 @@
 import { Button, Pagination, Space, Table } from "antd";
 import moment from "moment";
-import React from "react";
 import { Link } from "react-router-dom";
 import { useConfirmOrder } from "../../../common/hooks/useConfirmOrder.jsx";
 import { ORDER_STATUS } from "../../../constants/order.js";

@@ -1,23 +1,23 @@
-import React, { useState } from "react";
 import { Button, Popconfirm } from "antd";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useShippingOrder } from "../../../common/hooks/useShippingOrder";
+import { useDeliveredOrder } from "../../../common/hooks/useDeliveredOrder";
 import { toast } from "react-toastify";
 
-const ConfirmShippingPopup = ({ orderId }) => {
+const ConfirmDeliveredPopup = ({ orderId }) => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
-  const shippingOrder = useShippingOrder(orderId);
+  const deliveredOrder = useDeliveredOrder(orderId);
 
   const showPopconfirm = () => {
     setOpen(true);
   };
 
   const handleOk = () => {
-    shippingOrder.mutate(orderId, {
+    deliveredOrder.mutate(orderId, {
       onSuccess: () => {
-        toast.success("This order is on delivery");
+        toast.success("Delivered successfully");
         navigate(0);
         setOpen(false);
       },
@@ -34,7 +34,7 @@ const ConfirmShippingPopup = ({ orderId }) => {
 
   return (
     <Popconfirm
-      title="Confirm to delivery?"
+      title="Confirm to delivery successfully?"
       okText="Yes"
       okType="danger"
       open={open}
@@ -42,10 +42,10 @@ const ConfirmShippingPopup = ({ orderId }) => {
       onCancel={handleCancel}
     >
       <Button type="primary" danger onClick={showPopconfirm}>
-        Bắt đầu giao hàng
+        Xác nhận đã giao hàng
       </Button>
     </Popconfirm>
   );
 };
 
-export default ConfirmShippingPopup;
+export default ConfirmDeliveredPopup;

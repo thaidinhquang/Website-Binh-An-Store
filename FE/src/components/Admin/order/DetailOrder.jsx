@@ -6,6 +6,7 @@ import OrderProcessing from "./OrderProccessing";
 import OrderStatus from "./OrderStatus";
 import TableDataDetail from "./TableDataDetail";
 import ConfirmShippingPopup from "./ConfirmShippingPopup";
+import ConfirmDeliveredPopup from "./ConfirmDeliveredPopup";
 
 const DetailOrder = () => {
   const { id } = useParams();
@@ -20,6 +21,10 @@ const DetailOrder = () => {
 
         {order?.orderStatus === "confirmed" && (
           <ConfirmShippingPopup orderId={id} />
+        )}
+
+        {order?.orderStatus === "shipping" && (
+          <ConfirmDeliveredPopup orderId={id} />
         )}
       </Space>
 
