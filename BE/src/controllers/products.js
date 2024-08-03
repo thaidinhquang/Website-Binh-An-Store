@@ -17,12 +17,11 @@ export const getAllProduct = async (req, res, next) => {
       ]
     };
     let query = {};
-    if (req.query.query) {
-      if (mongoose.Types.ObjectId.isValid(req.query.query)) {
-        query._id = new mongoose.Types.ObjectId(req.query.query);
-      } else {
-        query.name = { $regex: new RegExp(req.query.query, 'i') };
-      }
+    if (req.query.name) {
+      query.name = { $regex: new RegExp(req.query.name, 'i') };
+    }
+    if (req.query.slug) {
+      query.slug = { $regex: new RegExp(req.query.slug, 'i') };
     }
     if (req.query.slug) {
       query.slug = { $regex: new RegExp(req.query.slug, 'i') };

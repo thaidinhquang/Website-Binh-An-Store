@@ -1,4 +1,3 @@
-
 import mongoose, { Schema } from "mongoose";
 
 const cartSchema = new Schema(
@@ -8,6 +7,7 @@ const cartSchema = new Schema(
             ref: "User",
             required: true,
         },
+       
         products: [
             {
                 productId: {
@@ -18,12 +18,20 @@ const cartSchema = new Schema(
                 quantity: {
                     type: Number,
                     required: true,
-                    min: 1
+                    min: 1,
                 },
-                attributesId: {
-                    type: [String],
-                    required: true,
-                },
+                attributesId: [
+                    {
+                        type: Schema.Types.ObjectId,
+                        ref: "Attribute",
+                    },
+                ],
+                valuesId: [
+                    {
+                        type: Schema.Types.ObjectId,
+                        ref: "ValueAttribute",
+                    },
+                ],
             },
         ],
     },
