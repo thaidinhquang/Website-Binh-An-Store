@@ -359,7 +359,7 @@ export const deliveredOrder = async (req, res) => {
   }
 };
 
-// @PATCH FINISH AN ORDER BY ADMIN
+// @PATCH FINISH AN ORDER
 export const finishAnOrder = async (req, res) => {
   try {
     const foundedOrder = await Order.findById(req.body.orderId);
@@ -377,7 +377,7 @@ export const finishAnOrder = async (req, res) => {
     await foundedOrder.save();
 
     return res.status(200).json({
-      message: "This order is done.",
+      message: "User received.",
       success: true,
     });
   } catch (error) {
