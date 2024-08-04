@@ -167,18 +167,25 @@ export const clearCart = async (req, res, next) => {
 
 export const getCartCount = async (req, res, next) => {
     try {
+
         const userId = req.user._id;
+
         const cart = await Cart.findOne({ userId });
         if (!cart) {
+
             return res.status(404).json({ message: "Không tìm thấy giỏ hàng" });
+
         }
+
         const count = cart.products.reduce((acc, product) => acc + product.quantity, 0);
-        return res.status(200).json({ count });
+
+        return res.status(200).json({ data: count });
     } catch (error) {
+
         next(error);
+
     }
 }
-
 export const getCartTotal = async (req, res, next) => {
     try {
         const userId = req.user._id;

@@ -154,33 +154,33 @@ const handleAddToCart = (event) => {
 
             </div>
 
+<div className="flex flex-wrap mb-4">
+  {product?.attributes.map(attribute => (
+    <div key={attribute._id} className="mr-4 mb-4">
+      <p
+        onClick={() => handleAttributeChange(attribute._id)}
+        className={`cursor-pointer btn ${selectedAttribute === attribute._id ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'} hover:bg-gray-300`}
+      >
+        {attribute.name}
+      </p>
+    </div>
+  ))}
+</div>
+<div className="flex flex-wrap space-x-2">
+  {product?.attributes.map(attribute => (
+    selectedAttribute === attribute._id && attribute.values.map(value => (
+      <button
+        key={value._id}
+        type="button"
+        onClick={() => handleAttributeSelect(attribute._id, value)}
+        className={`px-4 py-2 border border-qgray-border mb-2 ${selectedAttributes[attribute._id]?._id === value._id ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'} hover:bg-gray-300`}
+      >
+        {value.name} - {formatPrice(value.price)}
+      </button>
+    ))
+  ))}
+</div>
 
-     <div className="flex flex-wrap mb-4">
-              {product?.attributes.map(attribute => (
-                <div key={attribute._id} className="mr-4 mb-4">
-                  <p
-                    onClick={() => handleAttributeChange(attribute._id)}
-                    className={`cursor-pointer btn ${selectedAttribute === attribute._id ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
-                  >
-                    {attribute.name}
-                  </p>
-                </div>
-              ))}
-            </div>
-            <div className="flex flex-wrap space-x-2">
-              {product?.attributes.map(attribute => (
-                selectedAttribute === attribute._id && attribute.values.map(value => (
-                  <button
-                    key={value._id}
-                    type="button"
-                    onClick={() => handleAttributeSelect(attribute._id, value)}
-                    className={`px-4 py-2 border border-qgray-border mb-2 bg-gray-100 hover:bg-gray-200 ${selectedAttributes[attribute._id]?._id === value._id ? 'bg-blue-200' : ''}`}
-                  >
-                    {value.name} - {formatPrice(value.price)}
-                  </button>
-                ))
-              ))}
-            </div>
             <div data-aos="fade-up" className="quantity-card-wrapper w-full flex items-center h-[50px] space-x-[10px] mb-[30px]">
 
               <div className="w-[120px] h-full px-[26px] flex items-center border border-qgray-border">
