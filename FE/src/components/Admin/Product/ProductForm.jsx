@@ -53,8 +53,8 @@ const ProductForm = () => {
       form.reset(data);
       setImage(data.image);
       // Map attribute IDs to attribute objects
-      const mappedAttributes = data.attributes.map((attrId) => {
-        const selectedAttribute = attribute.find((attr) => attr._id === attrId);
+      const mappedAttributes = data.attributes?.map((attrId) => {
+        const selectedAttribute = attribute?.find((attr) => attr?._id === attrId);
         return {
           _id: attrId,
           values: selectedAttribute ? selectedAttribute.values : [],

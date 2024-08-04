@@ -17,17 +17,17 @@ export const getAllProduct = async (req, res, next) => {
       ]
     };
     let query = {};
+    if (req.query.id) {
+      query._id = req.query.id;
+    }
     if (req.query.name) {
       query.name = { $regex: new RegExp(req.query.name, 'i') };
     }
     if (req.query.slug) {
       query.slug = { $regex: new RegExp(req.query.slug, 'i') };
     }
-    if (req.query.slug) {
-      query.slug = { $regex: new RegExp(req.query.slug, 'i') };
-    }
-    if (req.query.category) {
-      const categoryIds = req.query.category.split(',');
+    if (req.query.categories) {
+      const categoryIds = req.query.categories.split(',');
       query.category = { $in: categoryIds };
     } 
     if (req.query.brand) {
