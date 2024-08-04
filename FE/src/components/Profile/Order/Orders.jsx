@@ -48,7 +48,7 @@ const OrderProfile = () => {
        
         <Space>
           <Input
-            placeholder="Tìm kiếm khách hàng..."
+            placeholder="Tìm kiếm Đơn hàng..."
             allowClear
             onChange={(e) => setSearch(e.target.value)}
             className="py-3"
