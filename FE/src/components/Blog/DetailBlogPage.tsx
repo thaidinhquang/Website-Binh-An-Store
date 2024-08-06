@@ -28,7 +28,6 @@ const DetailBlogPage: React.FC = () => {
     const fetchBlog = async () => {
       try {
         const response = await axios.get(`http://localhost:8000/api/blogs/${id}`);
-        console.log("API Response:", response.data);
         setBlog(response.data);
         setIsLoading(false);
       } catch (error) {
@@ -41,11 +40,11 @@ const DetailBlogPage: React.FC = () => {
     fetchBlog();
   }, [id]);
 
-  useEffect(() => {
-    if (blog) {
-      console.log("Blog content:", blog.content);
-    }
-  }, [blog]);
+  // useEffect(() => {
+  //   if (blog) {
+  //     console.log("Blog content:", blog.content);
+  //   }
+  // }, [blog]);
 
   if (isLoading) return <Spin size="large" className="flex justify-center items-center h-screen" />;
   if (!blog) return <div className="text-center py-10">Blog not found</div>;
@@ -83,7 +82,7 @@ const DetailBlogPage: React.FC = () => {
           <div className="p-8">
             <Title level={1} className="mb-4">{blog.title}</Title>
             
-            <Space className="text-gray-500 mb-6" size={16} wrap>
+            <Space className="text-black mb-6" size={16} wrap>
               <span><CalendarOutlined className="mr-2" />{formatDate(blog.createdAt)}</span>
               <span><UserOutlined className="mr-2" />{blog.author}</span>
               {blog.tags && blog.tags.length > 0 && (
@@ -93,7 +92,7 @@ const DetailBlogPage: React.FC = () => {
 
             <Divider />
 
-            <div className="content-area prose max-w-none">
+            <div className="content-area prose max-w-none text-black">
               <ReactMarkdown 
                 rehypePlugins={[rehypeRaw]}
                 remarkPlugins={[remarkGfm]}
