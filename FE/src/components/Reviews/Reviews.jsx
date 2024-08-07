@@ -50,9 +50,9 @@ export default function ReviewsProduct({
       <div className="w-full reviews mb-[60px]">
         {/* comments */}
         <div className="w-full comments mb-[60px]">
-          {reviews && reviews.length > 0 && reviews.map((review) => (
+          {reviews && reviews?.length > 0 && reviews?.map((review) => (
             <div
-              key={review._id}
+              key={review?._id}
               className="comment-item bg-white px-10 py-[32px] mb-2.5"
             >
               <div className="comment-author flex justify-between items-center mb-3">

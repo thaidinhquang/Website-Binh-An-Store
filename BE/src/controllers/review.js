@@ -124,3 +124,32 @@ export const deleteProductReview = async (req, res) => {
   }
 };
 
+
+export const getAllReviews = async (req, res) => {
+  try {
+    // Lấy tất cả các sản phẩm
+    const products = await Product.find();
+
+    // Lấy tất cả các đánh giá từ các sản phẩm
+    const allReviews = products.reduce((acc, product) => {
+      return acc.concat(product.reviews.map(review => ({
+        ...review._doc,
+        productId: product._id,
+        productName: product.name
+      })));
+    }, []);
+
+    // Trả về danh sách tất cả các đánh giá
+    res.status(200).send({
+      success: true,
+      reviews: allReviews,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error In Get All Reviews API",
+      error,
+    });
+  }
+};

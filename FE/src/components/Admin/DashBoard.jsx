@@ -31,6 +31,7 @@ const DashBoard = () => {
             {[
               { to: "/admin", icon: <IcoDashboard />, text: "Quản lý thông kê" },
               { to: "/admin/products", icon: <Product />, text: "Quản lý sản phẩm" },
+              { to: "/admin/review", icon: <IcoCart/>, text: "Quản lý Đánh giá" },
               { to: "/admin/categories", icon: <IcoCategory />, text: "Quản lý danh mục" },
               { to: "/admin/users", icon: <IcoPeople />, text: "Quản lý người dùng" },
               { to: "/admin/orders", icon: <IcoCart />, text: "Quản lý đơn hàng" },
