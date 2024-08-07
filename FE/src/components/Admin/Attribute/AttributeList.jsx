@@ -1,65 +1,47 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import instance from "../../../config/axios";
 import Pageination from "../../UI/Pagination";
-import { Link, useLocation } from "react-router-dom";
-import { useEffect } from 'react';
-import { useForm } from "react-hook-form";
-import { useHookSearch } from "../../../common/hooks/useSearch";
+import { Link } from "react-router-dom";
+
 import { toast } from "react-toastify";
 
 const AttributeList = () => {
-    const queryClient = useQueryClient();
-    const search = new URLSearchParams(useLocation().search);
-    const page = search.get('page') || 1;
-    const sort = search.get('sort') || '';
-    const query = search.get('query') || '';
-    const active = search.get('active') || '';
-    const form = useForm();
-    const useSearch = useHookSearch();
-
-    const { data, isLoading, refetch } = useQuery({
-        queryKey: ["ATTRIBUTE", { active, page, sort, query }],
+    const queryClient = useQueryClient()
+    const { data,isLoading } = useQuery({
+        queryKey: ["ATTRIBUTE"],
         queryFn: async () => {
-            const { data } = await instance.get(`/attributes`, { params: { active, page, sort, query } });
-            return data;
-
+          const { data } = await instance.get(`/attributes`);
+          return data;
         },
-    });
+      });
 
-    const { mutate } = useMutation({
+      const { mutate} = useMutation({
         mutationFn: async (id) => {
-            const { data } = await instance.delete(`/attributes/${id}`, { active: true });
-            return data;
+          const { data } = await instance.delete(`/attributes/${id}`,{active: true});
+          return data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries(["ATTRIBUTE"]);
-            toast.success("Thuộc tính đã được xóa thành công!");
+          queryClient.invalidateQueries({
+            queryKey: ["ATTRIBUTE"]
+          })
+          toast.success("Thuộc tính đã được xóa thành công!");
         },
-    });
+       
+      });
 
-    const { mutate: restore } = useMutation({
+      const { mutate:restore} = useMutation({
         mutationFn: async (id) => {
-            const { data } = await instance.delete(`/attributes/restore/${id}`, { active: true });
-            return data;
+          const { data } = await instance.delete(`/attributes/restore/${id}`,{active: true});
+          return data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries(["ATTRIBUTE"]);
-            toast.success("Thuộc tính đã được khôi phục thành công!");
+          queryClient.invalidateQueries({
+            queryKey: ["ATTRIBUTE"]
+          })
+          toast.success("Thuộc tính đã được khôi phục thành công!");
         },
-    });
-
-    useEffect(() => {
-        form.reset({ query, sort, page, active });
-    }, []);
-
-    useEffect(() => {
-        refetch();
-    }, [active, page, sort, query]);
-
-    const searchForm = (formData) => {
-        useSearch(formData, '/admin/attributes');
-    };
-
+       
+      });
     if (isLoading) return <div className="flex justify-center items-center h-screen"><div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div></div>;
 
     return (
@@ -71,45 +53,7 @@ const AttributeList = () => {
                         Thêm thuộc tính
                     </Link>
                 </div>
-                <form onSubmit={form.handleSubmit(searchForm)} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                    <div className="flex flex-wrap -mx-3 mb-4">
-                        <div className="w-full md:w-2/5 px-3 mb-4 md:mb-0">
-                            <input
-                                type="text"
-                                className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                placeholder="Tìm kiếm theo tên hoặc ID thuộc tính..."
-                                {...form.register('query')}
-                            />
-                        </div>
-                        <div className="w-full md:w-1/5 px-3 mb-4 md:mb-0">
-                            <select
-                                {...form.register('sort')}
-                                className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                            >
-                                <option value="">Mới {'->'} cũ</option>
-                                <option value="createdAt:1">Cũ {'->'} mới</option>
-                            </select>
-                        </div>
-                        <div className="w-full md:w-1/5 px-3 mb-4 md:mb-0">
-                            <select
-                                {...form.register('active')}
-                                className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                            >
-                                <option value="">Tất cả</option>
-                                <option value="true">Đang hoạt động</option>
-                                <option value="false">Không hoạt động</option>
-                            </select>
-                        </div>
-                        <div className="w-full md:w-1/5 px-3">
-                            <button
-                                type="submit"
-                                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
-                            >
-                                Tìm kiếm
-                            </button>
-                        </div>
-                    </div>
-                </form>
+                
                 <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
                     <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
                         <table className="min-w-full leading-normal">
@@ -151,13 +95,9 @@ const AttributeList = () => {
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <label className="relative inline-flex items-center cursor-pointer">
-                                                <input 
-                                                    type="checkbox" 
-                                                    value="" 
-                                                    className="sr-only peer" 
-                                                    checked={attribute.active}  
-                                                    onChange={() => attribute.active ? mutate(attribute._id) : restore(attribute._id)}
-                                                />
+                                            <input type="checkbox" value="" className="sr-only peer" checked={attribute.active}  onChange={() => 
+                                                attribute.active ? mutate(attribute._id) : restore(attribute._id)
+                                            }  />
                                                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                                             </label>
                                         </td>
