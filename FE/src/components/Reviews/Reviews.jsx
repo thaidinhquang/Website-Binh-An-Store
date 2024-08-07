@@ -92,6 +92,13 @@ export default function ReviewsProduct({
   };
 
   const handleSaveClick = (reviewId) => {
+    // Kiểm tra số lần cập nhật trước khi cho phép cập nhật
+    const review = reviews.find((r) => r._id === reviewId);
+    if (review.updateCount >= 2) {
+      toast.error("Bạn đã đánh giá nhiều hơn giới hạn cho phép");
+      return;
+    }
+
     const updatedReviewData = {
       productId: id,
       reviewId,

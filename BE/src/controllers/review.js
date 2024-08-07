@@ -191,9 +191,18 @@ export const updateProductReview = async (req, res) => {
       });
     }
 
+    // Kiểm tra giới hạn số lần cập nhật
+    if (review.updateCount >= 2) {
+      return res.status(403).send({
+        success: false,
+        message: "You have reached the maximum number of updates for this review",
+      });
+    }
+
     // Cập nhật đánh giá
     review.comment = comment || review.comment;
     review.rating = rating ? Number(rating) : review.rating;
+    review.updateCount += 1; // Tăng giá trị updateCount
 
     // Cập nhật số lượng đánh giá và điểm trung bình
     product.numReviews = product.reviews.length;
@@ -222,6 +231,7 @@ export const updateProductReview = async (req, res) => {
     });
   }
 };
+
 
 
 

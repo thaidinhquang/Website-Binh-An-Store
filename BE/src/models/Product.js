@@ -13,6 +13,7 @@ const reviewSchema = new mongoose.Schema({
     required: true,
     ref: "User",
   },
+  updateCount: { type: Number, default: 0 },
   active: {
     type: Boolean,
     default: true,
