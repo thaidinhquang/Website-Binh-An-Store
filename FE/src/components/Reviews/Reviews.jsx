@@ -1,8 +1,11 @@
-
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import StarRating from "../UI/StarRating";
 import Star from "../icons/Star";
 import { useTanstackQuery, useTanstackMutation } from "../../common/hooks/useTanstackQuery";
+import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import instance from '../../config/axios';
+import { toast } from 'react-toastify';
 
 export default function ReviewsProduct({
   rating,
@@ -13,14 +16,51 @@ export default function ReviewsProduct({
   hoverHandler,
 }) {
   const { id } = useParams();
+  const navigate = useNavigate(); 
   const { data: product, isLoading: isProductLoading } = useTanstackQuery(`/products/${id}`);
 
+  const queryClient = useQueryClient(); // useQueryClient hook
+
   const { mutate: submitReview, isLoading: isReviewLoading } = useTanstackMutation({
-    path: `reviews/${id}`,
+    path: `/reviews/${id}`,
     action: "CREATE",
     toastMessage: "Submitting review...",
     invalidateQueries: true,
   });
+
+  const { mutate: updateReview, isLoading: isUpdateLoading } = useMutation({
+    mutationFn: async ({ productId, reviewId, rating, comment }) => {
+      const response = await instance.put(`/reviews/${productId}/${reviewId}`, { rating, comment });
+      return response.data;
+    },
+    onSuccess: (updatedReview) => {
+      console.log("Thay đổi đánh giá thành công!");
+      setIsEditing(null);
+
+      // Cập nhật dữ liệu cục bộ
+      const previousData = queryClient.getQueryData(["products", id]);
+      if (previousData) {
+        const updatedReviews = previousData.reviews.map((review) =>
+          review._id === updatedReview._id ? updatedReview : review
+        );
+        queryClient.setQueryData(["products", id], { ...previousData, reviews: updatedReviews });
+      }
+      toast.success("Thay đổi đánh giá thành công!");
+
+      // Chuyển hướng đến trang OrderProfile
+      navigate(`/profile/orders/`);
+    },
+    onError: (error) => {
+      console.error("Error updating review:", error);
+      toast.error("Bạn không đăng nhập bằng tài khoản này");
+    },
+  });
+  
+
+  const [isEditing, setIsEditing] = useState(null);
+
+  const [editMessage, setEditMessage] = useState('');
+  const [editRating, setEditRating] = useState(0);
 
   if (isProductLoading) {
     return <div>Loading...</div>;
@@ -37,22 +77,57 @@ export default function ReviewsProduct({
 
     submitReview(reviewData, {
       onSuccess: () => {
-        console.log("Review submitted successfully!");
+        console.log("Tạo đánh giá thành công");
       },
       onError: (error) => {
-        console.error("Error submitting review:", error);
+        console.error("Lỗi đánh giá", error);
       },
     });
   };
+
+  const handleEditClick = (review) => {
+    setIsEditing(review._id);
+    setEditMessage(review.comment);
+    setEditRating(review.rating);
+  };
+
+  const handleSaveClick = (reviewId) => {
+    const updatedReviewData = {
+      productId: id,
+      reviewId,
+      rating: editRating,
+      comment: editMessage,
+    };
+  
+    updateReview(updatedReviewData, {
+      onSuccess: (updatedReview) => {
+        console.log("Review updated successfully!");
+        setIsEditing(null);
+  
+        // Cập nhật dữ liệu cục bộ
+        const previousData = queryClient.getQueryData(["products", id]);
+        if (previousData) {
+          const updatedReviews = previousData.reviews.map((review) =>
+            review._id === updatedReview._id ? updatedReview : review
+          );
+          queryClient.setQueryData(["products", id], { ...previousData, reviews: updatedReviews });
+        }
+      },
+      onError: (error) => {
+        console.error("Error updating review:", error);
+      },
+    });
+  };
+  
 
   return (
     <div className="review-wrapper w-full">
       <div className="w-full reviews mb-[60px]">
         {/* comments */}
         <div className="w-full comments mb-[60px]">
-          {reviews && reviews?.length > 0 && reviews?.map((review) => (
+          {reviews && reviews.length > 0 && reviews.map((review) => (
             <div
-              key={review?._id}
+              key={review._id}
               className="comment-item bg-white px-10 py-[32px] mb-2.5"
             >
               <div className="comment-author flex justify-between items-center mb-3">
@@ -87,9 +162,58 @@ export default function ReviewsProduct({
                 </div>
               </div>
               <div className="comment mb-[30px]">
-                <p className="text-[15px] text-qgray leading-7 text-normal">
-                  {review.comment}
-                </p>
+                {isEditing === review._id  && review.user ? (
+                  <div>
+                    <div className="flex space-x-1 items-center mb-[30px]">
+                      <StarRating
+                        hoverRating={hoverRating}
+                        hoverHandler={hoverHandler}
+                        rating={editRating}
+                        ratingHandler={setEditRating}
+                      />
+                      <span className="text-qblack text-[15px] font-normal mt-1">
+                        ({editRating}.0)
+                      </span>
+                    </div>
+                    <textarea
+                      value={editMessage}
+                      onChange={(e) => setEditMessage(e.target.value)}
+                      cols="30"
+                      rows="3"
+                      className="w-full focus:ring-0 focus:outline-none p-6"
+                    ></textarea>
+                    <div className="flex justify-end space-x-2 mt-3">
+                      <button
+                        onClick={() => handleSaveClick(review._id)}
+                        type="button"
+                        className="black-btn w-[150px] h-[50px]"
+                        disabled={isUpdateLoading}
+                      >
+                        {isUpdateLoading ? <span className="loader"></span> : "Save"}
+                      </button>
+                      <button
+                        onClick={() => setIsEditing(null)}
+                        type="button"
+                        className="black-btn w-[150px] h-[50px]"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-[15px] text-qgray leading-7 text-normal">
+                      {review.comment}
+                    </p>
+                    <button
+                      onClick={() => handleEditClick(review)}
+                      type="button"
+                      className="text-blue-500 underline mt-2"
+                    >
+                      Edit
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           ))}
@@ -160,8 +284,8 @@ export default function ReviewsProduct({
 
 // CSS for the loading spinner
 const spinnerStyle = document.createElement('style');
-spinnerStyle.innerHTML = `
-  .loader {
+spinnerStyle.innerHTML = 
+  `.loader {
     border: 4px solid rgba(0, 0, 0, 0.1);
     width: 24px;
     height: 24px;
@@ -177,6 +301,5 @@ spinnerStyle.innerHTML = `
     100% {
       transform: rotate(360deg);
     }
-  }
-`;
+  }`;
 document.head.appendChild(spinnerStyle);
