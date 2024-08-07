@@ -15,7 +15,7 @@ export const createProductReview = async (req, res) => {
     if (alreadyReviewed) {
       return res.status(400).send({
         success: false,
-        message: "Product Alredy Reviewed",
+        message: "Sản phẩm này đã đánh giá",
       });
     }
     // review object
@@ -156,6 +156,8 @@ export const getAllReviews = async (req, res) => {
 
 
 // Cập nhật đánh giá sản phẩm
+
+
 export const updateProductReview = async (req, res) => {
   try {
     const productId = req.params.id;
@@ -180,8 +182,16 @@ export const updateProductReview = async (req, res) => {
       });
     }
 
-    // Cập nhật đánh giá
+    // Kiểm tra xem người dùng có phải là người đã viết đánh giá không
     const review = product.reviews[reviewIndex];
+    if (review.user.toString() !== req.user._id.toString()) {
+      return res.status(403).send({
+        success: false,
+        message: "You are not authorized to update this review",
+      });
+    }
+
+    // Cập nhật đánh giá
     review.comment = comment || review.comment;
     review.rating = rating ? Number(rating) : review.rating;
 
@@ -212,6 +222,7 @@ export const updateProductReview = async (req, res) => {
     });
   }
 };
+
 
 
 
