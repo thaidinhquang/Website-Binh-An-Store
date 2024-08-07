@@ -6,10 +6,10 @@ import { getUser } from "../middlewares/getUser.js";
 const routerReview = Router();
 // Route để tạo mới một thuộc tính
 routerReview.post("/:id", getUser, createProductReview);
-routerReview.get("/:id", getProductReviews)
+routerReview.get("/:id",  getUser, getProductReviews)
 routerReview.get("/", getAllReviews)
 routerReview.put("/:id/:reviewId",getUser, updateProductReview)
-routerReview.delete("/:id/:reviewId", deleteProductReview);
+routerReview.delete("/:id/:reviewId",  getUser, deleteProductReview);
 routerReview.get("/:id/:reviewId",getUser,  getReviewUser);
 
 
