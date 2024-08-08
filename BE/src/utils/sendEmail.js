@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
+
 export const sendEmail = async (email, title, content) => {
     try {
         const transporter = nodemailer.createTransport({
@@ -11,20 +12,21 @@ export const sendEmail = async (email, title, content) => {
             }
         });
         const mailOptions = {
+            from: `"Binh An Store" <${process.env.SEND_OTP_EMAIL}>`,
             to: email,
             subject: title,
             html: content,
-        }
+        };
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
-                return false
+                return false;
             } else {
                 return true;
             }
         });
-    }
-    catch (error) {
+    } catch (error) {
         return false;
     }
-}
+};
+
 export default sendEmail;
