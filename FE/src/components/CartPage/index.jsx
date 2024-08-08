@@ -85,38 +85,46 @@ const CartPage = ({ cart = true, className }) => {
 
   const onSubmit = async () => {
     const data = {
-      userId: currentUser._id,
-      items: items,
-      currency: "vnd",
+        userId: currentUser._id,
+        items: items.map(item => ({
+            productId: item.productId,
+            name: item.name,
+            image: item.image,
+            price: item.price,
+            quantity: item.quantity,
+            attributesId: item.attributesId.map(attr => attr._id),
+            valuesId: item.valuesId.map(val => val._id),
+        })),
+        currency: "vnd",
     };
     order(data);
-  };
-
+};
   useEffect(() => {
     if (response) {
       window.location.replace(response.sessionUrl);
     }
   }, [response]);
 
+
   useEffect(() => {
     if (data?.products?.length > 0) {
-      setIsLoadingItem(true);
-      let listItem = [];
-      data.products.forEach((item) => {
-        listItem.push({
-          productId : item.productId._id,
-          name: item.productId.name,
-          image: item.productId.image,
-          price: calculateTotalPrice(item), 
-          quantity: item.quantity,
-          // attributes: item.attributesId,
+        setIsLoadingItem(true);
+        let listItem = [];
+        data.products.forEach((item) => {
+            listItem.push({
+                productId: item.productId._id,
+                name: item.productId.name,
+                image: item.productId.image,
+                price: calculateTotalPrice(item),
+                quantity: item.quantity,
+                attributesId: item.attributesId,
+                valuesId: item.valuesId,
+            });
         });
-      });
-      setItems(listItem);
-      setIsLoadingItem(false);
+        setItems(listItem);
+        setIsLoadingItem(false);
     }
-  }, [data]);
-
+}, [data]);
   if (isLoading) return <p>Loading...</p>;
 
   return (
