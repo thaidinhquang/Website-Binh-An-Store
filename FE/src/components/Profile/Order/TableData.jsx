@@ -1,17 +1,11 @@
 import { Button, Pagination, Space, Table } from "antd";
 import moment from "moment";
 import { Link } from "react-router-dom";
-
-import { toast } from "react-toastify";
-
-import { useFinishOrder } from "../../../common/hooks/useFinishOrder";
 import { ORDER_STATUS } from "../../../constants/order";
 import CancelModal from "../../Admin/order/CancelModal";
+import ReceivedOrderPopup from "./ReceivedOrderPopup";
 
 const TableData = ({ orders, setPage }) => {
-
-  const finishOrder = useFinishOrder();
-
   const dataSource = orders?.docs?.map((order) => ({
     key: order._id,
     code: order?.code ?? order?._id,
@@ -78,6 +72,8 @@ const TableData = ({ orders, setPage }) => {
       width: "20%",
       render: (value, _record) => {
         const status = _record?.orderStatus?.toLowerCase();
+
+        console.log("status", status);
         return (
           <Space>
             {status === ORDER_STATUS.PENDING && (
@@ -85,30 +81,17 @@ const TableData = ({ orders, setPage }) => {
                 <CancelModal order={_record} />
               </>
             )}
+
             {status === ORDER_STATUS.DELIVERED && (
-              <Button onClick={(e) => handleFinish(e, _record.key)}>
-                Nhận hàng
-              </Button>
+              <ReceivedOrderPopup orderId={_record.key} />
             )}
+
             <Button>{value}</Button>
           </Space>
         );
       },
     },
   ];
-
-  const handleFinish = (e, orderId) => {
-    e.preventDefault();
-
-    finishOrder.mutate(orderId, {
-      onSuccess: () => {
-        toast.success("Finish order successfully");
-      },
-      onError: () => {
-        toast.error("Finish order failed");
-      },
-    });
-  };
 
   return (
     <>

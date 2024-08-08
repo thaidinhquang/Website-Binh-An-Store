@@ -4,11 +4,13 @@ import {
   checkoutSession,
   confirmedOrder,
   createOrder,
+  deliveredOrder,
   finishAnOrder,
   getAllOrders,
   getAllOrdersByUser,
   getOrderDetails,
-  getReportOrders
+  getReportOrders,
+  shippingOrder,
 } from "../controllers/order.js";
 import { getUser } from "../middlewares/getUser.js";
 import { checkPermission } from "../middlewares/checkPermission.js";
@@ -24,6 +26,8 @@ router.get("/report", getUser, getReportOrders);
 router.get("/:orderId", getUser, getOrderDetails);
 router.patch("/cancel", getUser, cancelOrder);
 router.patch("/confirm", getUser, confirmedOrder);
+router.patch("/shipping", getUser, shippingOrder);
+router.patch("/delivered", getUser, deliveredOrder);
 router.patch("/done", getUser, finishAnOrder);
 
 export default router;
