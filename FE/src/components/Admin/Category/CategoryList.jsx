@@ -5,6 +5,11 @@ import { Link, useLocation } from "react-router-dom";
 import Pageination from "../../UI/Pagination";
 import { useHookSearch } from "../../../common/hooks/useSearch";
 import { useForm } from "react-hook-form";
+import CommonUtils from "../../../common/CommonUtils/CommonUtils";
+import { Button } from "antd";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileExcel } from '@fortawesome/free-solid-svg-icons';
+
 
 const CategoryList = () => {
   const search = new URLSearchParams(useLocation().search);
@@ -42,16 +47,34 @@ const CategoryList = () => {
     useSearch(data, '/admin/categories')
   }
 
+  const exportToExcel = async () => {
+    const dataToExport = data?.docs?.map(category => ({
+      ID: category._id,
+      Name: category.name,
+      Slug: category.slug,
+      Active: category.active ? 'Active' : 'False',
+      ProductCount: category.products.length,
+      ProductID: category.products.join(', '),
+      CreatedAt: new Date(category.createdAt).toLocaleString(), 
+      UpdatedAt: new Date(category.updatedAt).toLocaleString()  
+    }));
+    await CommonUtils.exportExcel(dataToExport, 'Categories', 'CategoryList');
+  };
+
   if (isLoading) return <div className="flex justify-center items-center h-screen"><div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div></div>;
 
   return (
     <div className="container mx-auto px-4 sm:px-8">
+    <h2 className="text-2xl font-semibold mb-4 md:mb-0">Danh sách danh mục</h2>
       <div className="py-8">
         <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold mb-4 md:mb-0">Danh sách danh mục</h2>
+         
           <Link to={`/admin/categories/add`} className="px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out">
             Thêm danh mục
           </Link>
+          <Button onClick={exportToExcel} type="default" icon={<FontAwesomeIcon icon={faFileExcel} />}>
+        Xuất Excel
+      </Button>
         </div>
         <form onSubmit={form.handleSubmit(searchForm)} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <div className="flex flex-wrap -mx-3 mb-4">

@@ -107,7 +107,7 @@ const CartPage = ({ cart = true, className }) => {
           productId : item.productId._id,
           name: item.productId.name,
           image: item.productId.image,
-          price: item.productId.price,
+          price: calculateTotalPrice(item), 
           quantity: item.quantity,
           // attributes: item.attributesId,
         });

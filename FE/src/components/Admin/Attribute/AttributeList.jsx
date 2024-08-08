@@ -4,6 +4,10 @@ import Pageination from "../../UI/Pagination";
 import { Link } from "react-router-dom";
 
 import { toast } from "react-toastify";
+import CommonUtils from "../../../common/CommonUtils/CommonUtils";
+import { Button } from "antd";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 
 const AttributeList = () => {
     const queryClient = useQueryClient()
@@ -42,17 +46,40 @@ const AttributeList = () => {
         },
        
       });
+      const formatPrice = (price) => {
+        return new Intl.NumberFormat('vi-VN', {
+          style: 'currency',
+          currency: 'VND'
+        }).format(price);
+      };
+
+
+      const exportToExcel = async () => {
+        const dataToExport = data?.map(attribute => ({
+            ID: attribute._id,
+            Name: attribute.name,
+            Active: attribute.active ? 'Active' : 'False',
+            Values: attribute.values.map(val => `${val.name} (${formatPrice(val.price)})`).join(', '), // Format price
+            CreatedAt: new Date(attribute.createdAt).toLocaleString(), // Format creation date and time
+            UpdatedAt: new Date(attribute.updatedAt).toLocaleString(), // Format update date and time
+        }));
+        await CommonUtils.exportExcel(dataToExport, 'Attributes', 'AttributeList');
+    };
     if (isLoading) return <div className="flex justify-center items-center h-screen"><div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div></div>;
 
     return (
         <div className="container mx-auto px-4 sm:px-8">
-            <div className="py-8">
-                <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-                    <h2 className="text-2xl font-semibold mb-4 md:mb-0">Danh sách thuộc tính</h2>
-                    <Link to={`/admin/attribute/add`} className="px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out">
-                        Thêm thuộc tính
-                    </Link>
-                </div>
+        <h2 className="text-2xl font-semibold mb-4 md:mb-0">Danh sách thuộc tính</h2>
+        <div className="py-8">
+            <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+            
+                <Link to={`/admin/attribute/add`} className="px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out">
+                    Thêm thuộc tính
+                </Link>
+                <Button onClick={exportToExcel} type="default" icon={<FontAwesomeIcon icon={faFileExcel} />}>
+                Xuất Excel
+              </Button>
+            </div>
                 
                 <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
                     <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">

@@ -6,6 +6,8 @@ import IcoCart from "../icons/IcoCart";
 import IcoLove from "../icons/IcoLove";
 import Product from "../icons/Product";
 import IcoCategory from "../icons/IcoCategory";
+import { faComment, faFlag, faLayerGroup, faList, faRectangleAd } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const DashBoard = () => {
   const location = useLocation();
@@ -30,14 +32,14 @@ const DashBoard = () => {
           <div className="flex flex-col space-y-4 h-full overflow-y-auto p-4">
             {[
               { to: "/admin", icon: <IcoDashboard />, text: "Quản lý thông kê" },
-              { to: "/admin/products", icon: <Product />, text: "Quản lý sản phẩm" },
-              { to: "/admin/review", icon: <IcoCart/>, text: "Quản lý Đánh giá" },
-              { to: "/admin/categories", icon: <IcoCategory />, text: "Quản lý danh mục" },
+              { to: "/admin/products", icon: <Product />, text: "Quản lý sản phẩm" }, 
+              { to: "/admin/attribute",  icon: <FontAwesomeIcon icon={faList}/>, text: "Quản lý thuộc tính" },
+               { to: "/admin/brands", icon: <FontAwesomeIcon icon={faFlag}/>, text: "Quản lý nhãn hàng" },
+              { to: "/admin/categories",icon: <FontAwesomeIcon icon={faLayerGroup}/>, text: "Quản lý danh mục" },
               { to: "/admin/users", icon: <IcoPeople />, text: "Quản lý người dùng" },
               { to: "/admin/orders", icon: <IcoCart />, text: "Quản lý đơn hàng" },
-              { to: "/admin/attribute", icon: <IcoCart />, text: "Quản lý thuộc tính" },
-              { to: "/admin/brands", icon: <IcoCart />, text: "Quản lý nhãn hàng" },
-              { to: "/admin/blogs", icon: <IcoCart />, text: "Quản lý blogs" },
+             { to: "/admin/review", icon: <FontAwesomeIcon icon={faComment}/>, text: "Quản lý Đánh giá" },
+              { to: "/admin/blogs", icon: <FontAwesomeIcon icon={faRectangleAd}/>, text: "Quản lý blogs" },
               { to: "/", icon: <IcoLove />, text: "Website", textColor: "text-green-500" }
             ].map(({ to, icon, text, textColor = "text-qgray" }) => (
               <div
@@ -48,10 +50,10 @@ const DashBoard = () => {
                 onClick={() => handleLinkClick(to)}
               >
                 <Link to={to}>
-                  <div className="flex space-x-3 items-center text-qgray group-hover:text-black">
+                  <button className="flex space-x-3 items-center text-qgray group-hover:text-black">
                     <span>{icon}</span>
                     <span className={`font-normal text-base group-hover:${textColor}`}>{text}</span>
-                  </div>
+                  </button>
                 </Link>
               </div>
             ))}
