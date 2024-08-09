@@ -2,6 +2,9 @@ import Stripe from "stripe";
 import Order from "../models/Order.js";
 import { ORDER_STATUS } from "../constants/order.js";
 import { ROLES } from "../constants/Role.js";
+import sendEmail from "../utils/sendEmail.js";
+import User from "../models/User.js";
+
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -67,6 +70,57 @@ export const createOrder = async (req, res) => {
   }
 };
 // @POST CREATE ORDER BY CARD
+// export const createStripeOrder = async (session) => {
+//   try {
+//     const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
+
+//     const detailedLineItems = [];
+
+//     for (const item of lineItems.data) {
+//       if (item.price && item.price.product) {
+//         const product = await stripe.products.retrieve(item.price.product);
+//         detailedLineItems.push({
+//           ...item,
+//           image: product.images[0] ?? "",
+//           name: product.name,
+//           productId: product.metadata.productId,
+//         });
+//       }
+//     }
+
+//     const dataItems = detailedLineItems.map((item) => ({
+//       productId: item.productId,
+//       name: item.name,
+//       quantity: item.quantity,
+//       price: item.amount_total,
+//       image: item.image,
+//     }));
+
+//     const order = new Order({
+//       userId: session.metadata && session.metadata?.userId,
+//       items: dataItems,
+//       totalPrice: session.amount_total,
+//       paymentMethod: session.payment_method_types[0],
+//       shippingAddress: session.customer_details?.address,
+//       customerInfo: {
+//         name: session.customer_details?.name,
+//         email: session.customer_details?.email,
+//         phone: session.customer_details?.phone,
+//       },
+//       isPaid: session.payment_status === "paid",
+//     });
+
+//     await order.save();
+
+//     console.log("Order saved successfully");
+//   } catch (error) {
+//     return console.error(
+//       "Error processing checkout.session.completed event:",
+//       error
+//     );
+//   }
+// };
+
 export const createStripeOrder = async (session) => {
   try {
     const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
@@ -108,13 +162,46 @@ export const createStripeOrder = async (session) => {
     });
 
     await order.save();
-
     console.log("Order saved successfully");
-  } catch (error) {
-    return console.error(
-      "Error processing checkout.session.completed event:",
-      error
+
+    // Sending email after saving the order
+    const user = await User.findById(session.metadata?.userId);
+
+    if (!user) {
+      return console.error("User not found for the given session");
+    }
+
+    const emailSent = sendEmail(
+      user.email,
+      "Cảm ơn quý khách đã đặt hàng",
+      `<div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+        <div style="margin:50px auto;width:70%;padding:20px 0">
+        <div style="border-bottom:1px solid #eee">
+            <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Nguyen Tuan Anh</a>
+        </div>
+        <p style="font-size:1.1em">Xin chào ${user.email},</p>
+        <p>Cảm ơn quý khách đã đặt hàng với chúng tôi. Dưới đây là chi tiết đơn hàng của bạn:</p>
+        <ul>
+          ${dataItems.map(item => `<li>${item.name} - Số lượng: ${item.quantity} - Giá: ${item.price}</li>`).join('')}
+        </ul>
+        <p style="font-size:0.9em;">Trân trọng,<br />Nguyen Tuan Anh</p>
+        <hr style="border:none;border-top:1px solid #eee" />
+        <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
+            <p>Nguyen Tuan Anh</p>
+            <p>Việt Nam</p>
+        </div>
+        </div>
+      </div>`
     );
+
+    if (emailSent) {
+      console.log("Email sent successfully");
+    } else {
+      console.error("Failed to send email");
+    }
+
+  } catch (error) {
+    console.error("Error processing checkout.session.completed event:", error);
   }
 };
 
@@ -211,11 +298,35 @@ export const getOrderDetails = async (req, res) => {
 };
 
 // @PATCH CANCEL AN  ORDER
+// export const cancelOrder = async (req, res) => {
+//   try {
+//     const foundedOrder = await Order.findById(req.body.orderId);
+//     if (!foundedOrder) {
+//       throw new Error(`NOt found any order with id ${req.body.orderId}`);
+//     }
+
+//     if (req.user.role === ROLES.ADMIN) {
+//       foundedOrder.cancelledBy = ROLES.ADMIN;
+//     }
+
+//     if (req.body.content) {
+//       foundedOrder.cancelledReason = req.body.content;
+//     }
+
+//     foundedOrder.orderStatus = ORDER_STATUS.CANCELLED;
+//     foundedOrder.canceledReason = req.body.content;
+//     await foundedOrder.save();
+//     return res.status(200).json({ message: "Cancelled", success: true });
+//   } catch (error) {
+//     return console.log("Something went wrong.", error);
+//   }
+// };
+
 export const cancelOrder = async (req, res) => {
   try {
     const foundedOrder = await Order.findById(req.body.orderId);
     if (!foundedOrder) {
-      throw new Error(`NOt found any order with id ${req.body.orderId}`);
+      return res.status(404).json({ message: `Order not found with id ${req.body.orderId}`, success: false });
     }
 
     if (req.user.role === ROLES.ADMIN) {
@@ -227,11 +338,46 @@ export const cancelOrder = async (req, res) => {
     }
 
     foundedOrder.orderStatus = ORDER_STATUS.CANCELLED;
-    foundedOrder.canceledReason = req.body.content;
     await foundedOrder.save();
-    return res.status(200).json({ message: "Cancelled", success: true });
+
+    // Sending email after the order is canceled
+    const user = await User.findById(foundedOrder.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found", success: false });
+    }
+
+    const emailSent = sendEmail(
+      user.email,
+      "Xác nhận hoàn tiền",
+      `<div class="font-sans min-w-[1000px] overflow-auto leading-7">
+        <div class="mx-auto my-12 w-4/5 p-5 bg-white shadow-lg">
+          <div class="border-b border-gray-300 pb-3">
+            <a href="#" class="text-xl font-semibold text-blue-800 no-underline">Nguyen Tuan Anh</a>
+          </div>
+          <p class="text-lg mt-5">Xin chào ${user.name || 'quý khách'},</p>
+          <p class="mt-2">Đơn hàng của bạn đã được hủy thành công. Chúng tôi sẽ tiến hành hoàn tiền trong thời gian sớm nhất.</p>
+          <p><strong>Lý do hủy đơn:</strong> ${foundedOrder.cancelledReason || 'Không có lý do cụ thể'}</p>
+          <p class="text-base mt-5">Trân trọng,<br />Nguyen Tuan Anh</p>
+          <hr class="mt-6 border-t border-gray-200" />
+          <div class="text-right text-sm text-gray-500 mt-4">
+            <p>Nguyen Tuan Anh</p>
+            <p>Việt Nam</p>
+          </div>
+        </div>
+      </div>`
+    );
+
+    if (emailSent) {
+      console.log("Cancellation email sent successfully");
+    } else {
+      console.error("Failed to send cancellation email");
+    }
+
+    return res.status(200).json({ message: "Order cancelled and email sent", success: true });
   } catch (error) {
-    return console.log("Something went wrong.", error);
+    console.log("Something went wrong.", error);
+    return res.status(500).json({ message: "Internal server error", success: false });
   }
 };
 
@@ -432,3 +578,8 @@ export const getReportOrders = async (req, res) => {
     console.log("Something went wrong.", error);
   }
 };
+
+
+
+
+
