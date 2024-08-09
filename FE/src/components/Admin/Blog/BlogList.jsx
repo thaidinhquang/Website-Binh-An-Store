@@ -87,7 +87,7 @@ const BlogList = () => {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold">Danh sách blog</h2>
         <Link to="/admin/blogs/add">
-          <Button type="primary" icon={<PlusOutlined />}>
+          <Button className="bg-blue-600" type="primary" icon={<PlusOutlined />}>
             Thêm Blog
           </Button>
         </Link>
