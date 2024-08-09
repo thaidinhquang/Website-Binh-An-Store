@@ -233,12 +233,12 @@ const CartPage = ({ cart = true, className }) => {
                               </td>
 
                               <td className="text-center py-4 px-2">
-                                <div className="flex space-x-1 items-center justify-center">
-                                  <span className="text-[15px] font-normal">
-                                    {formatPrice(item.productId.price)}
-                                  </span>
-                                </div>
-                              </td>
+                              <div className="flex space-x-1 items-center justify-center">
+                                <span className="text-[15px] font-normal">
+                                  {formatPrice(calculateTotalPrice(item))}
+                                </span>
+                              </div>
+                            </td>
 
                               <td className="py-4">
                                 <div className="flex justify-center items-center space-x-2">
