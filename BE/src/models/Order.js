@@ -19,13 +19,11 @@ const OrderItemSchema = new mongoose.Schema(
     attributesId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Attribute",
-      required: true,
-  },
-  valuesId:{
+    },
+    valuesId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Value",
-      required: true,
-  },
+    },
     price: {
       type: Number,
       required: true,

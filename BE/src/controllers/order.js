@@ -310,7 +310,18 @@ export const getAllOrdersByUser = async (req, res) => {
 // @GET ORDER DETAIL
 export const getOrderDetails = async (req, res) => {
   try {
-    const order = await Order.findById(req.params.orderId).lean();
+    const order = await Order.findById(req.params.orderId)
+    .populate({
+      path: 'items.attributesId',
+      model: 'Attribute',
+      select: 'name',
+    })
+    .populate({
+      path: 'items.valuesId',
+      model: 'ValueAttribute',
+      select: 'name',
+    })
+    .lean();
 
     if (!order) {
       throw new Error(`Not found any order with id: ${req.params.orderId} `);
