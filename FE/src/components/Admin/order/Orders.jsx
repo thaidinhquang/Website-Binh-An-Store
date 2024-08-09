@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Button, Space, Input } from "antd";
+import {  Space, Input, Select } from "antd";
 import { useOrders } from "../../../common/hooks/useOrders.jsx";
 import TableData from "./TableData.jsx";
 import FilterStatus from "./FilterStatus.jsx";
 import { ORDER_STATUS } from "../../../constants/order.js";
+
+const { Option } = Select;
 
 const OrderAdmin = () => {
   const [page, setPage] = useState(1);
@@ -53,16 +55,22 @@ const OrderAdmin = () => {
       <Space className="mt-[1rem]">
         <span className="border rounded-xl p-4 font-semibold">
           Trạng thái đơn hàng
-        </span>{" "}
-        <Button className="h-[3rem] font-semibold text-[1rem]">
-          Chưa xử lý {countPendingOrders}
-        </Button>{" "}
-        <Button className="h-[3rem] font-semibold text-[1rem]">
-          Đã xử lý {countConfirmedOrders}
-        </Button>
+        </span>
+        <Select
+          placeholder="Select Order Status"
+          onChange={(value) => setOrderStatus(value)}
+          className="h-[3rem] font-semibold text-[1rem]"
+        >
+          <Option value={ORDER_STATUS.PENDING}>
+            Chưa xử lý {countPendingOrders}
+          </Option>
+          <Option value={ORDER_STATUS.CONFIRMED}>
+            Đã xử lý {countConfirmedOrders}
+          </Option>
+        </Select>
         <Space>
           <Input
-            placeholder="Tìm kiếm khách hàng..."
+            placeholder="Tìm kiếm Đơn hàng..."
             allowClear
             onChange={(e) => setSearch(e.target.value)}
             className="py-3"
