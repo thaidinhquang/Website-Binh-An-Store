@@ -18,7 +18,7 @@ const ValueAttributeSchema = new Schema(
             // required: true,
         },
     },
-    { timestamps: false, versionKey: false }
+    { timestamps: true, versionKey: false }
 );
 export const ValueAttributeModel = mongoose.model("ValueAttribute", ValueAttributeSchema);
 
@@ -40,6 +40,6 @@ const AttributeSchema = new Schema(
             },
         ],
     },
-    { timestamps: false, versionKey: false }
+    { timestamps: true, versionKey: false }
 );
 export default mongoose.model("Attribute", AttributeSchema);

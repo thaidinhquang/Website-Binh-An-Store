@@ -1,5 +1,7 @@
 import Stripe from "stripe";
 import Order from "../models/Order.js";
+import Attribute from "../models/attribute.js"; // Ensure correct import
+import ValueAttribute from "../models/attribute.js";
 import { ORDER_STATUS } from "../constants/order.js";
 import { ROLES } from "../constants/Role.js";
 
@@ -15,6 +17,8 @@ export const checkoutSession = async (req, res) => {
         images: [item.image ?? ""],
         metadata: {
           productId: item.productId,
+          attributesId: JSON.stringify(item.attributesId), // Ensure attributesId is included
+          valuesId: JSON.stringify(item.valuesId),
         },
       },
       unit_amount: item.price,
@@ -81,6 +85,8 @@ export const createStripeOrder = async (session) => {
           image: product.images[0] ?? "",
           name: product.name,
           productId: product.metadata.productId,
+          attributesId: JSON.parse(product.metadata.attributesId), // Ensure attributesId is included
+          valuesId: JSON.parse(product.metadata.valuesId),
         });
       }
     }
@@ -91,6 +97,8 @@ export const createStripeOrder = async (session) => {
       quantity: item.quantity,
       price: item.amount_total,
       image: item.image,
+      attributesId: item.attributesId,
+      valuesId:item.valuesId
     }));
 
     const order = new Order({
@@ -181,7 +189,21 @@ export const getAllOrdersByUser = async (req, res) => {
   }
 
   try {
-    const orders = await Order.paginate(filter, options);
+    const orders = await Order.paginate(filter, {
+      ...options,
+      populate: [
+        {
+          path: 'items.attributesId',
+          model: 'Attribute',
+          select: 'name',
+        },
+        {
+          path: 'items.valuesId',
+          model: 'ValueAttribute',
+          select: 'name price quantity',
+        },
+      ],
+    });
 
     return res.status(200).json({
       message: "OK",
@@ -189,7 +211,12 @@ export const getAllOrdersByUser = async (req, res) => {
       metadata: orders,
     });
   } catch (error) {
-    return console.log("Something went wrong.", error);
+    console.log("Something went wrong.", error);
+    return res.status(500).json({
+      message: "Something went wrong.",
+      success: false,
+      error: error.message,
+    });
   }
 };
 
@@ -252,8 +279,6 @@ export const getAllOrders = async (req, res) => {
 
   if (req.query.search) {
     const search = req.query.search;
-    // filter["customerInfo.name"] = { $regex: new RegExp(search, "i") };
-
     filter.$or = [
       { "customerInfo.name": { $regex: new RegExp(search, "i") } },
       { code: { $regex: new RegExp(search, "i") } },
@@ -273,7 +298,21 @@ export const getAllOrders = async (req, res) => {
   }
 
   try {
-    const orders = await Order.paginate(filter, options);
+    const orders = await Order.paginate(filter, {
+      ...options,
+      populate: [
+        {
+          path: 'items.attributesId',
+          model: 'Attribute',
+          select: 'name',
+        },
+        {
+          path: 'items.valuesId',
+          model: 'ValueAttribute',
+          select: 'name price quantity',
+        },
+      ],
+    });
 
     return res.status(200).json({
       message: "OK",
@@ -282,6 +321,11 @@ export const getAllOrders = async (req, res) => {
     });
   } catch (error) {
     console.log("Something went wrong.", error);
+    return res.status(500).json({
+      message: "Something went wrong.",
+      success: false,
+      error: error.message,
+    });
   }
 };
 
