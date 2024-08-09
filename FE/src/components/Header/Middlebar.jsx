@@ -8,6 +8,7 @@ import { useContext, useEffect } from "react";
 import AuthenticationModal from './AuthenticationModal'
 import { AuthContext } from '../Auth/core/Auth'
 import { useTanstackQuery } from '../../common/hooks/useTanstackQuery'
+import ThinLove1 from '../icons/ThinLove1'
 
 const Middlebar = ({ className }) => {
   const { currentUser } = useContext(AuthContext);
@@ -33,7 +34,7 @@ const Middlebar = ({ className }) => {
                   <div className="favorite relative">
                     <Link to="/wishlist">
                       <span>
-                        <ThinLove />
+                        <ThinLove1 />
                       </span>
                     </Link>
                     <span className="w-[18px] h-[18px] rounded-full bg-qh4-pink absolute -top-2.5 -right-2.5 flex justify-center items-center text-[9px] text-qblack">

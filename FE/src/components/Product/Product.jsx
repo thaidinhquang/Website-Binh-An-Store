@@ -30,12 +30,13 @@ const ProductCard = ({ limit, pagination, className }) => {
       currency: 'VND'
     }).format(price);
   };
-  const getStatus = (createdAt) => {
-    const creationDate = new Date(createdAt);
-    const now = new Date();
-    const twoDays = 2 * 24 * 60 * 60 * 1000; // milliseconds in 2 days
-    return now - creationDate <= twoDays ? 0 : 1;
-  };
+ 
+const getStatus = (createdAt) => {
+  const creationDate = new Date(createdAt);
+  const now = new Date();
+  const twoDays = 2 * 24 * 60 * 60 * 1000; // milliseconds in 2 days
+  return now - creationDate <= twoDays ? "Mới" : "";
+};
 
   const checkProductInWishlist = (product) => {
     return wishlistProducts?.findIndex((item) => item.productId === product._id) !== -1;
@@ -50,6 +51,11 @@ const ProductCard = ({ limit, pagination, className }) => {
         {data?.docs.map((product) => (
           <div key={product._id} className="product-card-one bg-white relative group overflow-hidden shadow-md">
             <div className="product-card-img h-80 overflow-hidden">
+            {getStatus(product.createdAt) && (
+              <span className="new-product-label absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-full">
+                {getStatus(product.createdAt)}
+              </span>
+            )}
               <img
                 className="w-full h-[300px]"
                 src={product.image}
@@ -84,21 +90,24 @@ const ProductCard = ({ limit, pagination, className }) => {
                   <QuickViewIco />
                 </span>
               </Link>
-              <button onClick={() => {
-                if (currentUser) {
-                  if (checkProductInWishlist(product)) {
-                    removeFromWishlist({ productId: product._id });
-                  } else {
-                    addToWishlist({ productId: product._id });
-                  }
-                } else {
-                  alert('Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích');
-                }
-              }}>
-                <span className="w-10 h-10 flex justify-center items-center bg-primarygray rounded">
-                  {checkProductInWishlist(product) ? <ThinLove /> : <ThinLove />}
-                </span>
-              </button>
+              
+<button
+onClick={() => {
+  if (currentUser) {
+    if (checkProductInWishlist(product)) {
+      removeFromWishlist({ productId: product._id });
+    } else {
+      addToWishlist({ productId: product._id });
+    }
+  } else {
+    alert('Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích');
+  }
+}}
+>
+<span className={`w-10 h-10 flex justify-center items-center rounded ${checkProductInWishlist(product) ? 'bg-white' : 'bg-primarygray'} hover:bg-white`}>
+  <ThinLove className="fill-current" fillColor={checkProductInWishlist(product) ? 'red' : 'black'} />
+</span>
+</button>
             </div>
           </div>
         ))

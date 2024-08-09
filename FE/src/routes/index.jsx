@@ -43,6 +43,7 @@ import AllBlogPage from "../components/Blog/AllBlogPage";
 import BlogList from "../components/Admin/Blog/BlogList";
 import BlogForm from "../components/Admin/Blog/BlogForm";
 import BlogEdit from "../components/Admin/Blog/BlogEdit";
+import ReviewList from "../components/Admin/Review/ReviewForm";
 
 
 
@@ -54,7 +55,7 @@ const Router = () => {
           <Route index element={<Home />} />
           <Route path="detail/:id" element={<SingleProduct />} />
           <Route path="about" element={<About />} />
-          <Route path="review/:id" element={<ProductReviews/>} />
+          <Route path="review/:id" element={ <LoginRoute> <ProductReviews/> </LoginRoute>} />
           <Route path="blogs" element={<AllBlogPage />} />
           <Route path="/blogs/:id" element={<DetailBlogPage />} />
           <Route
@@ -139,6 +140,10 @@ const Router = () => {
             <Route index element={<OrderAdmin/>} />
             <Route path=":id" element={<DetailOrder />} />
           </Route>
+          <Route path="review">
+            <Route index element={<ReviewList/>} />
+          </Route>
+
           <Route path="attribute">
             <Route index element={<AttributeList />} />
             <Route path="add" element={<AttributeAdd />} />

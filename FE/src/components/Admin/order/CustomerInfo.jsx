@@ -1,8 +1,6 @@
-import React from "react";
 import { Descriptions } from "antd";
 
 const CustomerInfo = ({ order }) => {
-
   const items = [
     {
       key: "1",

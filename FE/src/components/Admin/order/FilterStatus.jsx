@@ -1,67 +1,36 @@
-
-import { Button, Space } from "antd";
+import { Space, Select } from "antd";
 import { ORDER_STATUS, PAYMENT_METHOD } from "../../../constants/order.js";
+
+const { Option } = Select;
 
 const FilterStatus = ({ setOrderStatus, setPaymentMethod }) => {
   return (
     <Space className="flex w-full mt-5">
-      <Button
-        className="h-[3rem] font-semibold border "
-        onClick={() => setOrderStatus("")}
+      <Select
+        placeholder="Trạng thái đơn hàng"
+        onChange={(value) => setOrderStatus(value)}
+        className="h-[3rem] font-semibold"
+        style={{ width: 200 }}
       >
-        Tất cả
-      </Button>
-      <Button
-        className="h-[3rem] font-semibold border "
-        onClick={() => setOrderStatus(ORDER_STATUS.PENDING)}
-      >
-        Chờ xác nhận
-      </Button>
+        <Option value="">Tất cả</Option>
+        <Option value={ORDER_STATUS.PENDING}>Chờ xác nhận</Option>
+        <Option value={ORDER_STATUS.CONFIRMED}>Chờ lấy hàng</Option>
+        <Option value={ORDER_STATUS.SHIPPING}>Đang giao</Option>
+        <Option value={ORDER_STATUS.DELIVERED}>Đã giao</Option>
+        <Option value={ORDER_STATUS.DONE}>Giao hàng thành công</Option>
+        <Option value={ORDER_STATUS.CANCELLED}>Đơn hủy</Option>
+      </Select>
 
-      <Button
-        className="h-[3rem] font-semibold border "
-        onClick={() => setOrderStatus(ORDER_STATUS.CONFIRMED)}
+      <Select
+        placeholder="Phương thức thanh toán"
+        onChange={(value) => setPaymentMethod(value)}
+        className="h-[3rem] font-semibold"
+        style={{ width: 200 }}
       >
-        Chờ lấy hàng
-      </Button>
-      <Button
-        className="h-[3rem] font-semibold border "
-        onClick={() => setOrderStatus(ORDER_STATUS.SHIPPING)}
-      >
-        Đang giao
-      </Button>
-      <Button
-        className="h-[3rem] font-semibold border "
-        onClick={() => setOrderStatus(ORDER_STATUS.DELIVERED)}
-      >
-        Đã giao
-      </Button>
-      <Button
-        className="h-[3rem] font-semibold border "
-        onClick={() => setOrderStatus(ORDER_STATUS.DONE)}
-      >
-       Giao hàng thành công
-      </Button>
-
-      <Button
-        className="h-[3rem] font-semibold border "
-        onClick={() => setOrderStatus(ORDER_STATUS.CANCELLED)}
-      >
-        Đơn hủy
-      </Button>
-
-      <Button
-        className="h-[3rem] font-semibold border "
-        onClick={() => setPaymentMethod(PAYMENT_METHOD.CASH)}
-      >
-        Chưa thanh toán
-      </Button>
-      <Button
-        className="h-[3rem] font-semibold border "
-        onClick={() => setPaymentMethod(PAYMENT_METHOD.CARD)}
-      >
-        Đã thanh toán
-      </Button>
+        <Option value="">Tất cả</Option>
+        <Option value={PAYMENT_METHOD.CASH}>Chưa thanh toán</Option>
+        <Option value={PAYMENT_METHOD.CARD}>Đã thanh toán</Option>
+      </Select>
     </Space>
   );
 };

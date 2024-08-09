@@ -1,12 +1,18 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import { useTanstackMutation, useTanstackQuery } from "../../common/hooks/useTanstackQuery";
 
 import { useParams } from "react-router-dom";
+import { Button } from "antd";
+import { AuthContext } from "../Auth/core/Auth";
+import ThinLove from "../icons/ThinLove";
 
 
 const ProductView = ({ className }) => {
-
+  const { currentUser } = useContext(AuthContext);
+  const { data: wishlistProducts } = useTanstackQuery('wishlist/products');
+  const { mutate: addToWishlist } = useTanstackMutation({ path: `wishlist/add`, action: "CREATE" });
+  const { mutate: removeFromWishlist } = useTanstackMutation({ path: `wishlist/remove`, action: "CREATE" });
   const formatPrice = (price) => {
 
     return new Intl.NumberFormat('vi-VN', {
@@ -82,16 +88,22 @@ const handleAddToCart = (event) => {
     setSelectedAttributes({});
   };
 
-  const getStatus = (createdAt) => {
-
+   const getStatus = (createdAt) => {
     const creationDate = new Date(createdAt);
-
     const now = new Date();
-
     const twoDays = 2 * 24 * 60 * 60 * 1000; // milliseconds in 2 days
+    return now - creationDate <= twoDays ? "Mới" : "";
+  };
+   const calculateTotalPrice = () => {
+    let totalPrice = product?.price || 0;
+    Object.values(selectedAttributes).forEach(attr => {
+      totalPrice += attr.price;
+    });
+    return totalPrice;
+  };
 
-    return now - creationDate <= twoDays ? 0 : 1;
-
+  const checkProductInWishlist = (product) => {
+    return wishlistProducts?.findIndex((item) => item.productId === product._id) !== -1;
   };
 
 
@@ -114,11 +126,11 @@ const handleAddToCart = (event) => {
 
               <img src={product.image} alt={product.name} className="object-contain w-full" />
 
-             {getStatus(product.createdAt) === 0 && (
-  <div className="w-[80px] h-[80px] rounded-full bg-qyellow text-qblack flex justify-center items-center text-xl font-medium absolute left-[30px] top-[30px]">
-    New
-  </div>
-)}
+             {getStatus(product.createdAt) && (
+                <div className="w-[80px] h-[80px] rounded-full bg-red-500 text-qblack flex justify-center items-center text-xl font-medium absolute left-[30px] top-[30px]">
+                  {getStatus(product.createdAt)}
+                </div>
+              )}
 
 
             </div>
@@ -146,11 +158,9 @@ const handleAddToCart = (event) => {
 
               </span>
 
-              <span className="text-2xl font-500 text-qred">
-
-                {formatPrice(product?.price)}
-
-              </span>
+               <span className="text-2xl font-500 text-qred">
+      {formatPrice(calculateTotalPrice())}
+    </span>
 
             </div>
 
@@ -169,14 +179,14 @@ const handleAddToCart = (event) => {
 <div className="flex flex-wrap space-x-2">
   {product?.attributes.map(attribute => (
     selectedAttribute === attribute._id && attribute.values.map(value => (
-      <button
+      <Button
         key={value._id}
-        type="button"
+       
         onClick={() => handleAttributeSelect(attribute._id, value)}
-        className={`px-4 py-2 border border-qgray-border mb-2 ${selectedAttributes[attribute._id]?._id === value._id ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'} hover:bg-gray-300`}
+        className={`px-4 btn py-2 border border-qgray-border mb-2 ${selectedAttributes[attribute._id]?._id === value._id ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'} hover:bg-gray-300`}
       >
         {value.name} - {formatPrice(value.price)}
-      </button>
+      </Button>
     ))
   ))}
 </div>
@@ -207,18 +217,20 @@ const handleAddToCart = (event) => {
 
               <div className="w-[60px] h-full flex justify-center items-center border border-qgray-border">
 
-                <button type="button">
-
-                  <span>
-
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-
-                      <path d="M17 1C14.9 1 13.1 2.1 12 3.7C10.9 2.1 9.1 1 7 1C3.7 1 1 3.7 1 7C1 13 12 22 12 22C12 22 23 13 23 7C23 3.7 20.3 1 17 1Z" stroke="#D5D5D5" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="square" />
-
-                    </svg>
-
+                <button type="button" onClick={() => {
+                  if (currentUser) {
+                    if (checkProductInWishlist(product)) {
+                      removeFromWishlist({ productId: product._id });
+                    } else {
+                      addToWishlist({ productId: product._id });
+                    }
+                  } else {
+                    alert('Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích');
+                  }
+                }}>
+                  <span className="w-10 h-10 flex justify-center items-center rounded hover:bg-white">
+                    <ThinLove className="fill-current" fillColor={checkProductInWishlist(product) ? 'red' : 'black'} />
                   </span>
-
                 </button>
 
               </div>
@@ -242,13 +254,13 @@ const handleAddToCart = (event) => {
 
                 <span className="text-qblack">Category : </span>
 
-                {category?.name || "Loading category..."}
+                {category?.name || ""}
 
               </p>
 
               <p className="text-[13px] text-qgray leading-7">
 
-                <span className="text-qblack">Brand :</span> {brand?.name || "No brand available"}
+                <span className="text-qblack">Brand :</span> {brand?.name || ""}
 
               </p>
 

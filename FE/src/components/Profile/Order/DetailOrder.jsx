@@ -1,11 +1,9 @@
-import { Input } from "antd";
+import { Input, Space } from "antd";
 import { useParams } from "react-router-dom";
-
 
 import TableDataDetail from "./TableDataDetail";
 import OrderProcessing from "./OrderProccessing";
 import { useOrderDetail } from "../../../common/hooks/useOrderDetail";
-
 
 import CustomerInfo from "../../Admin/order/CustomerInfo";
 import OrderStatus from "../../Admin/order/OrderStatus";
@@ -16,7 +14,9 @@ const DetailOrderUser = () => {
 
   return (
     <div className="w-full">
-      <div className="font-bold mb-4 text-lg"> Thông tin đơn hàng</div>
+      <Space className="flex justify-between items-center bg-[#ffff] p-4 rounded-lg mb-5">
+        <span className="font-bold mb-4 text-lg">Thông tin đơn hàng</span>
+      </Space>
 
       <OrderProcessing order={order} />
 

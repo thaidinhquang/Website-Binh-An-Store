@@ -5,6 +5,10 @@ import { Link, useLocation } from "react-router-dom";
 import Pageination from "../../UI/Pagination";
 import { useForm } from "react-hook-form";
 import { useHookSearch } from "../../../common/hooks/useSearch";
+import CommonUtils from "../../../common/CommonUtils/CommonUtils";
+import { Button } from "antd";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 
 const BrandList = () => {
   const search = new URLSearchParams(useLocation().search);
@@ -40,16 +44,33 @@ const BrandList = () => {
     useSearch(data, '/admin/brands')
   }
 
+  const exportToExcel = async () => {
+    const dataToExport = data?.docs?.map(brand => ({
+      ID: brand._id,
+      Name: brand.name,
+      Slug: brand.slug,
+      Active: brand.active ? 'Active' : 'False',
+      Products: brand.products.join(', '),
+      CreatedAt: new Date(brand.createdAt).toLocaleString(), 
+      UpdatedAt: new Date(brand.updatedAt).toLocaleString()  
+    }));
+    await CommonUtils.exportExcel(dataToExport, 'Brands', 'BrandList');
+  };
+
   if (isLoading) return <div className="flex justify-center items-center h-screen"><div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div></div>;
 
   return (
     <div className="container mx-auto px-4 sm:px-8">
+    <h2 className="text-2xl font-semibold mb-4 md:mb-0">Danh sách nhãn hàng</h2>
       <div className="py-8">
         <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold mb-4 md:mb-0">Danh sách nhãn hàng</h2>
+         
           <Link to={`/admin/brands/add`} className="px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out">
             Thêm nhãn hàng
           </Link>
+          <Button onClick={exportToExcel} type="default" icon={<FontAwesomeIcon icon={faFileExcel} />}>
+          Xuất Excel
+        </Button>
         </div>
         <form onSubmit={form.handleSubmit(searchForm)} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <div className="flex flex-wrap -mx-3 mb-4">

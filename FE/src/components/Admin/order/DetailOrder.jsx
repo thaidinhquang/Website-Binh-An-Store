@@ -1,21 +1,32 @@
-import React from "react";
-import { Space, Steps, Descriptions, Input } from "antd";
-import { CiUser } from "react-icons/ci";
-
+import { Input, Space } from "antd";
 import { useParams } from "react-router-dom";
-import CustomerInfo from "./CustomerInfo";
 import { useOrderDetail } from "../../../common/hooks/useOrderDetail";
+import CustomerInfo from "./CustomerInfo";
+import OrderProcessing from "./OrderProccessing";
 import OrderStatus from "./OrderStatus";
 import TableDataDetail from "./TableDataDetail";
-import OrderProcessing from "./OrderProccessing";
+import ConfirmShippingPopup from "./ConfirmShippingPopup";
+import ConfirmDeliveredPopup from "./ConfirmDeliveredPopup";
 
 const DetailOrder = () => {
   const { id } = useParams();
   const { data: order } = useOrderDetail(id);
 
+  console.log(order);
+
   return (
     <div className="w-full">
-      <div className="font-bold mb-4 text-lg"> Thông tin đơn hàng</div>
+      <Space className="flex justify-between items-center bg-[#ffff] p-4 rounded-lg mb-5">
+        <span className="font-bold mb-4 text-lg">Thông tin đơn hàng</span>
+
+        {order?.orderStatus === "confirmed" && (
+          <ConfirmShippingPopup orderId={id} />
+        )}
+
+        {order?.orderStatus === "shipping" && (
+          <ConfirmDeliveredPopup orderId={id} />
+        )}
+      </Space>
 
       <OrderProcessing order={order} />
 
