@@ -46,12 +46,12 @@ const OrderProcessing = ({ order }) => {
             className="w-full"
             items={[
               {
-                title: "Đã đặt hàng",
+                title: "Chờ Xác nhận",
                 icon: <CiUser />,
                 className: "text-primary ",
               },
               {
-                title: "Chờ Xác nhận",
+                title: "Đã xác nhận",
                 icon: <FaUserCheck />,
                 className: "text-primary mr-5",
               },
