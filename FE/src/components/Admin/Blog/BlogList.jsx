@@ -4,7 +4,10 @@ import { Link } from 'react-router-dom';
 import instance from '../../../config/axios';
 import { Space, Table, Button, Popconfirm } from 'antd';
 import { toast } from 'react-toastify';
-import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, } from '@ant-design/icons';
+import CommonUtils from '../../../common/CommonUtils/CommonUtils';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileExcel } from '@fortawesome/free-solid-svg-icons';
 
 const BlogList = () => {
   const queryClient = useQueryClient();
@@ -30,6 +33,21 @@ const BlogList = () => {
 
   const handleDelete = (id) => {
     deleteMutation.mutate(id);
+  };
+
+
+  const exportToExcel = async () => {
+    const dataToExport = data?.map(blog => ({
+      ID: blog._id,
+      Title: blog.title,
+      Slug: blog.slug,
+      Image: blog.image,
+      Content: blog.content,
+      Active: blog.active ? 'Active' : 'Inactive',
+      CreatedAt: new Date(blog.createdAt).toLocaleString(), // Format creation date and time
+      UpdatedAt: new Date(blog.updatedAt).toLocaleString()  // Format update date and time
+    }));
+    await CommonUtils.exportExcel(dataToExport, 'Blogs', 'BlogList');
   };
 
   const columns = [
@@ -84,13 +102,17 @@ const BlogList = () => {
 
   return (
     <div className="p-4 bg-white rounded-lg shadow">
+    <h2 className="text-2xl font-semibold">Danh sách blog</h2>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-semibold">Danh sách blog</h2>
-        <Link to="/admin/blogs/add">
-          <Button type="primary" icon={<PlusOutlined />}>
+       
+        <Link to="/admin/blogs/add" className='btn'>
+        
             Thêm Blog
-          </Button>
+        
         </Link>
+        <Button onClick={exportToExcel} type="default" icon={<FontAwesomeIcon icon={faFileExcel} />}>
+        Xuất Excel
+      </Button>
       </div>
       <Table
         columns={columns}
