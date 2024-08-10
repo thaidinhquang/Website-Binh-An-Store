@@ -117,11 +117,14 @@ const AttributeList = () => {
                                         </td>
                                         
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                        <Link to={`/admin/attribute/detail/${attribute._id}`} className="text-blue-600 hover:text-blue-900 mx-2">
+                                        <Link to={`/admin/attribute/detail/${attribute._id}`} className="text-red-600 hover:text-blue-900 mx-2">
                                                 Chi tiết
                                             </Link>
-                                            <Link to={`/admin/attribute/edit/${attribute._id}`} className="text-yellow-600 hover:text-yellow-900">
+                                            <Link to={`/admin/attribute/edit/${attribute._id}`} className="text-yellow-600 hover:text-yellow-900 mx-2">
                                                 Sửa
+                                            </Link>
+                                            <Link to={`/admin/attribute/add/${attribute._id}/value`} className="text-blue-600 hover:text-yellow-900">
+                                                Thêm 
                                             </Link>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
