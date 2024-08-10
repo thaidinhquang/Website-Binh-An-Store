@@ -54,7 +54,9 @@ const ProductForm = () => {
       setImage(data.image);
       // Map attribute IDs to attribute objects
       const mappedAttributes = data.attributes?.map((attrId) => {
-        const selectedAttribute = attribute?.find((attr) => attr?._id === attrId);
+        const selectedAttribute = attribute?.find(
+          (attr) => attr?._id === attrId
+        );
         return {
           _id: attrId,
           values: selectedAttribute ? selectedAttribute.values : [],
@@ -62,10 +64,13 @@ const ProductForm = () => {
       });
       setAttributes(mappedAttributes);
       // Set attribute values
-      const mappedAttributeValues = mappedAttributes.reduce((acc, attr, index) => {
-        acc[index] = attr.values;
-        return acc;
-      }, {});
+      const mappedAttributeValues = mappedAttributes.reduce(
+        (acc, attr, index) => {
+          acc[index] = attr.values;
+          return acc;
+        },
+        {}
+      );
       setAttributeValues(mappedAttributeValues);
     }
   }, [data, attribute]);
@@ -321,65 +326,82 @@ const ProductForm = () => {
               )}
             </div>
 
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {attributes.map((attr, index) => (
-          <div className="mb-4" key={index}>
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Thuộc tính {index + 1}
-            </label>
-            <div className="flex items-center">
-              <select
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:cursor-not-allowed"
-                {...form.register(`attributes[${index}]._id`, { required: `Attribute ${index + 1} không được để trống` })}
-                value={attr._id} // Ensure the value is set correctly
-                onChange={(e) => handleAttributeChange(index, e.target.value)}
-                disabled={location === 'detail'}
-              >
-                {attribute?.length > 0 ? attribute.map((att) => (
-                  <option key={att._id} value={att._id} disabled={isAttributeSelected(att._id)}>
-                    {att.name}
-                  </option>
-                )) : <option value="">Không có thuộc tính</option>}
-              </select>
-              <button
-                disabled={isPending}
-                hidden={location === "detail"}
-                type="button"
-                onClick={() => removeAttribute(index)}
-                className="ml-2 py-1 px-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg focus:outline-none focus:ring-4 focus:ring-red-300"
-              >
-                Xóa
-              </button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {attributes.map((attr, index) => (
+                <div className="mb-4" key={index}>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Thuộc tính {index + 1}
+                  </label>
+                  <div className="flex items-center">
+                    <select
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:cursor-not-allowed"
+                      {...form.register(`attributes[${index}]._id`, {
+                        required: `Attribute ${index + 1} không được để trống`,
+                      })}
+                      value={attr._id} // Ensure the value is set correctly
+                      onChange={(e) =>
+                        handleAttributeChange(index, e.target.value)
+                      }
+                      disabled={location === "detail"}
+                    >
+                      {attribute?.length > 0 ? (
+                        attribute.map((att) => (
+                          <option
+                            key={att._id}
+                            value={att._id}
+                            disabled={isAttributeSelected(att._id)}
+                          >
+                            {att.name}
+                          </option>
+                        ))
+                      ) : (
+                        <option value="">Không có thuộc tính</option>
+                      )}
+                    </select>
+                    <button
+                      disabled={isPending}
+                      hidden={location === "detail"}
+                      type="button"
+                      onClick={() => removeAttribute(index)}
+                      className="ml-2 py-1 px-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg focus:outline-none focus:ring-4 focus:ring-red-300"
+                    >
+                      Xóa
+                    </button>
+                  </div>
+                  {form.formState.errors.attributes && (
+                    <span className="text-red-500">
+                      {form.formState.errors.attributes.message}
+                    </span>
+                  )}
+
+                  {/* Display values for the selected attribute */}
+                  {attributeValues[index] && (
+                    <div className="mt-2">
+                      <label className="block text-gray-700 text-sm font-bold mb-2">
+                        Giá trị thuộc tính
+                      </label>
+                      <ul>
+                        {attributeValues[index].map((value) => (
+                          <li key={value._id} className="text-gray-700">
+                            {value.name} - Giá: {value.price || "N/A"} - Số
+                            lượng: {value.quantity || "N/A"}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
-            {form.formState.errors.attributes && <span className="text-red-500">{form.formState.errors.attributes.message}</span>}
-            
-            {/* Display values for the selected attribute */}
-            {attributeValues[index] && (
-              <div className="mt-2">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Giá trị thuộc tính
-                </label>
-                <ul>
-                  {attributeValues[index].map((value) => (
-                    <li key={value._id} className="text-gray-700">
-                      {value.name} - Giá: {value.price || "N/A"} - Số lượng: {value.quantity || "N/A"}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-      <button
-        disabled={isPending}
-        hidden={location === "detail"}
-        type="button"
-        onClick={addAttribute}
-        className="mb-4 py-2 px-4 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg focus:outline-none focus:ring-4 focus:ring-green-300"
-      >
-        Thêm Thuộc Tính
-      </button>
+            <button
+              disabled={isPending}
+              hidden={location === "detail"}
+              type="button"
+              onClick={addAttribute}
+              className="mb-4 py-2 px-4 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg focus:outline-none focus:ring-4 focus:ring-green-300"
+            >
+              Thêm Thuộc Tính
+            </button>
 
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -404,20 +426,6 @@ const ProductForm = () => {
                 )}
               </select>
             </div>
-
-            <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Thông số
-            </label>
-            <textarea
-              cols="30"
-              rows="5"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:cursor-not-allowed"
-              {...form.register("parameter")}
-              disabled={location === "parameter"}
-              defaultValue={data?.parameter || ""} // Set default value
-            ></textarea>
-          </div>
 
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2">
