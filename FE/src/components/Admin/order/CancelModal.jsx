@@ -1,7 +1,7 @@
 import { Button, Form, Input, Modal } from "antd";
-import React, { useEffect, useState } from "react";
-import { useCancelOrder } from "../../../common/hooks/useCancelOrder";
+import { useState } from "react";
 import { toast } from "react-toastify";
+import { useCancelOrder } from "../../../common/hooks/useCancelOrder";
 
 const CancelModal = ({ order }) => {
   const [form] = Form.useForm();
@@ -35,7 +35,7 @@ const CancelModal = ({ order }) => {
   return (
     <>
       <Button type="default" onClick={() => setOpen(true)}>
-        Cancel
+        Hủy đơn
       </Button>
 
       <Modal
