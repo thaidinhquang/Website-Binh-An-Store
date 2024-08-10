@@ -115,8 +115,12 @@ const AttributeList = () => {
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">{attribute.name}</p>
                                         </td>
+                                        
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <Link to={`/admin/attribute/edit/${attribute._id}`} className="text-green-600 hover:text-green-900">
+                                        <Link to={`/admin/attribute/detail/${attribute._id}`} className="text-blue-600 hover:text-blue-900 mx-2">
+                                                Chi tiết
+                                            </Link>
+                                            <Link to={`/admin/attribute/edit/${attribute._id}`} className="text-yellow-600 hover:text-yellow-900">
                                                 Sửa
                                             </Link>
                                         </td>
