@@ -106,7 +106,7 @@ export default function CampaignCountDown({
                   </div>
                   <div className="inline-flex space-x-2 items-center border-b border-qyellow">
                     <span className="text-sm font-600 tracking-wide leading-7">
-                      Shop Now
+                      Mua Ngay
                     </span>
                     <span>
                       <svg
@@ -151,14 +151,14 @@ export default function CampaignCountDown({
               <div className="flex flex-col h-full justify-between">
                 <div className="get-app">
                   <p className="text-[13px] font-600 text-qblack mb-3">
-                    MOBILE APP VERSION
+                    PHIÊN BẢN ỨNG DỤNG DI ĐỘNG
                   </p>
                   <h1 className="text-[30px] font-600 text-qblack leading-10 mb-8">
-                    Get Our
+                    Tải về
                     <span className="text-qred border-b-2 border-qred mx-2">
-                      Mobile App
+                      Ứng Dụng Di Động
                     </span>
-                    <br /> It’s Make easy for you life !
+                    <br /> Giúp cuộc sống của bạn dễ dàng hơn!
                   </h1>
                   <div className="flex space-x-5 items-center">
                     <div>

@@ -58,7 +58,7 @@ const Navbar = ({ className }) => {
     }
   }, [categoryToggle]);
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <p>Đang tải...</p>;
 
   return (
     <div>
@@ -93,7 +93,7 @@ const Navbar = ({ className }) => {
                         </svg>
                       </span>
                       <span className="text-sm font-600 text-qblacktext">
-                        All Categories
+                        Danh mục
                       </span>
                     </div>
                     <div>
@@ -164,7 +164,7 @@ const Navbar = ({ className }) => {
                     <li className="relative">
                       <Link to="/">
                         <span className="flex items-center text-sm text-qblack font-600 cursor-pointer ">
-                          <span>Homepage</span>
+                          <span>Trang chủ</span>
                           <span className="ml-1.5 "></span>
                         </span>
                       </Link>
@@ -172,7 +172,7 @@ const Navbar = ({ className }) => {
                     <li className="relative">
                       <Link to="/shop">
                         <span className="flex items-center text-sm text-qblack font-600 cursor-pointer ">
-                          <span>Shop</span>
+                          <span>Cửa hàng</span>
                           <span className="ml-1.5 "></span>
                         </span>
                       </Link>
@@ -180,7 +180,7 @@ const Navbar = ({ className }) => {
                     <li>
                       <Link to="/about">
                         <span className="flex items-center text-sm text-qblack font-600 cursor-pointer ">
-                          <span>About</span>
+                          <span>Giới thiệu</span>
                         </span>
                       </Link>
                     </li>
@@ -194,7 +194,7 @@ const Navbar = ({ className }) => {
                     <li>
                       <Link to="/contact">
                         <span className="flex items-center text-sm text-qblack font-600 cursor-pointer ">
-                          <span>Contact</span>
+                          <span>Liên hệ</span>
                         </span>
                       </Link>
                     </li>

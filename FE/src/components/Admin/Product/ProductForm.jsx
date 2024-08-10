@@ -406,6 +406,20 @@ const ProductForm = () => {
             </div>
 
             <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Thông số
+            </label>
+            <textarea
+              cols="30"
+              rows="5"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:cursor-not-allowed"
+              {...form.register("parameter")}
+              disabled={location === "parameter"}
+              defaultValue={data?.parameter || ""} // Set default value
+            ></textarea>
+          </div>
+
+            <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2">
                 Mô tả Sản Phẩm
               </label>
