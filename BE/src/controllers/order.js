@@ -259,8 +259,11 @@ export const getAllOrdersByUser = async (req, res) => {
   };
 
   if (req.query.search) {
-    const search = req.query.search.toString();
-    filter["customerInfo.name"] = { $regex: new RegExp(search, "i") };
+    const search = req.query.search;
+    filter.$or = [
+      { "customerInfo.name": { $regex: new RegExp(search, "i") } },
+      { code: { $regex: new RegExp(search, "i") } },
+    ];
   }
 
   if (req.query.paymentMethod) {
