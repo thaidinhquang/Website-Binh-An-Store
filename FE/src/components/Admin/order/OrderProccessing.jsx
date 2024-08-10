@@ -16,7 +16,7 @@ const OrderProcessing = ({ order }) => {
         return 2;
       case ORDER_STATUS.DELIVERED:
         return 3;
-      case ORDER_STATUS.COMPLETED:
+      case ORDER_STATUS.DONE:
         return 4;
       default:
         return 0;
@@ -43,12 +43,12 @@ const OrderProcessing = ({ order }) => {
             className="w-full"
             items={[
               {
-                title: "Đã đặt hàng",
+                title: "Chờ xác nhận",
                 icon: <CiUser />,
                 className: "text-primary mr-5",
               },
               {
-                title: "Chờ Xác nhận",
+                title: "Đã xác nhận",
                 icon: <FaUserCheck />,
                 className: "text-primary mr-5",
               },
