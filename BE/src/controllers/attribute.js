@@ -29,7 +29,7 @@ export const getAttributeById = async (req, res) => {
     try {
         const attribute = await Attribute.findById(req.params.id).populate("values");
         if (!attribute) {
-            return res.status(404).json({ message: "Attribute not found" });
+            return res.status(404).json({ message: "Không tìm thấy attribute" });
         }
         res.json(attribute);
     } catch (error) {
@@ -43,7 +43,7 @@ export const updateAttribute = async (req, res) => {
         const { name } = req.body;
         const attribute = await Attribute.findById(req.params.id);
         if (!attribute) {
-            return res.status(404).json({ message: "Attribute not found" });
+            return res.status(404).json({ message: "Không tìm thấy attribute" });
         }
         attribute.name = name;
         const updatedAttribute = await attribute.save();

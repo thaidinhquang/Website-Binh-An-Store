@@ -77,7 +77,7 @@ export const getOneCategoryByName = async (req, res, next) => {
 export const removeCategory = async (req, res, next) => {
   try {
     const data = await Category.findByIdAndUpdate(req.params.id, { active: false }, { new: true });
-    return !data ? res.status(400).json({ message: "Delete category failed!" }) : res.status(200).json({ data, message: "Delete category successfully"})
+    return !data ? res.status(400).json({ message: "Vô hiệu hóa category thất bại!" }) : res.status(200).json({ data, message: "Vô hiệu hóa category thành công"})
   } catch (error) {
     next(error)
   }
@@ -86,7 +86,7 @@ export const removeCategory = async (req, res, next) => {
 export const restoreCategory = async (req, res, next) => {
   try {
     const data = await Category.findByIdAndUpdate(req.params.id, { active: true }, { new: true });
-    return !data ? res.status(400).json({ message: "Restore category failed!" }) : res.status(200).json({ data, message: "Restore category successfully"})
+    return !data ? res.status(400).json({ message: "Khôi phục category thất bại!" }) : res.status(200).json({ data, message: "Khôi phục category thành công"})
   }
   catch (error) {
     next(error)

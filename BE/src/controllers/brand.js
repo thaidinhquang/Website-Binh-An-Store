@@ -78,7 +78,7 @@ export const getOneBrandByName = async (req, res, next) => {
 export const removeBrand = async (req, res, next) => {
   try {
     const data = await Brand.findByIdAndUpdate(req.params.id, { active: false }, { new: true });
-    return !data ? res.status(400).json({ message: "Delete Brand failed!" }) : res.status(200).json({ data, message: "Delete Brand successfully"})
+    return !data ? res.status(400).json({ message: "Vô hiệu hóa brand thất bại" }) : res.status(200).json({ data, message: "Vô hiệu hóa brand thành công"})
   } catch (error) {
     next(error)
   }
@@ -87,7 +87,7 @@ export const removeBrand = async (req, res, next) => {
 export const restoreBrand = async (req, res, next) => {
   try {
     const data = await Brand.findByIdAndUpdate(req.params.id, { active: true }, { new: true });
-    return !data ? res.status(400).json({ message: "Restore Brand failed!" }) : res.status(200).json({ data, message: "Restore Brand successfully"})
+    return !data ? res.status(400).json({ message: "Khôi phục Brand thất bại" }) : res.status(200).json({ data, message: "Khôi phục brand thành công"})
   }
   catch (error) {
     next(error)
