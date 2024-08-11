@@ -1,27 +1,4 @@
 import Attribute, { ValueAttributeModel } from "../models/attribute.js";
-import Product from "../models/Product.js";
-
-export const createAttributeProduct = async (req, res) => {
-    try {
-        const { name } = req.body;
-        const { productId } = req.params;
-        
-        // Check if the product exists
-        const product = await Product.findById(productId);
-        if (!product) {
-            return res.status(404).json({ message: "Product not found" });
-        }
-
-        const attribute = new Attribute({
-            name,
-            productId,
-        });
-        const newAttribute = await attribute.save();
-        res.status(201).json(newAttribute);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
-};
 
 // Controller để tạo mới một thuộc tính
 export const createAttribute = async (req, res) => {
