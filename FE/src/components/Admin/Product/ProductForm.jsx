@@ -10,6 +10,7 @@ import instance from "../../../config/axios";
 import { useQuery } from "@tanstack/react-query";
 
 const ProductForm = () => {
+  const [isNameTaken, setIsNameTaken] = useState(false);
   const location = useLocation().pathname.split("/")[3];
   const { id } = useParams();
   const [image, setImage] = useState(
@@ -18,11 +19,39 @@ const ProductForm = () => {
   const [attributes, setAttributes] = useState([{ _id: "" }]); // State to manage attributes
   const [attributeValues, setAttributeValues] = useState({}); // State to manage values of each attribute
 
-  const { form, onSubmit } = useTanstackMutation({
+  const checkNameUniqueness = async (name) => {
+    try {
+      const response = await fetch(`/api/products/check-name?name=${name}`);
+      const data = await response.json();
+      return data.exists;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
+
+  // useEffect(() => {
+  //   if (form.getValues("name")) {
+  //       checkNameUniqueness(form.getValues("name"));
+  //   }
+  // }, [form.getValues("name")]);
+
+  
+  const { form, onSubmit: originalOnSubmit } = useTanstackMutation({
     path: `products`,
     action: id ? "UPDATE" : "CREATE",
     navigatePage: "/admin/products",
   });
+
+  const onSubmit = async (data) => {
+    const nameExists = await checkNameUniqueness(form.getValues("name"));
+    if (nameExists) {
+      toast.error("Tên sản phẩm đã tồn tại!");
+      return;
+    }
+    originalOnSubmit(data);
+  };
+
   const { currentUser } = useContext(AuthContext);
   const { data } = id
     ? useTanstackQuery(`products/not-populate/${id}`)
@@ -191,6 +220,11 @@ const ProductForm = () => {
                 disabled={location === "detail"}
                 type="text"
                 defaultValue={data?.name || ""} // Set default value
+                {...form.formState.errors.name && (
+                  <span className="text-red-500">
+                    {form.formState.errors.name.message}
+                  </span>
+                )}
               />
               {form.formState.errors.name && (
                 <span className="text-red-500">
