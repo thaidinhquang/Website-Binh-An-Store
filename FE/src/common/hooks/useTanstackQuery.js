@@ -53,35 +53,44 @@ export const useTanstackMutation = ({
       } else if (action === "DELETE") {
         return data.active ? await axiosDelete(`${path}/${data._id}`) : await axiosDelete(`${path}/restore/${data._id}`);
       } else if (action === "UPLOAD") {
-        const url = await uploadFilesCloudinary(data)
+        const url = await uploadFilesCloudinary(data);
         return url;
       }
       return null;
     },
     onMutate: async (variables) => {
       const toastId = toast.loading(toastMessage || "Processing...");
-      const startTime = Date.now(); // Record the start time
-      return { toastId, startTime };
+      return { toastId };
     },
     onSuccess: (data, variables, context) => {
-      const elapsedTime = Date.now() - context.startTime; // Calculate elapsed time
-      const delay = Math.max(500 - elapsedTime, 0); // Calculate remaining delay to ensure at least 1 second
-      setTimeout(() => { // Delay the toast update if needed
-        toast.update(context.toastId, { render: toastMessage || data.message, type: "success", isLoading: false, autoClose: 5000 });
-        if (navigatePage) {
-          navigate(navigatePage);
-        }
-      }, delay);
+      if (context.toastId) {
+        toast.update(context.toastId, {
+          render: toastMessage || data.message,
+          type: "success",
+          isLoading: false,
+          autoClose: 2000
+        });
+      } else {
+        toast.success(toastMessage || data.message, { autoClose: 2000 });
+      }
+      if (navigatePage) {
+        navigate(navigatePage);
+      }
     },
     onError: (error, variables, context) => {
-      const elapsedTime = Date.now() - context.startTime; // Calculate elapsed time
-      const delay = Math.max(500 - elapsedTime, 0); // Calculate remaining delay to ensure at least 1 second
-      setTimeout(() => { // Delay the toast update if needed
-        toast.update(context.toastId, { render: `Error: ${error.message}`, type: "error", isLoading: false, autoClose: 5000 });
-      }, delay);
+      if (context.toastId) {
+        toast.update(context.toastId, {
+          render: `Error: ${error.message}`,
+          type: "error",
+          isLoading: false,
+          autoClose: 2000
+        });
+      } else {
+        toast.error(`Error: ${error.message}`, { autoClose: 2000 });
+      }
     },
     onSettled: (data, error, variables, context) => {
-      if (invalidateQueries != false) {
+      if (invalidateQueries !== false) {
         queryClient.invalidateQueries(path);
       }
     },
