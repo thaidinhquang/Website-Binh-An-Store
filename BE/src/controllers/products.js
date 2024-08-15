@@ -72,7 +72,7 @@ export const getDetailProduct = async (req, res, next) => {
 export const deleteProduct = async (req, res, next) => {
   try {
     const data = await Product.findByIdAndUpdate(req.params.id, { active: false }, { new: true });
-    return !data ? res.status(400).json({ message: "Xoa that bai!" }) : res.status(200).json({ data, message: "Xoa thanh cong!"})
+    return !data ? res.status(400).json({ message: "Xoa that bai!" }) : res.status(200).json({ data, message: "Vô hiệu hóa sản phẩm thành công!"})
   } catch (error) {
     next(error)
   }
@@ -81,7 +81,7 @@ export const deleteProduct = async (req, res, next) => {
 export const restoreProduct = async (req, res, next) => {
   try {
     const data = await Product.findByIdAndUpdate(req.params.id, { active: true }, { new: true });
-    return !data ? res.status(400).json({ message: "Khoi phuc that bai!" }) : res.status(200).json({ data, message: "Khoi phuc thanh cong!"})
+    return !data ? res.status(400).json({ message: "Khoi phuc that bai!" }) : res.status(200).json({ data, message: "Khôi phục sản phẩm thành công!"})
   } catch (error) {
     next(error)
   }
