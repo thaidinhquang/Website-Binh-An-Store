@@ -63,7 +63,7 @@ const getStatus = (createdAt) => {
               />
             </div>
             <div className="product-card-details px-[30px] pb-[80px] relative">
-              <div className="absolute w-full h-10 px-[30px] left-0 top-40 group-hover:top-[85px] transition-all duration-300 ease-in-out">
+              <div className="absolute w-full h-10 px-[30px] left-0 top-60 group-hover:top-[85px] transition-all duration-300 ease-in-out">
                 <Link to={`/detail/${product._id}`} className={isPending ? "blue-btn" : "yellow-btn"}>
                   <div className="flex items-center space-x-3">
                     <span>{isPending ? "..." : "Xem chi tiết"}</span>
@@ -76,10 +76,10 @@ const getStatus = (createdAt) => {
                 </p>
               </Link>
               <p className="price">
-                <span className="main-price text-qgray line-through text-[18px]">
+                <span className="main-price text-qgray line-through text-[14px]">
                   {formatPrice(product.price)}
                 </span>
-                <span className="offer-price text-qred font-600 text-[18px] ml-2">
+                <span className="offer-price text-qred font-semibold text-[15px] ml-2">
                   {formatPrice(product.price)}
                 </span>
               </p>

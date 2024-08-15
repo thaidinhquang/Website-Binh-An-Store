@@ -32,14 +32,8 @@ const CheckoutPage = () => {
                     image: item.productId.image,
                     price: calculateTotalPrice(item),
                     quantity: item.quantity,
-                    attributesId: item.attributesId.map(attr => ({
-                        ...attr,
-                        values: attr.values.map(valueId =>
-                            item.valuesId.find(value => value._id === valueId)
-                        )
-                    })),
-                    valuesId: item.valuesId.map(value => value._id),
-                })
+                    attributesId: item.attributesId.map(attr => attr._id), // Changed to only include _id
+                valuesId: item.valuesId.map(value => value._id),})
             })
             setItems(listItem)
             setIsLoadingItem(false)
