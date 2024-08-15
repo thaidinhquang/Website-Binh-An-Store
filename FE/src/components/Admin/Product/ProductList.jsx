@@ -132,7 +132,7 @@ const ProductList = () => {
               <tr key={product._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                 <th className="px-6 py-4">{product._id}</th>
                 <th className="px-6 py-4">
-                  <img src={product.image} width={80} className=" rounded-lg" alt="" />
+                  <img src={product.image[0]} width={80} className=" rounded-lg" alt="" />
                 </th>
                 <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                   <p className="inline-block">{product.name}</p> <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${getStatus(product.createdAt) === 0 ? 'text-white bg-green-500' : 'text-transparent bg-transparent'}`}>

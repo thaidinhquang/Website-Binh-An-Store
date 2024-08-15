@@ -3,11 +3,52 @@ import {
   useTanstackMutation,
   useTanstackQuery,
 } from "../../../common/hooks/useTanstackQuery";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 import socket from "/src/config/socket";
 import { AuthContext } from "../../Auth/core/Auth";
 import instance from "../../../config/axios";
 import { useQuery } from "@tanstack/react-query";
+import { useDropzone } from 'react-dropzone';
+import { DndProvider, useDrag, useDrop } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+
+const ItemType = {
+  IMAGE: 'image',
+};
+
+const DraggableImage = ({ file, index, moveImage, removeImage, isEdit }) => {
+  const [, ref] = useDrag({
+    type: ItemType.IMAGE,
+    item: { index },
+  });
+
+  const [, drop] = useDrop({
+    accept: ItemType.IMAGE,
+    hover: (draggedItem) => {
+      if (draggedItem.index !== index) {
+        moveImage(draggedItem.index, index);
+        draggedItem.index = index;
+      }
+    },
+  });
+
+  return (
+    <div ref={(node) => ref(drop(node))} className="flex items-center gap-4 mb-4">
+      <img
+        src={file instanceof File ? URL.createObjectURL(file) : file}
+        className="w-40 h-20 object-cover rounded-lg"
+      />
+      {isEdit && (
+        <button
+          type="button"
+          onClick={() => removeImage(index)}
+          className="py-3.5 px-7 text-base font-medium text-red-100 focus:outline-none bg-[#202142] rounded-lg border border-red-200 hover:bg-red-900 focus:z-10 focus:ring-4 focus:ring-red-200"
+        >
+          Remove
+        </button>)}
+    </div>
+  );
+};
 
 const ProductForm = () => {
   const location = useLocation().pathname.split("/")[3];
@@ -15,20 +56,63 @@ const ProductForm = () => {
   const [image, setImage] = useState(
     "https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg"
   );
+  const [uploadImages, setUploadImages] = useState([]);
   const [attributes, setAttributes] = useState([{ _id: "" }]); // State to manage attributes
   const [attributeValues, setAttributeValues] = useState({}); // State to manage values of each attribute
+  const [categoryId, setCategoryId] = useState(0);
+  const onDrop = useCallback((acceptedFiles) => {
+    const newImages = [...uploadImages, ...acceptedFiles];
+    setUploadImages(newImages);
+    if (newImages.length > 0) {
+      handleImage(newImages[0]);
+    }
+  }, [uploadImages]);
 
-  const [categoryId, setCategoryId] = useState( 0);
-  
-  const { form, onSubmit } = useTanstackMutation({
+  const moveImage = (fromIndex, toIndex) => {
+    const updatedImages = [...uploadImages];
+    const [movedImage] = updatedImages.splice(fromIndex, 1);
+    updatedImages.splice(toIndex, 0, movedImage);
+    setUploadImages(updatedImages);
+    if (updatedImages.length > 0) {
+      handleImage(updatedImages[0]);
+    }
+    
+  };
+
+  const removeImage = (index) => {
+    const updatedImages = uploadImages.filter((_, i) => i !== index);
+    setUploadImages(updatedImages);
+    if (updatedImages.length > 0) {
+      handleImage(updatedImages[0]);
+    } else {
+      handleImage("https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg");
+    }
+  };
+
+  const handleImage = (file) => {
+    const imageUrl = file instanceof File ? URL.createObjectURL(file) : file;
+    setImage(imageUrl);
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: {
+      'image/png': [],
+      'image/jpeg': [],
+      'image/webp': [],
+      'image/gif': [],
+    },
+  });
+
+  const { form, mutate: mutateForm } = useTanstackMutation({
     path: `products`,
     action: id ? "UPDATE" : "CREATE",
     navigatePage: "/admin/products",
   });
   const { currentUser } = useContext(AuthContext);
   const { data } = id
-  ? useTanstackQuery(`products/not-populate/${id}`)
-  : { data: null };
+    ? useTanstackQuery(`products/not-populate/${id}`)
+    : { data: null };
   const { data: category } = useTanstackQuery(`categories`, {
     active: true,
   });
@@ -48,13 +132,12 @@ const ProductForm = () => {
       refetch();
     }
   }, [categoryId]);
+
   useEffect(() => {
     if (data?.category) {
       setCategoryId(data.category);
     }
   }, [data]);
-  console.log(brand);
-  
   const { mutate, isPending } = useTanstackMutation({
     action: "UPLOAD",
     toastMessage: "Uploading image",
@@ -64,7 +147,8 @@ const ProductForm = () => {
   useEffect(() => {
     if (data) {
       form.reset(data);
-      setImage(data.image);
+      setImage(data.image[0]);
+      setUploadImages(data.image);
       // Map attribute IDs to attribute objects
       const mappedAttributes = data.attributes?.map((attrId) => {
         const selectedAttribute = attribute?.find((attr) => attr?._id === attrId);
@@ -130,6 +214,18 @@ const ProductForm = () => {
     return attributes.some((attr) => attr._id === id);
   };
 
+  const onSubmit = (formData) => {
+    mutate(uploadImages, {
+      onSuccess: (data) => {
+        mutateForm({
+          ...formData,
+          image: data,
+        });
+      },
+    });
+  };
+
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="flex justify-between items-center mb-6">
@@ -146,7 +242,7 @@ const ProductForm = () => {
           <h2 className="text-2xl font-semibold mb-4">Ảnh Sản Phẩm</h2>
           <img
             src={image}
-            className="w-full h-auto object-cover rounded-lg mb-4"
+            className="w-full h-72 object-cover rounded-lg mb-4"
           />
           {location === "detail" ? (
             <Link
@@ -155,36 +251,28 @@ const ProductForm = () => {
             >
               Edit
             </Link>
-          ) : (
-            <div className="flex flex-col">
-              <button
-                type="button"
-                onClick={() => document.getElementById("file")?.click()}
-                className="py-3.5 px-7 text-base font-medium text-indigo-100 focus:outline-none bg-[#202142] rounded-lg border border-indigo-200 hover:bg-indigo-900 focus:z-10 focus:ring-4 focus:ring-indigo-200 "
+          ) : <DndProvider backend={HTML5Backend}>
+            <div>
+              <div
+                {...getRootProps()}
+                className="border-dashed border-2 border-gray-300 p-6 rounded-lg cursor-pointer mb-4"
               >
-                Change image
-              </button>
-              <input
-                type="file"
-                id="file"
-                accept="image/jpg, image/jpeg, image/png"
-                onChange={async ({ target }) => {
-                  if (target.files.length > 0) {
-                    const file = target.files[0];
-                    setImage(URL.createObjectURL(file));
-                    mutate(file, {
-                      onSuccess: (data) => {
-                        form.setValue("image", data);
-                      },
-                    });
-                  }
-                }}
-                className="hidden"
-              />
+                <input {...getInputProps()} />
+                <p>Kéo và thả ảnh hoặc bấm vào đây để tải ảnh lên!</p>
+              </div>
+              {uploadImages.length > 0 && uploadImages.map((file, index) => (
+                <DraggableImage
+                  key={index}
+                  index={index}
+                  file={file}
+                  moveImage={moveImage}
+                  removeImage={removeImage}
+                  isEdit={location !== 'detail'}
+                />
+              ))}
             </div>
-          )}
+          </DndProvider>}
         </div>
-
         <div className="bg-white p-6 shadow rounded md:w-2/3">
           <h2 className="text-2xl font-semibold mb-4">Thông Tin Sản Phẩm</h2>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -336,65 +424,65 @@ const ProductForm = () => {
               )}
             </div>
 
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {attributes.map((attr, index) => (
-          <div className="mb-4" key={index}>
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              Thuộc tính {index + 1}
-            </label>
-            <div className="flex items-center">
-              <select
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:cursor-not-allowed"
-                {...form.register(`attributes[${index}]._id`, { required: `Attribute ${index + 1} không được để trống` })}
-                value={attr._id} // Ensure the value is set correctly
-                onChange={(e) => handleAttributeChange(index, e.target.value)}
-                disabled={location === 'detail'}
-              >
-                {attribute?.length > 0 ? attribute.map((att) => (
-                  <option key={att._id} value={att._id} disabled={isAttributeSelected(att._id)}>
-                    {att.name}
-                  </option>
-                )) : <option value="">Không có thuộc tính</option>}
-              </select>
-              <button
-                disabled={isPending}
-                hidden={location === "detail"}
-                type="button"
-                onClick={() => removeAttribute(index)}
-                className="ml-2 py-1 px-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg focus:outline-none focus:ring-4 focus:ring-red-300"
-              >
-                Xóa
-              </button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {attributes.map((attr, index) => (
+                <div className="mb-4" key={index}>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Thuộc tính {index + 1}
+                  </label>
+                  <div className="flex items-center">
+                    <select
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:cursor-not-allowed"
+                      {...form.register(`attributes[${index}]._id`, { required: `Attribute ${index + 1} không được để trống` })}
+                      value={attr._id} // Ensure the value is set correctly
+                      onChange={(e) => handleAttributeChange(index, e.target.value)}
+                      disabled={location === 'detail'}
+                    >
+                      {attribute?.length > 0 ? attribute.map((att) => (
+                        <option key={att._id} value={att._id} disabled={isAttributeSelected(att._id)}>
+                          {att.name}
+                        </option>
+                      )) : <option value="">Không có thuộc tính</option>}
+                    </select>
+                    <button
+                      disabled={isPending}
+                      hidden={location === "detail"}
+                      type="button"
+                      onClick={() => removeAttribute(index)}
+                      className="ml-2 py-1 px-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg focus:outline-none focus:ring-4 focus:ring-red-300"
+                    >
+                      Xóa
+                    </button>
+                  </div>
+                  {form.formState.errors.attributes && <span className="text-red-500">{form.formState.errors.attributes.message}</span>}
+
+                  {/* Display values for the selected attribute */}
+                  {attributeValues[index] && (
+                    <div className="mt-2">
+                      <label className="block text-gray-700 text-sm font-bold mb-2">
+                        Giá trị thuộc tính
+                      </label>
+                      <ul>
+                        {attributeValues[index].map((value) => (
+                          <li key={value._id} className="text-gray-700">
+                            {value.name} - Giá: {value.price || "N/A"} - Số lượng: {value.quantity || "N/A"}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
-            {form.formState.errors.attributes && <span className="text-red-500">{form.formState.errors.attributes.message}</span>}
-            
-            {/* Display values for the selected attribute */}
-            {attributeValues[index] && (
-              <div className="mt-2">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Giá trị thuộc tính
-                </label>
-                <ul>
-                  {attributeValues[index].map((value) => (
-                    <li key={value._id} className="text-gray-700">
-                      {value.name} - Giá: {value.price || "N/A"} - Số lượng: {value.quantity || "N/A"}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-      <button
-        disabled={isPending}
-        hidden={location === "detail"}
-        type="button"
-        onClick={addAttribute}
-        className="mb-4 py-2 px-4 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg focus:outline-none focus:ring-4 focus:ring-green-300"
-      >
-        Thêm Thuộc Tính
-      </button>
+            <button
+              disabled={isPending}
+              hidden={location === "detail"}
+              type="button"
+              onClick={addAttribute}
+              className="mb-4 py-2 px-4 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg focus:outline-none focus:ring-4 focus:ring-green-300"
+            >
+              Thêm Thuộc Tính
+            </button>
 
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2">

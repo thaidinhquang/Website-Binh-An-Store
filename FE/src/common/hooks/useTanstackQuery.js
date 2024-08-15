@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { axiosDelete, axiosGet, axiosPatch, axiosPost, axiosPut } from "../../config/axios";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { uploadFileCloudinary } from "../libs/uploadImageCloud";
+import { uploadFilesCloudinary } from "../libs/uploadFilesCloudinary";
 export const addparamstoUrl = (url, params) => {
   let newUrl = url;
   if (params) {
@@ -53,7 +53,7 @@ export const useTanstackMutation = ({
       } else if (action === "DELETE") {
         return data.active ? await axiosDelete(`${path}/${data._id}`) : await axiosDelete(`${path}/restore/${data._id}`);
       } else if (action === "UPLOAD") {
-        const url = await uploadFileCloudinary(data)
+        const url = await uploadFilesCloudinary(data)
         return url;
       }
       return null;

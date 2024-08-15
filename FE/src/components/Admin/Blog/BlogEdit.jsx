@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import MDEditor from '@uiw/react-md-editor';
-import { uploadFileCloudinary } from "../../../common/libs/uploadImageCloud";
+import { uploadFilesCloudinary } from "../../../common/libs/uploadFilesCloudinary";
 import { Button, Input, Form, Spin } from 'antd';
 import instance from "../../../config/axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
