@@ -51,26 +51,26 @@ const BrandList = () => {
       Slug: brand.slug,
       Active: brand.active ? 'Active' : 'False',
       Products: brand.products.join(', '),
-      CreatedAt: new Date(brand.createdAt).toLocaleString(), 
-      UpdatedAt: new Date(brand.updatedAt).toLocaleString()  
+      CreatedAt: new Date(brand.createdAt).toLocaleString(),
+      UpdatedAt: new Date(brand.updatedAt).toLocaleString()
     }));
     await CommonUtils.exportExcel(dataToExport, 'Brands', 'BrandList');
   };
-
+  console.log(data);
+  
   if (isLoading) return <div className="flex justify-center items-center h-screen"><div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div></div>;
-
   return (
     <div className="container mx-auto px-4 sm:px-8">
-    <h2 className="text-2xl font-semibold mb-4 md:mb-0">Danh sách nhãn hàng</h2>
+      <h2 className="text-2xl font-semibold mb-4 md:mb-0">Danh sách nhãn hàng</h2>
       <div className="py-8">
         <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-         
+
           <Link to={`/admin/brands/add`} className="px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out">
             Thêm nhãn hàng
           </Link>
           <Button onClick={exportToExcel} type="default" icon={<FontAwesomeIcon icon={faFileExcel} />}>
-          Xuất Excel
-        </Button>
+            Xuất Excel
+          </Button>
         </div>
         <form onSubmit={form.handleSubmit(searchForm)} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <div className="flex flex-wrap -mx-3 mb-4">
@@ -126,6 +126,9 @@ const BrandList = () => {
                     Tên nhãn hàng
                   </th>
                   <th scope="col" className="px-5 py-3 bg-white  border-b border-gray-200 text-gray-800  text-left text-sm uppercase font-normal">
+                    Danh mục
+                  </th>
+                  <th scope="col" className="px-5 py-3 bg-white  border-b border-gray-200 text-gray-800  text-left text-sm uppercase font-normal">
                     Hành động
                   </th>
                   <th scope="col" className="px-5 py-3 bg-white  border-b border-gray-200 text-gray-800  text-left text-sm uppercase font-normal">
@@ -147,6 +150,9 @@ const BrandList = () => {
                         {brand.name}
                         {isUserEditing(brand._id)}
                       </p>
+                    </td>
+                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                      <p className="text-gray-900 whitespace-no-wrap">{brand.category?.name}</p>
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                       <Link to={`/admin/brands/edit/${brand._id}`} className="text-green-600 hover:text-green-900">

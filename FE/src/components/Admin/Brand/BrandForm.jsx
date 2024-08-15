@@ -12,7 +12,10 @@ const BrandForm = () => {
         navigatePage: "/admin/brands",
     });
     const { currentUser } = useContext(AuthContext);
-    const { data, isLoading } = id? useTanstackQuery(`brands/${id}`) : { data: null };
+    const { data, isLoading } = id ? useTanstackQuery(`brands/${id}`) : { data: null };
+    const { data: category } = useTanstackQuery(`categories`, {
+        active: true,
+    });
     if (id) {
         const userEditingPost = { id: currentUser._id, post_id: id, fullname: currentUser.email };
         const handleUnload = () => {
@@ -58,16 +61,34 @@ const BrandForm = () => {
                                 />
                                 {form.formState.errors.name && <span className="text-red-500">{form.formState.errors.name.message}</span>}
                             </div>
-                            <div>
+                            <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2">
-                                    Slug:
+                                    Category
                                 </label>
-                                <input
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                                    {...form.register("slug", { required: 'không được bỏ trống', minLength: { value: 2, message: 'Tên slug nhãn hàng phải có ít nhất 1 ký tự!' } })}
-                                    type="text"
-                                />
-                                {form.formState.errors.slug && <span className="text-red-500">{form.formState.errors.slug.message}</span>}
+                                <select
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline disabled:cursor-not-allowed"
+                                    {...form.register("category", {
+                                        required: "Category không được để trống",
+                                    })}
+                                    disabled={location === "detail"}
+                                    defaultValue={data?.category || ""} // Set default value
+                                >
+                                    <option value="">Chọn danh mục</option>
+                                    {category?.docs?.length > 0 ? (
+                                        category.docs.map((cate) => (
+                                            <option key={cate._id} value={cate._id}>
+                                                {cate.name}
+                                            </option>
+                                        ))
+                                    ) : (
+                                        <option value="">Không có danh mục</option>
+                                    )}
+                                </select>
+                                {form.formState.errors.category && (
+                                    <span className="text-red-500">
+                                        {form.formState.errors.category.message}
+                                    </span>
+                                )}
                             </div>
                             <button className="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900">
                                 {id ? "Sửa" : "Thêm"}

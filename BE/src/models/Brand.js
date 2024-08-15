@@ -8,24 +8,16 @@ const brandSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    desc: {
+    description: {
       type: String,
+      required: false,
     },
-    slug: {
-      type: String,
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
       required: true,
       unique: true,
-    },
-    active: {
-      type: Boolean,
-      default: true,
-    },
-    products: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
-      },
-    ],
+    }
   },
   { timestamps: true, versionKey: false }
 );

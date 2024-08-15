@@ -20,6 +20,12 @@ const categorySchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    brands: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Brand",
+      },
+    ],
     products: [
       {
         type: mongoose.Schema.Types.ObjectId,

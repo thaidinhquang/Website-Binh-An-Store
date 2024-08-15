@@ -18,6 +18,8 @@ const ProductForm = () => {
   const [attributes, setAttributes] = useState([{ _id: "" }]); // State to manage attributes
   const [attributeValues, setAttributeValues] = useState({}); // State to manage values of each attribute
 
+  const [categoryId, setCategoryId] = useState( 0);
+  
   const { form, onSubmit } = useTanstackMutation({
     path: `products`,
     action: id ? "UPDATE" : "CREATE",
@@ -25,8 +27,8 @@ const ProductForm = () => {
   });
   const { currentUser } = useContext(AuthContext);
   const { data } = id
-    ? useTanstackQuery(`products/not-populate/${id}`)
-    : { data: null };
+  ? useTanstackQuery(`products/not-populate/${id}`)
+  : { data: null };
   const { data: category } = useTanstackQuery(`categories`, {
     active: true,
   });
@@ -37,11 +39,22 @@ const ProductForm = () => {
       return data.filter((attr) => attr.active);
     },
   });
-
-  const { data: brand } = useTanstackQuery(`brands`, {
+  const { data: brand, refetch } = useTanstackQuery(`brands`, {
     active: true,
+    category: categoryId,
   });
-
+  useEffect(() => {
+    if (categoryId) {
+      refetch();
+    }
+  }, [categoryId]);
+  useEffect(() => {
+    if (data?.category) {
+      setCategoryId(data.category);
+    }
+  }, [data]);
+  console.log(brand);
+  
   const { mutate, isPending } = useTanstackMutation({
     action: "UPLOAD",
     toastMessage: "Uploading image",
@@ -303,7 +316,9 @@ const ProductForm = () => {
                 })}
                 disabled={location === "detail"}
                 defaultValue={data?.category || ""} // Set default value
+                onChange={(e) => setCategoryId(e.target.value)}
               >
+                <option value={0}>Chọn danh mục</option>
                 {category?.docs?.length > 0 ? (
                   category.docs.map((cate) => (
                     <option key={cate._id} value={cate._id}>
