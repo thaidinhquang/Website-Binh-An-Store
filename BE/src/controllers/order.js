@@ -1,12 +1,9 @@
 import Stripe from "stripe";
 import Order from "../models/Order.js";
-import Attribute from "../models/attribute.js"; // Ensure correct import
-import ValueAttribute from "../models/attribute.js";
 import { ORDER_STATUS } from "../constants/order.js";
 import { ROLES } from "../constants/Role.js";
 import sendEmail from "../utils/sendEmail.js";
 import User from "../models/User.js";
-
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -152,7 +149,7 @@ export const createStripeOrder = async (session) => {
       price: item.amount_total,
       image: item.image,
       attributesId: item.attributesId,
-      valuesId:item.valuesId
+      valuesId: item.valuesId,
     }));
 
     const order = new Order({
@@ -190,7 +187,12 @@ export const createStripeOrder = async (session) => {
         <p style="font-size:1.1em">Xin chào ${user.email},</p>
         <p>Cảm ơn quý khách đã đặt hàng với chúng tôi. Dưới đây là chi tiết đơn hàng của bạn:</p>
         <ul>
-          ${dataItems.map(item => `<li>${item.name} - Số lượng: ${item.quantity} - Giá: ${item.price}</li>`).join('')}
+          ${dataItems
+            .map(
+              (item) =>
+                `<li>${item.name} - Số lượng: ${item.quantity} - Giá: ${item.price}</li>`
+            )
+            .join("")}
         </ul>
         <p style="font-size:0.9em;">Trân trọng,<br />Nguyen Tuan Anh</p>
         <hr style="border:none;border-top:1px solid #eee" />
@@ -207,7 +209,6 @@ export const createStripeOrder = async (session) => {
     } else {
       console.error("Failed to send email");
     }
-
   } catch (error) {
     console.error("Error processing checkout.session.completed event:", error);
   }
@@ -283,14 +284,14 @@ export const getAllOrdersByUser = async (req, res) => {
       ...options,
       populate: [
         {
-          path: 'items.attributesId',
-          model: 'Attribute',
-          select: 'name',
+          path: "items.attributesId",
+          model: "Attribute",
+          select: "name",
         },
         {
-          path: 'items.valuesId',
-          model: 'ValueAttribute',
-          select: 'name price quantity',
+          path: "items.valuesId",
+          model: "ValueAttribute",
+          select: "name price quantity",
         },
       ],
     });
@@ -314,17 +315,17 @@ export const getAllOrdersByUser = async (req, res) => {
 export const getOrderDetails = async (req, res) => {
   try {
     const order = await Order.findById(req.params.orderId)
-    .populate({
-      path: 'items.attributesId',
-      model: 'Attribute',
-      select: 'name',
-    })
-    .populate({
-      path: 'items.valuesId',
-      model: 'ValueAttribute',
-      select: 'name',
-    })
-    .lean();
+      .populate({
+        path: "items.attributesId",
+        model: "Attribute",
+        select: "name",
+      })
+      .populate({
+        path: "items.valuesId",
+        model: "ValueAttribute",
+        select: "name",
+      })
+      .lean();
 
     if (!order) {
       throw new Error(`Not found any order with id: ${req.params.orderId} `);
@@ -367,7 +368,10 @@ export const cancelOrder = async (req, res) => {
   try {
     const foundedOrder = await Order.findById(req.body.orderId);
     if (!foundedOrder) {
-      return res.status(404).json({ message: `Order not found with id ${req.body.orderId}`, success: false });
+      return res.status(404).json({
+        message: `Order not found with id ${req.body.orderId}`,
+        success: false,
+      });
     }
 
     if (req.user.role === ROLES.ADMIN) {
@@ -385,7 +389,9 @@ export const cancelOrder = async (req, res) => {
     const user = await User.findById(foundedOrder.userId);
 
     if (!user) {
-      return res.status(404).json({ message: "User not found", success: false });
+      return res
+        .status(404)
+        .json({ message: "User not found", success: false });
     }
 
     const emailSent = sendEmail(
@@ -396,9 +402,11 @@ export const cancelOrder = async (req, res) => {
           <div class="border-b border-gray-300 pb-3">
             <a href="#" class="text-xl font-semibold text-blue-800 no-underline">Nguyen Tuan Anh</a>
           </div>
-          <p class="text-lg mt-5">Xin chào ${user.name || 'quý khách'},</p>
+          <p class="text-lg mt-5">Xin chào ${user.name || "quý khách"},</p>
           <p class="mt-2">Đơn hàng của bạn đã được hủy thành công. Chúng tôi sẽ tiến hành hoàn tiền trong thời gian sớm nhất.</p>
-          <p><strong>Lý do hủy đơn:</strong> ${foundedOrder.cancelledReason || 'Không có lý do cụ thể'}</p>
+          <p><strong>Lý do hủy đơn:</strong> ${
+            foundedOrder.cancelledReason || "Không có lý do cụ thể"
+          }</p>
           <p class="text-base mt-5">Trân trọng,<br />Nguyen Tuan Anh</p>
           <hr class="mt-6 border-t border-gray-200" />
           <div class="text-right text-sm text-gray-500 mt-4">
@@ -415,10 +423,14 @@ export const cancelOrder = async (req, res) => {
       console.error("Failed to send cancellation email");
     }
 
-    return res.status(200).json({ message: "Order cancelled and email sent", success: true });
+    return res
+      .status(200)
+      .json({ message: "Order cancelled and email sent", success: true });
   } catch (error) {
     console.log("Something went wrong.", error);
-    return res.status(500).json({ message: "Internal server error", success: false });
+    return res
+      .status(500)
+      .json({ message: "Internal server error", success: false });
   }
 };
 
@@ -462,14 +474,14 @@ export const getAllOrders = async (req, res) => {
       ...options,
       populate: [
         {
-          path: 'items.attributesId',
-          model: 'Attribute',
-          select: 'name',
+          path: "items.attributesId",
+          model: "Attribute",
+          select: "name",
         },
         {
-          path: 'items.valuesId',
-          model: 'ValueAttribute',
-          select: 'name price quantity',
+          path: "items.valuesId",
+          model: "ValueAttribute",
+          select: "name price quantity",
         },
       ],
     });
@@ -636,8 +648,3 @@ export const getReportOrders = async (req, res) => {
     console.log("Something went wrong.", error);
   }
 };
-
-
-
-
-
