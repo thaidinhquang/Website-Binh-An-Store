@@ -3,7 +3,7 @@ import Checkbox from "../UI/Checkbox";
 import { useTanstackQuery } from "../../common/hooks/useTanstackQuery";
 import { useLocation, useNavigate } from "react-router-dom";
 const ProductsFilter = () => {
-  const { data, isLoading } = useTanstackQuery('categories', { limit: 100, active: true });
+  const { data, isLoading } = useTanstackQuery('categories', {}, true);  
   const location = useLocation();
   const navigate = useNavigate();
   const checkIsCategory = (id) => {
@@ -27,6 +27,7 @@ const ProductsFilter = () => {
     }
     navigate(`?${searchParams.toString()}`);
   };
+  
   if (isLoading) return <p>Loading...</p>;
   return (
     <>
@@ -36,12 +37,12 @@ const ProductsFilter = () => {
         <div className="filter-subject-item pb-10 border-b border-qgray-border">
           <div className="subject-title mb-[30px]">
             <h1 className="text-black text-base font-500">
-              Product categories
+              Danh mục
             </h1>
           </div>
           <div className="filter-items">
             <ul>
-              {data?.docs?.length > 0 ? data.docs.map((item) => (
+              {data?.length > 0 ? data.map((item) => (
                 <li className="item flex justify-between items-center mb-5" key={item._id}>
                   <button className="flex space-x-[14px]">
                     <div>
@@ -94,7 +95,7 @@ const ProductsFilter = () => {
                   </div>
                 </li>)
               ) : <li>
-                <p>No category found</p>
+                <p>Không tìm thấy danh mục</p>
               </li>}
             </ul>
           </div>

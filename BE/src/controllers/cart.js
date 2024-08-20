@@ -8,15 +8,6 @@ export const getCartByUserId = async (req, res, next) => {
                 path: "products.productId",
                 model: "Product",
             })
-            .populate({
-                path: "products.attributesId",
-                model: "Attribute",
-            })
-            .populate({
-                path: "products.valuesId",
-                model: "ValueAttribute",
-            });
-
         if (!cart) {
             cart = new Cart({ userId, products: [] });
             await cart.save();
@@ -131,15 +122,6 @@ export const updateItemInCart = async (req, res, next) => {
                 path: "products.productId",
                 model: "Product",
             })
-            .populate({
-                path: "products.attributesId",
-                model: "Attribute",
-            })
-            .populate({
-                path: "products.valuesId",
-                model: "ValueAttribute",
-            });
-
         return res.status(200).json({ data: updatedCart, message: "Mặt hàng được cập nhật vào giỏ hàng thành công" });
     } catch (error) {
         next(error);
@@ -189,7 +171,7 @@ export const getCartCount = async (req, res, next) => {
 export const getCartTotal = async (req, res, next) => {
     try {
         const userId = req.user._id;
-        const cart = await Cart.findOne({ userId }).populate("products.productId").populate("products.valuesId");
+        const cart = await Cart.findOne({ userId }).populate("products.productId")
         if (!cart) {
             return res.status(404).json({ message: "Không tìm thấy giỏ hàng" });
         }
