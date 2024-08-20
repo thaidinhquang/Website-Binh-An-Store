@@ -1,26 +1,47 @@
 import Category from "../models/Category.js";
 
-export const addNewCategory = async (req, res) => {
+export const addNewCategory = async (req, res, next) => {
   try {
+    const existingCategory = await Category.findOne({ name: req.body.name });
+    if (existingCategory) {
+      return res.status(400).json({ message: 'Tên của danh mục đã tồn tại' });
+    }
+
     const category = await Category.create(req.body);
-    return res.status(201).json(category);
+    return res.status(201).json({ message: 'Tạo danh mục thành công', category });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
-export const getAllCategory = async (req, res) => {
+export const updateCategory = async (req, res, next) => {
+  try {
+    const existingCategory = await Category.findOne({ name: req.body.name, _id: { $ne: req.params.id } });
+    if (existingCategory) {
+      return res.status(400).json({ message: 'Tên của danh mục đã tồn tại' });
+    }
+
+    const category = await Category.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    return res.status(200).json({ message: 'Cập nhật danh mục thành công', category });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAllCategory = async (req, res, next) => {
   try {
     const categories = await Category.find();
     return res.status(200).json(categories);
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
 import mongoose from 'mongoose';
 
-export const getAllCategoryWithDetails = async (req, res) => {
+export const getAllCategoryWithDetails = async (req, res, next) => {
   try {
     const { query, sort } = req.query;
     let filter = {};
@@ -53,22 +74,23 @@ export const getAllCategoryWithDetails = async (req, res) => {
   }
 }
 
-export const getCategory = async (req, res) => {
+export const getCategory = async (req, res, next) => {
   try {
     const category = await Category.findById(req.params.id);
     return res.status(200).json(category);
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
-export const updateCategory = async (req, res) => {
+export const getCategoryDetails = async (req, res, next) => {
   try {
-    const category = await Category.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const category = await Category.findById(req.params.id).populate({
+      path: 'details',
+      select: 'key'
+    })
     return res.status(200).json(category);
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };

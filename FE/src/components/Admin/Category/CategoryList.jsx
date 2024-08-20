@@ -18,7 +18,6 @@ const CategoryList = () => {
   const form = useForm();
   const useSearch = useHookSearch();
   const { data, isLoading, refetch } = useTanstackQuery('categories/details', { sort, query }, false)
-  console.log(data);
   const { mutate } = useTanstackMutation({
     path: `categories`,
     action: "DELETE",
