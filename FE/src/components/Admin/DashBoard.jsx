@@ -24,7 +24,7 @@ const DashBoard = () => {
       <div className="fixed top-0 left-0 right-0 bg-white shadow-md z-10 py-4 px-6">
         <h1 className="text-[22px] font-bold text-qblack italic">Bình An Store</h1>
       </div>
-      
+
       {/* Main content */}
       <div className="flex mt-[3.5rem]">
         {/* Sidebar */}
@@ -32,14 +32,15 @@ const DashBoard = () => {
           <div className="flex flex-col space-y-4 h-full overflow-y-auto p-4">
             {[
               { to: "/admin", icon: <IcoDashboard />, text: "Quản lý thông kê" },
-              { to: "/admin/products", icon: <Product />, text: "Quản lý sản phẩm" }, 
-              { to: "/admin/attribute",  icon: <FontAwesomeIcon icon={faList}/>, text: "Quản lý thuộc tính" },
-               { to: "/admin/brands", icon: <FontAwesomeIcon icon={faFlag}/>, text: "Quản lý nhãn hàng" },
-              { to: "/admin/categories",icon: <FontAwesomeIcon icon={faLayerGroup}/>, text: "Quản lý danh mục" },
+              { to: "/admin/products", icon: <Product />, text: "Quản lý sản phẩm" },
+              { to: "/admin/attribute", icon: <FontAwesomeIcon icon={faList} />, text: "Quản lý thuộc tính" },
+              { to: "/admin/brands", icon: <FontAwesomeIcon icon={faFlag} />, text: "Quản lý nhãn hàng" },
+              { to: "/admin/categories", icon: <FontAwesomeIcon icon={faLayerGroup} />, text: "Quản lý danh mục" },
               { to: "/admin/users", icon: <IcoPeople />, text: "Quản lý người dùng" },
               { to: "/admin/orders", icon: <IcoCart />, text: "Quản lý đơn hàng" },
-             { to: "/admin/review", icon: <FontAwesomeIcon icon={faComment}/>, text: "Quản lý Đánh giá" },
-              { to: "/admin/blogs", icon: <FontAwesomeIcon icon={faRectangleAd}/>, text: "Quản lý blogs" },
+              { to: "/admin/review", icon: <FontAwesomeIcon icon={faComment} />, text: "Quản lý Đánh giá" },
+              { to: "/admin/blogs", icon: <FontAwesomeIcon icon={faRectangleAd} />, text: "Quản lý blogs" },
+              { to: "/admin/feedback", icon: <FontAwesomeIcon icon={faRectangleAd} />, text: "Phản hồi" },
               { to: "/", icon: <IcoLove />, text: "Website", textColor: "text-green-500" }
             ].map(({ to, icon, text, textColor = "text-qgray" }) => (
               <div
