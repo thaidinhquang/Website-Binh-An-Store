@@ -22,9 +22,9 @@ const UserList = () => {
   const active = search.get('active') || '';
   const form = useForm();
   const useSearch = useHookSearch();
-  const { currentUser } = useContext(AuthContext)
-  const { data: dataRole, isLoading: isLoadingRole } = useTanstackQuery('role')
-  const { data, isLoading, refetch } = useTanstackQuery('users', { active, page, sort, name, email, phone, role })
+  const { currentUser } = useContext(AuthContext);
+  const { data: dataRole, isLoading: isLoadingRole } = useTanstackQuery('role');
+  const { data, isLoading, refetch } = useTanstackQuery('users', { active, page, sort, name, email, phone, role });
   const { mutate } = useTanstackMutation({
     path: `users`,
     action: "DELETE",
@@ -45,12 +45,12 @@ const UserList = () => {
   }, []);
 
   useEffect(() => {
-    refetch()
+    refetch();
   }, [active, page, sort, name, email, phone, role]);
 
   const searchForm = (data) => {
-    useSearch(data, '/admin/users')
-  }
+    useSearch(data, '/admin/users');
+  };
 
   const exportToExcel = async () => {
     const dataToExport = data?.docs?.map(user => ({
@@ -61,27 +61,25 @@ const UserList = () => {
       Phone: user.phone,
       Role: user.role,
       Active: user.active ? 'Active' : 'Flase',
-      CreatedAt: new Date(user.createdAt).toLocaleString(), // Format creation date and time
-      UpdatedAt: new Date(user.updatedAt).toLocaleString()  // Format update date and time
+      CreatedAt: new Date(user.createdAt).toLocaleString(),
+      UpdatedAt: new Date(user.updatedAt).toLocaleString()
     }));
     await CommonUtils.exportExcel(dataToExport, 'Users', 'UserList');
   };
-
 
   if (isLoading || isLoadingRole) return <div className="flex justify-center items-center h-screen"><div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div></div>;
 
   return (
     <div className="container mx-auto px-4 sm:px-8">
-    <h2 className="text-2xl font-semibold mb-4 md:mb-0">Danh sách người dùng</h2>
+      <h2 className="text-2xl font-semibold mb-4 md:mb-0">Danh sách người dùng</h2>
       <div className="py-8">
         <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-          
           <Link to={`/admin/users/add`} className="px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out">
             Thêm người dùng
           </Link>
           <Button onClick={exportToExcel} type="default" icon={<FontAwesomeIcon icon={faFileExcel} />}>
-          Xuất Excel
-        </Button>
+            Xuất Excel
+          </Button>
         </div>
         <form onSubmit={form.handleSubmit(searchForm)} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <div className="flex flex-wrap -mx-3 mb-4">
@@ -211,7 +209,7 @@ const UserList = () => {
                         Sửa
                       </Link>
                     </td>
-                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                    <td className={`px-5 py-5 border-b border-gray-200 bg-white text-sm ${item.role === 'admin' ? 'cursor-not-allowed' : ''}`}>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input
                           type="checkbox"
@@ -223,7 +221,7 @@ const UserList = () => {
                         />
                         <div className={`w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 ${
                           currentUser?._id === item._id || item.role === 'admin'
-                            ? 'peer-checked:bg-red-600'
+                            ? 'peer-checked:bg-red-600 cursor-not-allowed'
                             : 'peer-checked:bg-blue-600'
                         }`}></div>
                       </label>
