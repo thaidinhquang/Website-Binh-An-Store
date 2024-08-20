@@ -6,10 +6,78 @@ import {
 } from "../../common/hooks/useTanstackQuery";
 
 import { useParams } from "react-router-dom";
-import { Button } from "antd";
+
 import { AuthContext } from "../Auth/core/Auth";
 import ThinLove from "../icons/ThinLove";
 
+
+
+const productFake={
+  "name": "Smartphone XYZ",
+  "image": "https://example.com/images/smartphone-xyz.jpg",
+  "status": 1,
+  "gallery": [
+      "https://example.com/images/smartphone-xyz-1.jpg",
+      "https://example.com/images/smartphone-xyz-2.jpg",
+      "https://example.com/images/smartphone-xyz-3.jpg"
+  ],
+  "parameter": "6.5 inch display, 128GB storage",
+  "description": "A high-end smartphone with a 6.5-inch display, advanced camera system, and 128GB of storage.",
+  "discount": 10,
+  "featured": true,
+  "tags": [
+      "smartphone",
+      "electronics",
+      "mobile"
+  ],
+  "slug": "smartphone-xyz",
+  "attributes": [
+      {
+          "key": "Color",
+          "value": "Black"
+      },
+      {
+          "key": "Storage",
+          "value": "128GB"
+      }
+  ],
+  "active": true,
+  "category": "64dfe8b2c9b5a53c12345679",
+  "brand": "64dfe8b2c9b5a53c12345670",
+  "productItems": [
+      {
+          "productId": "64dfe8b2c9b5a53c12345678",
+          "name": "Smartphone XYZ",
+          "price": 699.99,
+          "stock": 150,
+          "reviews": [
+              "64dfe8b2c9b5a53c87654321",
+              "64dfe8b2c9b5a53c87654322"
+          ],
+          "rating": 4.5,
+          "variants": [
+              {
+                  "key": "Color",
+                  "value": [
+                      "Black",
+                      "White",
+                      "Blue"
+                  ]
+              },
+              {
+                  "key": "Storage",
+                  "value": [
+                      "64GB",
+                      "128GB",
+                      "256GB"
+                  ]
+              }
+          ]
+      }
+  ],
+  "createdAt": "2024-08-20T10:00:00Z",
+  "updatedAt": "2024-08-20T12:00:00Z"
+}
 const ProductView = ({ className }) => {
   const { currentUser } = useContext(AuthContext);
   const { data: wishlistProducts } = useTanstackQuery("wishlist/products");
@@ -41,18 +109,11 @@ const ProductView = ({ className }) => {
 
   console.log(product);
 
-  // Fetch category and brand data
 
-  const { data: category } = useTanstackQuery(
-    `categories/${product?.category?._id}`
-  );
-
-  const { data: brand } = useTanstackQuery(`brands/${product?.brand?._id}`);
 
   const [quantity, setQuantity] = useState(1);
 
-  const [selectedAttribute, setSelectedAttribute] = useState(null);
-  const [selectedAttributes, setSelectedAttributes] = useState({});
+
 
   const { mutate } = useTanstackMutation({
     path: `cart/add-item`,
@@ -70,22 +131,13 @@ const ProductView = ({ className }) => {
 
   const handleAddToCart = (event) => {
     event.preventDefault();
-    const attributesId = Object.keys(selectedAttributes).map((attr) => attr);
-    const valuesId = Object.values(selectedAttributes).map((attr) => attr._id);
-    mutate({ productId: product._id, quantity, attributesId, valuesId });
+    // const attributesId = Object.keys(selectedAttributes).map((attr) => attr);
+    // const valuesId = Object.values(selectedAttributes).map((attr) => attr._id);
+    mutate({ productId: product._id, quantity,  });
   };
 
-  const handleAttributeSelect = (attributeId, value) => {
-    setSelectedAttributes((prevAttributes) => ({
-      ...prevAttributes,
-      [attributeId]: value,
-    }));
-  };
 
-  const handleAttributeChange = (attributeId) => {
-    setSelectedAttribute(attributeId);
-    setSelectedAttributes({});
-  };
+
 
   const getStatus = (createdAt) => {
     const creationDate = new Date(createdAt);
@@ -93,13 +145,7 @@ const ProductView = ({ className }) => {
     const twoDays = 2 * 24 * 60 * 60 * 1000; // milliseconds in 2 days
     return now - creationDate <= twoDays ? "Mới" : "";
   };
-  const calculateTotalPrice = () => {
-    let totalPrice = product?.price || 0;
-    Object.values(selectedAttributes).forEach((attr) => {
-      totalPrice += attr.price;
-    });
-    return totalPrice;
-  };
+
 
   const checkProductInWishlist = (product) => {
     return (
@@ -107,11 +153,8 @@ const ProductView = ({ className }) => {
       -1
     );
   };
-  const [showFullParameter, setShowFullParameter] = useState(false); // Add state for toggling
 
-  const toggleParameterVisibility = () => {
-    setShowFullParameter(!showFullParameter);
-  };
+
 
   if (isLoading) return <p>Loading...</p>;
 
@@ -151,7 +194,8 @@ const ProductView = ({ className }) => {
               data-aos="fade-up"
               className="text-xl font-medium text-qblack mb-4"
             >
-              {product.name}
+              {product.name}{" "}{productFake?.productItems.map((rating, index) => (rating.rating ? <span className="text-sm text-gray-500" key={index}>({rating.rating})</span> : null ))}
+              
             </p>
 
             <div
@@ -163,46 +207,30 @@ const ProductView = ({ className }) => {
               </span>
 
               <span className="text-2xl font-500 text-qred">
-                {formatPrice(calculateTotalPrice())}
+                {formatPrice()}
               </span>
             </div>
 
-            <div className="flex flex-wrap mb-4">
-              {product?.attributes.map((attribute) => (
-                <div key={attribute._id} className="mr-4 mb-4">
-                  <p
-                    onClick={() => handleAttributeChange(attribute._id)}
-                    className={`cursor-pointer btn ${
-                      selectedAttribute === attribute._id
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-200 text-black"
-                    } hover:bg-gray-300`}
-                  >
-                    {attribute.name}
-                  </p>
-                </div>
-              ))}
-            </div>
-            <div className="flex flex-wrap space-x-2">
-              {product?.attributes.map(
-                (attribute) =>
-                  selectedAttribute === attribute._id &&
-                  attribute.values.map((value) => (
-                    <Button
-                      key={value._id}
-                      onClick={() =>
-                        handleAttributeSelect(attribute._id, value)
-                      }
-                      className={`px-4 btn py-2 border border-qgray-border mb-2 ${
-                        selectedAttributes[attribute._id]?._id === value._id
-                          ? "bg-blue-500 text-white"
-                          : "bg-gray-200 text-black"
-                      } hover:bg-gray-300`}
-                    >
-                      {value.name} - {formatPrice(value.price)}
-                    </Button>
+           
+                 <div className="flex flex-wrap mb-4">
+              <div className="mb-4 flex flex-wrap">
+                {productFake?.productItems.map((attribute) =>
+                  attribute.variants.map((varriantitem, i) => (
+                <div key={i} className="flex items-center"> {/* Thay đổi để hiện trên 1 dòng */}
+                      {/*<span>{varriantitem.key}</span>*/}
+                      {varriantitem.value.map((item, index) => (
+                        <div key={index} className="mb-4 mr-4">
+                          <p
+                            className={`btn cursor-pointer  hover:bg-gray-300`}
+                          >
+                            {item}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
                   ))
-              )}
+                )}
+              </div>
             </div>
 
             <div
@@ -271,13 +299,13 @@ const ProductView = ({ className }) => {
 
             <div data-aos="fade-up" className="mb-[20px]">
               <p className="text-[13px] text-qgray leading-7">
-                <span className="text-qblack">Category : </span>
+                <span className="text-qblack">Danh mục: </span>
 
-                {category?.name || ""}
+                {productFake?.category || "Không có danh mục"}
               </p>
 
               <p className="text-[13px] text-qgray leading-7">
-                <span className="text-qblack">Brand :</span> {brand?.name || ""}
+                <span className="text-qblack">Nhãn hàng:</span> {productFake?.brand || "không có nhãn hàng"}
               </p>
             </div>
           </div>
