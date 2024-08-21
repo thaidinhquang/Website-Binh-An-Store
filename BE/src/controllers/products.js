@@ -115,55 +115,150 @@ export const restoreProduct = async (req, res, next) => {
 };
 
 export const createProduct = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
-    if (!req.body.name || !req.body.description || !req.body.category) {
-      throw new Error("Missing required fields");
-    }
-    const product = new Product({ ...req.body });
+    const {
+      name,
+      image,
+      status,
+      gallery,
+      parameter,
+      description,
+      discount,
+      featured,
+      tags,
+      slug,
+      attributes,
+      active,
+      category,
+      brand,
+      variants,
+    } = req.body;
 
-    await product.save();
+    const product = new Product({
+      name,
+      image,
+      status,
+      gallery,
+      parameter,
+      description,
+      discount,
+      featured,
+      tags,
+      slug,
+      attributes,
+      active,
+      category,
+      brand,
+    });
 
-    if (product && product._id) {
-      if (req.body.variants && req.body.variants.length) {
-        for (let i = 0; i < req.body.variants.length; i++) {
-          const variant = req.body.variants[i];
-          console.log("Variant:", variant);
-          console.log("Product:", product._id);
-          const productItem = new ProductItem({
-            ...variant,
-            productId: product._id,
-          });
-          await productItem.save();
-        }
-      }
-    }
+    const savedProduct = await product.save({ session });
 
-    return res.status(200).json({ product });
+    const productItems = variants.map((variant) => ({
+      productId: savedProduct._id,
+      price: variant.price,
+      image: variant.image,
+      stock: variant.stock,
+      variants: variant.variants,
+    }));
+
+    await ProductItem.insertMany(productItems, { session });
+    await session.commitTransaction();
+    session.endSession();
+
+    return res.status(201).json({
+      message: "Product and product items added successfully",
+      product: savedProduct,
+      productItems,
+    });
   } catch (error) {
-    console.log(error.message);
+    await session.abortTransaction();
+    session.endSession();
+
+    res.status(500).json({ error: error.message });
   }
 };
 
 export const updateProduct = async (req, res, next) => {
-  try {
-    const { name } = req.body;
-    const { id } = req.params;
+  const { id } = req.params;
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-    // Check tên sản phẩm
-    const existingProduct = await Product.findOne({ name, _id: { $ne: id } });
-    if (existingProduct) {
-      return res.status(400).json({ message: "Tên sản phẩm đã tồn tại" });
+  try {
+    const { productData, productItemsData } = req.body;
+
+    // Step 1: Update the Product
+    const updatedProduct = await Product.findByIdAndUpdate(id, productData, {
+      new: true, // Return the updated document
+      session, // Use the session for this operation
+    });
+
+    if (!updatedProduct) {
+      throw new Error("Product not found");
     }
 
-    const data = await Product.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
+    // Step 2: Update or Create ProductItems
+    const updatedProductItems = [];
+
+    for (const item of productItemsData) {
+      if (item._id) {
+        // If the product item already exists, update it
+        const updatedItem = await ProductItem.findByIdAndUpdate(
+          item._id,
+          {
+            price: item.price,
+            image: item.image,
+            stock: item.stock,
+            variants: item.variants,
+          },
+          {
+            new: true, // Return the updated document
+            session, // Use the session for this operation
+          }
+        );
+
+        if (!updatedItem) {
+          throw new Error(`ProductItem with id ${item._id} not found`);
+        }
+        updatedProductItems.push(updatedItem);
+      } else {
+        // If the product item is new, create it
+        const newItem = new ProductItem({
+          productId: id, // Reference the updated product
+          price: item.price,
+          image: item.image,
+          stock: item.stock,
+          variants: item.variants,
+        });
+
+        const savedItem = await newItem.save({ session });
+        updatedProductItems.push(savedItem);
+      }
+    }
+
+    // Optionally: Handle deletion of removed product items
+    // For example, delete items that were not included in productItemsData:
+    await ProductItem.deleteMany(
+      {
+        productId: id,
+        _id: { $nin: productItemsData.map((item) => item._id).filter(Boolean) },
+      },
+      { session }
+    );
+
+    await session.commitTransaction(); // Commit the transaction
+    session.endSession();
+
+    res.status(200).json({
+      message: "Product and product items updated successfully",
+      product: updatedProduct,
+      productItems: updatedProductItems,
     });
-    return !data
-      ? res.status(400).json({ message: "Cập nhật sản phẩm thất bại!" })
-      : res
-          .status(200)
-          .json({ data, message: "Cập nhật sản phẩm thành công!" });
   } catch (error) {
-    next(error);
+    await session.abortTransaction(); // Abort the transaction in case of error
+    session.endSession();
+
+    res.status(500).json({ error: error.message });
   }
 };
