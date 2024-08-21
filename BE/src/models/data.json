@@ -1,0 +1,68 @@
+{
+    {
+        "name": "Smartphone XYZ",
+        "image": "https://example.com/images/smartphone-xyz.jpg",
+        "status": 1,
+        "gallery": [
+            "https://example.com/images/smartphone-xyz-1.jpg",
+            "https://example.com/images/smartphone-xyz-2.jpg",
+            "https://example.com/images/smartphone-xyz-3.jpg"
+        ],
+        "parameter": "6.5 inch display, 128GB storage",
+        "description": "A high-end smartphone with a 6.5-inch display, advanced camera system, and 128GB of storage.",
+        "discount": 10,
+        "featured": true,
+        "tags": [
+            "smartphone",
+            "electronics",
+            "mobile"
+        ],
+        "slug": "smartphone-xyz",
+        "attributes": [
+            {
+                "key": "Color",
+                "value": "Black"
+            },
+            {
+                "key": "Storage",
+                "value": "128GB"
+            }
+        ],
+        "active": true,
+        "category": "64dfe8b2c9b5a53c12345679",
+        "brand": "64dfe8b2c9b5a53c12345670",
+        "productItems": [
+            {
+                "productId": "64dfe8b2c9b5a53c12345678",
+                "name": "Smartphone XYZ",
+                "price": 699.99,
+                "stock": 150,
+                "reviews": [
+                    "64dfe8b2c9b5a53c87654321",
+                    "64dfe8b2c9b5a53c87654322"
+                ],
+                "rating": 4.5,
+                "variants": [
+                    {
+                        "key": "Color",
+                        "value": [
+                            "Black",
+                            "White",
+                            "Blue"
+                        ]
+                    },
+                    {
+                        "key": "Storage",
+                        "value": [
+                            "64GB",
+                            "128GB",
+                            "256GB"
+                        ]
+                    }
+                ]
+            }
+        ],
+        "createdAt": "2024-08-20T10:00:00Z",
+        "updatedAt": "2024-08-20T12:00:00Z"
+    }
+}
