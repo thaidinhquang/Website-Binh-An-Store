@@ -98,9 +98,11 @@ const CartPage = ({ cart = true, className }) => {
       let listItem = [];
       data.products.forEach((item) => {
         listItem.push({
-          productId: item.productId._id,
+          name: item.name,
+          image: item.productId.image,
+          price: item.productId.price,
           quantity: item.quantity,
-
+          variants: item.productId.variants  
         });
       });      
       setItems(listItem);
