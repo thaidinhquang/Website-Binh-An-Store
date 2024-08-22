@@ -11,111 +11,6 @@ import { AuthContext } from "../Auth/core/Auth";
 import ThinLove from "../icons/ThinLove";
 
 const ProductView = ({ className }) => {
-  // const demoProduct = {
-  //   name: "Smartphone XYZ",
-  //   image:
-  //     "https://cdn.tgdd.vn/Products/Images/7077/306530/befit-watch-fit-den-fix-1.jpg",
-  //   status: 1,
-  //   gallery: [
-  //     "https://cdn.tgdd.vn/Products/Images/7077/306530/befit-watch-fit-vang-1.jpg",
-  //     "https://cdn.tgdd.vn/Products/Images/7077/306530/befit-watch-fit-hong-2-2.jpg",
-  //     "https://cdn.tgdd.vn/Products/Images/7077/306530/befit-watch-fit-xanh-la-1-3.jpg",
-  //   ],
-  //   parameter: "6.5 inch display, 128GB storage",
-  //   description:
-  //     "A high-end smartphone with a 6.5-inch display, advanced camera system, and 128GB of storage.",
-  //   discount: 10,
-  //   featured: true,
-  //   tags: ["smartphone", "electronics", "mobile"],
-  //   slug: "smartphone-xyz",
-  //   attributes: [
-  //     {
-  //       key: "Display",
-  //       value: "5 inch",
-  //     },
-  //     {
-  //       key: "Camera",
-  //       value: "16mp",
-  //     },
-  //     {
-  //       key: "CPU",
-  //       value: "16mp",
-  //     },  {
-  //       key: "Độ phân giải",
-  //       value: "200 x 320 Pixels",
-  //     },  {
-  //       key: "Chất liệu mặt",
-  //       value: "Mặt kính nhựa",
-  //     },  {
-  //       key: "Chất liệu khung viền",
-  //       value: "Hợp kim nhôm",
-  //     },  {
-  //       key: "Tính năng cho sức khỏe:",
-  //       value: "Đếm số bước chânĐo nồng độ oxy (SpO2)Đo nhịp timTính quãng đường chạyTính lượng calories tiêu thụTheo dõi giấc ngủBài tập thở",
-  //     },
-  //   ],
-  //   active: true,
-  //   category: "64dfe8b2c9b5a53c12345679",
-  //   brand: "64dfe8b2c9b5a53c12345670",
-  //   productItems: [
-  //     {
-  //       productId: "64dfe8b2c9b5a53c12345671",
-  //       name: "Smartphone XYZ",
-  //       price: 699.99,
-  //       stock: 120,
-  //       reviews: ["64dfe8b2c9b5a53c87654321", "64dfe8b2c9b5a53c87654322"],
-  //       rating: 4.5,
-  //       variants: [
-  //         {
-  //           key: "Color",
-  //           value: "Red",
-  //         },
-  //         {
-  //           key: "Storage",
-  //           value: "128GB",
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       productId: "64dfe8b2c9b5a53c12345638",
-  //       name: "Smartphone XYZ",
-  //       price: 799.99,
-  //       stock: 140,
-  //       reviews: ["64dfe8b2c9b5a53c87654321", "64dfe8b2c9b5a53c87654322"],
-  //       rating: 5,
-  //       variants: [
-  //         {
-  //           key: "Color",
-  //           value: "Green",
-  //         },
-  //         {
-  //           key: "Storage",
-  //           value: "128GB",
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       productId: "64dfe8b2c9b5a53c12345618",
-  //       name: "Smartphone XYZ",
-  //       price: 899.99,
-  //       stock: 150,
-  //       reviews: ["64dfe8b2c9b5a53c87654321", "64dfe8b2c9b5a53c87654322"],
-  //       rating: 4.6,
-  //       variants: [
-  //         {
-  //           key: "Color",
-  //           value: "Black",
-  //         },
-  //         {
-  //           key: "Storage",
-  //           value: "526GB",
-  //         },
-  //       ],
-  //     },
-  //   ],
-  //   createdAt: "2024-08-20T10:00:00Z",
-  //   updatedAt: "2024-08-20T12:00:00Z",
-  // };
   const { currentUser } = useContext(AuthContext);
   const [variants, setVariant] = useState(null);
   const { data: wishlistProducts } = useTanstackQuery("wishlist/products");
@@ -265,7 +160,10 @@ const ProductView = ({ className }) => {
               {product.productItems.map((productItem, i) => {
                 return (
                   <div
-                    onClick={() => handleSelectVariant(productItem)}
+                  onClick={() => {
+                    handleSelectVariant(productItem);
+                    setSelectedImage(productItem.image); // Update selected image on variant select
+                  }}
                     key={i}
                     className={`border-2 flex gap-2 h-[50px]  items-center ${
                       variants?._id === productItem._id
