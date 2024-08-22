@@ -13,13 +13,11 @@ import { faFileExcel } from '@fortawesome/free-solid-svg-icons';
 
 const CategoryList = () => {
   const search = new URLSearchParams(useLocation().search);
-  const page = search.get('page') || 1;
-  const sort = search.get('sort') || '';
+  const sort = search.get('sort') || 'new';
   const query = search.get('query') || '';
-  const active = search.get('active') || '';
   const form = useForm();
   const useSearch = useHookSearch();
-  const { data, isLoading, refetch } = useTanstackQuery('categories', { active, page, sort, query })
+  const { data, isLoading, refetch } = useTanstackQuery('categories/details', { sort, query }, false)
   const { mutate } = useTanstackMutation({
     path: `categories`,
     action: "DELETE",
@@ -31,7 +29,7 @@ const CategoryList = () => {
   };
 
   useEffect(() => {
-    form.reset({ query, sort, page, active });
+    form.reset({ query, sort });
     const handleUserEditing = (data) => {
       setListUserOnEditRoute(data);
     };
@@ -41,7 +39,7 @@ const CategoryList = () => {
 
   useEffect(() => {
     refetch()
-  }, [active, page, sort, query]);
+  }, [sort, query]);
 
   const searchForm = (data) => {
     useSearch(data, '/admin/categories')
@@ -52,11 +50,10 @@ const CategoryList = () => {
       ID: category._id,
       Name: category.name,
       Slug: category.slug,
-      Active: category.active ? 'Active' : 'False',
       ProductCount: category.products.length,
       ProductID: category.products.join(', '),
-      CreatedAt: new Date(category.createdAt).toLocaleString(), 
-      UpdatedAt: new Date(category.updatedAt).toLocaleString()  
+      CreatedAt: new Date(category.createdAt).toLocaleString(),
+      UpdatedAt: new Date(category.updatedAt).toLocaleString()
     }));
     await CommonUtils.exportExcel(dataToExport, 'Categories', 'CategoryList');
   };
@@ -65,20 +62,19 @@ const CategoryList = () => {
 
   return (
     <div className="container mx-auto px-4 sm:px-8">
-    <h2 className="text-2xl font-semibold mb-4 md:mb-0">Danh sách danh mục</h2>
+      <h2 className="text-2xl font-semibold mb-4 md:mb-0">Danh sách danh mục</h2>
       <div className="py-8">
         <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-         
           <Link to={`/admin/categories/add`} className="px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out">
             Thêm danh mục
           </Link>
           <Button onClick={exportToExcel} type="default" icon={<FontAwesomeIcon icon={faFileExcel} />}>
-        Xuất Excel
-      </Button>
+            Xuất Excel
+          </Button>
         </div>
         <form onSubmit={form.handleSubmit(searchForm)} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
           <div className="flex flex-wrap -mx-3 mb-4">
-            <div className="w-full md:w-2/5 px-3 mb-4 md:mb-0">
+            <div className="w-full md:w-3/5 px-3 mb-4 md:mb-0">
               <input
                 type="text"
                 className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
@@ -91,18 +87,8 @@ const CategoryList = () => {
                 {...form.register('sort')}
                 className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
               >
-                <option value="">Mới {'->'} cũ</option>
-                <option value="createdAt:1">Cũ {'->'} mới</option>
-              </select>
-            </div>
-            <div className="w-full md:w-1/5 px-3 mb-4 md:mb-0">
-              <select
-                {...form.register('active')}
-                className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-              >
-                <option value="">Tất cả</option>
-                <option value="true">Đang hoạt động</option>
-                <option value="false">Không hoạt động</option>
+                <option value="new">Mới {'->'} cũ</option>
+                <option value="old">Cũ {'->'} mới</option>
               </select>
             </div>
             <div className="w-full md:w-1/5 px-3">
@@ -127,15 +113,15 @@ const CategoryList = () => {
                     Tên Danh Mục
                   </th>
                   <th scope="col" className="px-5 py-3 bg-white  border-b border-gray-200 text-gray-800  text-left text-sm uppercase font-normal">
-                    Hành động
+                    Chi tiết
                   </th>
                   <th scope="col" className="px-5 py-3 bg-white  border-b border-gray-200 text-gray-800  text-left text-sm uppercase font-normal">
-                    Trạng thái
+                    Hành động
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {data?.docs?.map((category) => (
+                {data?.map((category) => (
                   <tr key={category._id}>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                       <p className="text-gray-900 whitespace-no-wrap">{category._id}</p>
@@ -147,17 +133,15 @@ const CategoryList = () => {
                       </p>
                     </td>
                     <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                      {category.details.map((detail, index) => <span key={index} className="bg-purple-500 text-white mr-1 py-1 px-2 rounded-lg">{detail.key}</span>)}
+                    </td>
+                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                       <div className="flex items-center space-x-4 text-sm">
                         <Link to={`/admin/categories/edit/${category._id}`} className="text-yellow-600 hover:text-yellow-900">
                           Sửa
                         </Link>
+                        <button className="text-red-400">Xóa</button>
                       </div>
-                    </td>
-                    <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" value="" className="sr-only peer" checked={category.active} onChange={() => mutate(category)} />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                      </label>
                     </td>
                   </tr>
                 ))}

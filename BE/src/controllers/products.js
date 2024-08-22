@@ -14,10 +14,6 @@ export const getAllProduct = async (req, res, next) => {
       populate: [
         { path: "category" },
         { path: "brand" },
-        {
-          path: "attributes",
-          populate: { path: "values", select: "name price quantity active" },
-        },
       ],
     };
     let query = {};
@@ -26,6 +22,9 @@ export const getAllProduct = async (req, res, next) => {
     }
     if (req.query.name) {
       query.name = { $regex: new RegExp(req.query.name, "i") };
+    }
+    if (req.query.productItem) {
+      query.productItem = { $regex: new RegExp(req.query.productItem, "i") };
     }
     if (req.query.slug) {
       query.slug = { $regex: new RegExp(req.query.slug, "i") };
@@ -48,9 +47,7 @@ export const getAllProduct = async (req, res, next) => {
     const data = await Product.paginate(query, options);
     return !data
       ? res.status(400).json({ message: "Không tìm thấy sản phẩm nào!" })
-      : res
-          .status(200)
-          .json({ data, message: "Lấy danh sách sản phẩm thành công" });
+      :  res.status(200).json({ data, message: "Lấy danh sách sản phẩm thành công" });
   } catch (error) {
     next(error);
   }
@@ -58,16 +55,12 @@ export const getAllProduct = async (req, res, next) => {
 
 export const getDetailProductPopulate = async (req, res, next) => {
   try {
-    const data = await Product.findById(req.params.id)
-      .populate("category")
-      .populate("brand")
-      .populate({
-        path: "attributes",
-        populate: { path: "values", select: "name price quantity active" },
-      });
+    const data = await Product.findById(req.params.id).populate("brand").populate("category");
+    const productItems = await ProductItem.find({ productId: data._id });
+
     return !data
       ? res.status(400).json({ message: "Khong tim thay san pham!" })
-      : res.status(200).json({ data });
+      : res.status(200).json({ data: { ...data.toObject(), productItems } }); // Đưa productItems vào bên trong data
   } catch (error) {
     next(error);
   }
@@ -76,9 +69,10 @@ export const getDetailProductPopulate = async (req, res, next) => {
 export const getDetailProduct = async (req, res, next) => {
   try {
     const data = await Product.findById(req.params.id);
+    const productItems = await ProductItem.find({ productId: data._id });
     return !data
       ? res.status(400).json({ message: "Khong tim thay san pham!" })
-      : res.status(200).json({ data });
+      : res.status(200).json({ data: { ...data.toObject(), productItems } });
   } catch (error) {
     next(error);
   }
