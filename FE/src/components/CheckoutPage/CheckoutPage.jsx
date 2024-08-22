@@ -16,10 +16,8 @@ const CheckoutPage = () => {
     });
 
     const calculateTotalPrice = (item) => {
-        const basePrice = item.productId.price * item.quantity;
-        const valuesPrice = item.valuesId.reduce((total, value) => total + value.price, 0) * item.quantity;
-        return basePrice + valuesPrice;
-    };
+        return item.productId.price * item.quantity;
+      };
 
     useEffect(() => {
         if (cartItems?.products?.length > 0) {
@@ -32,8 +30,8 @@ const CheckoutPage = () => {
                     image: item.productId.image,
                     price: calculateTotalPrice(item),
                     quantity: item.quantity,
-                    attributesId: item.attributesId.map(attr => attr._id), // Changed to only include _id
-                valuesId: item.valuesId.map(value => value._id),})
+                 
+            })
             })
             setItems(listItem)
             setIsLoadingItem(false)
@@ -188,31 +186,20 @@ const CheckoutPage = () => {
                                 <div className="product-list w-full mb-8">
                                     <ul className="flex flex-col space-y-5">
                                         {cartItems?.products?.map((item, index) => {
-                                            const productAttributes = item.attributesId.map(attr => ({
-                                                ...attr,
-                                                values: attr.values.map(valueId =>
-                                                    item.valuesId.find(value => value._id === valueId)
-                                                )
-                                            }));
+                                            
                                             return (
                                                 <li key={index}>
                                                     <div className="flex justify-between items-center">
                                                         <div>
                                                             <h4 className="text-base text-gray-800 mb-2.5">
-                                                                {item.productId.name}
+                                                                {item.name}{" "}
                                                                 <sup className="text-sm text-gray-500 ml-2 mt-2">
                                                                     {item.quantity}
                                                                 </sup>
                                                             </h4>
                                                             <img src={item.productId.image} alt="" className="w-24" />
                                                             <div>
-                                                                {productAttributes.map(attr => (
-                                                                    <div key={attr._id}>
-                                                                        <p className="mt-2 text-gray-500 text-sm">
-                                                                            {attr.name} {attr.values.map(val => val?.name).join(', ')}
-                                                                        </p>
-                                                                    </div>
-                                                                ))}
+                                                            {item?.productId?.variants?.map(variant => variant.value).join(", ")}
                                                             </div>
                                                         </div>
                                                         <div>
