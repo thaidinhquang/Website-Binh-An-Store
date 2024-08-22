@@ -11,7 +11,7 @@ export const addNewCategory = async (req, res) => {
 
 export const getAllCategory = async (req, res) => {
   try {
-    const categories = await Category.find();
+    const categories = await Category.find({});
     return res.status(200).json(categories);
   } catch (error) {
     console.log(error);
@@ -20,7 +20,11 @@ export const getAllCategory = async (req, res) => {
 
 export const getCategory = async (req, res) => {
   try {
-    const category = await Category.findById(req.params.id);
+    const category = await Category.findById(req.params.id).populate({
+      path: "details",
+      select: "-_id -__v -createdAt -updatedAt",
+    });
+
     return res.status(200).json(category);
   } catch (error) {
     console.log(error);
