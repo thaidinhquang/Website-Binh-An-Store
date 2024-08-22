@@ -1,4 +1,4 @@
-const DiscountBanner=({ className, type })=> {
+const DiscountBanner = ({ className, type }) => {
   return (
     <div
       className={`discount-banner w-full h-[307px] bg-cover flex justify-center items-center ${
@@ -11,7 +11,7 @@ const DiscountBanner=({ className, type })=> {
     >
       {type === 3 ? (
         <div className="container-x mx-auto">
-          <div className="best-services w-full  flex flex-col space-y-10 lg:space-y-0 lg:flex-row lg:justify-between lg:items-center lg:h-[110px] px-10 lg:py-0 py-10">
+          <div className="best-services w-full flex flex-col space-y-10 lg:space-y-0 lg:flex-row lg:justify-between lg:items-center lg:h-[110px] px-10 lg:py-0 py-10">
             <div className="item">
               <div className="flex space-x-5 items-center">
                 <div>
@@ -63,9 +63,9 @@ const DiscountBanner=({ className, type })=> {
                 </div>
                 <div>
                   <p className="text-black text-[15px] font-700 tracking-wide mb-1">
-                    Free Shipping
+                    Miễn phí vận chuyển
                   </p>
-                  <p className="text-sm text-qgray">When ordering over $100</p>
+                  <p className="text-sm text-qgray">Khi đặt hàng trên 2.000.000₫</p>
                 </div>
               </div>
             </div>
@@ -98,10 +98,10 @@ const DiscountBanner=({ className, type })=> {
                 </div>
                 <div>
                   <p className="text-black text-[15px] font-700 tracking-wide mb-1">
-                    Free Return
+                    Hoàn trả miễn phí
                   </p>
                   <p className="text-sm text-qgray">
-                    Get Return within 30 days
+                    Hoàn trả trong vòng 30 ngày
                   </p>
                 </div>
               </div>
@@ -143,10 +143,10 @@ const DiscountBanner=({ className, type })=> {
                 </div>
                 <div>
                   <p className="text-black text-[15px] font-700 tracking-wide mb-1">
-                    Secure Payment
+                    Thanh toán an toàn
                   </p>
                   <p className="text-sm text-qgray">
-                    100% Secure Online Payment
+                    Thanh toán trực tuyến 100% an toàn
                   </p>
                 </div>
               </div>
@@ -199,10 +199,10 @@ const DiscountBanner=({ className, type })=> {
                 </div>
                 <div>
                   <p className="text-black text-[15px] font-700 tracking-wide mb-1">
-                    Best Quality
+                    Chất lượng tốt nhất
                   </p>
                   <p className="text-sm text-qgray">
-                    Original Product Guarenteed
+                    Đảm bảo sản phẩm chính hãng
                   </p>
                 </div>
               </div>
@@ -213,11 +213,10 @@ const DiscountBanner=({ className, type })=> {
         <div>
           <div data-aos="fade-up">
             <h1 className="sm:text-3xl text-xl font-700 text-qblack mb-2 text-center">
-              Get <span className="mx-1 text-qyellow">20%</span> Off Discount
-              Coupon
+              Nhận <span className="mx-1 text-qyellow">20%</span> phiếu giảm giá
             </h1>
             <p className="text-center sm:text-[18px] text-sm font-400">
-              by Subscribe our Newsletter
+              bằng cách đăng ký nhận bản tin của chúng tôi
             </p>
           </div>
           <div
@@ -253,14 +252,14 @@ const DiscountBanner=({ className, type })=> {
                 type="email"
                 name="email"
                 className="w-full h-full focus:outline-none text-sm placeholder:text-xs placeholder:text-qblack text-qblack font-400 tracking-wider"
-                placeholder="EMAIL ADDRESS"
+                placeholder="ĐỊA CHỈ EMAIL"
               />
             </div>
             <button
               type="button"
-              className="sm:w-[158px] w-[80px]  h-full bg-qyellow text-sm font-600"
+              className="sm:w-[158px] w-[80px] h-full bg-qyellow text-sm font-600"
             >
-              Get the Coupon
+              Nhận phiếu giảm giá
             </button>
           </div>
         </div>

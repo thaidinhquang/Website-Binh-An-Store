@@ -26,6 +26,7 @@ export const commonStatistics = async (req, res) => {
             $gte: startDate,
             $lt: endDate,
           },
+          status: { $ne: "cancelled" },
         },
       },
       {
@@ -61,7 +62,9 @@ export const commonStatistics = async (req, res) => {
     });
   } catch (error) {
     console.error(error); // Log error for debugging
-    return res.status(500).json({ message: "An error occurred while retrieving statistics." });
+    return res
+      .status(500)
+      .json({ message: "An error occurred while retrieving statistics." });
   }
 };
 
@@ -81,6 +84,7 @@ export const orderStatisticsByMonth = async (req, res) => {
             $gte: new Date(`${year}-01-01`),
             $lt: new Date(`${year + 1}-01-01`),
           },
+          status: { $ne: "cancelled" },
         },
       },
       {
@@ -114,7 +118,9 @@ export const orderStatisticsByMonth = async (req, res) => {
     });
   } catch (error) {
     console.error(error); // Log error for debugging
-    return res.status(500).json({ message: "An error occurred while retrieving monthly statistics." });
+    return res.status(500).json({
+      message: "An error occurred while retrieving monthly statistics.",
+    });
   }
 };
 
@@ -122,6 +128,11 @@ export const orderStatisticsByMonth = async (req, res) => {
 export const ordersStatisticsByYear = async (req, res) => {
   try {
     const stats = await Order.aggregate([
+      {
+        $match: {
+          status: { $ne: "cancelled" },
+        },
+      },
       {
         $group: {
           _id: { year: { $year: "$createdAt" } },
@@ -147,6 +158,8 @@ export const ordersStatisticsByYear = async (req, res) => {
     });
   } catch (error) {
     console.error(error); // Log error for debugging
-    return res.status(500).json({ message: "An error occurred while retrieving yearly statistics." });
+    return res.status(500).json({
+      message: "An error occurred while retrieving yearly statistics.",
+    });
   }
 };

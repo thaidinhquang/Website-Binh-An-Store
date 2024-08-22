@@ -1,31 +1,25 @@
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import Star from "../icons/Star";
 import { useTanstackQuery } from "../../common/hooks/useTanstackQuery";
 
-export default function Reviews(
- 
-
-) {
+export default function Reviews() {
   const { id } = useParams();
   const { data: product, isLoading: isProductLoading } = useTanstackQuery(`/products/${id}`);
-
-
+  const [showAllComments, setShowAllComments] = useState(false); // Add state for toggling comments
 
   if (isProductLoading) {
-
     return <div>Loading...</div>;
   }
 
   const { reviews } = product;
-
-  
 
   return (
     <div className="review-wrapper w-full">
       <div className="w-full reviews mb-[60px]">
         {/* comments */}
         <div className="w-full comments mb-[60px]">
-          {reviews && reviews.length > 0 && reviews.map((review) => (
+          {reviews && reviews.length > 0 && reviews.slice(0, showAllComments ? reviews.length : 1).map((review) => (
             <div
               key={review._id}
               className="comment-item bg-white px-10 py-[32px] mb-2.5"
@@ -71,17 +65,17 @@ export default function Reviews(
         </div>
         {/* load comments */}
         <div className="w-full flex justify-center">
-          <button
-            type="button"
-            className="black-btn w-[300px] h-[50px] text-sm font-semibold"
+          <span
+            onClick={() => setShowAllComments(!showAllComments)}
+            className="cursor-pointer text-blue-500"
           >
-            Load More
-          </button>
+            {showAllComments ? "Thu gọn" : "Xem thêm"}
+          </span>
         </div>
       </div>
       <div className="write-review w-full">
         <h1 className="text-2xl font-medium text-qblack mb-5">
-          Write Your Reviews
+          Đánh giá
         </h1>
       </div>
     </div>

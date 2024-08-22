@@ -29,7 +29,7 @@ const AllBlogPage: React.FC = () => {
       setIsLoading(true);
       try {
         const response = await axios.get(`http://localhost:8000/api/blogs?page=${currentPage}&limit=${pageSize}`);
-        console.log("API Response:", response.data);
+        
         if (Array.isArray(response.data)) {
           setBlogs(response.data);
           setTotalBlogs(response.data.length);
@@ -113,10 +113,10 @@ const AllBlogPage: React.FC = () => {
                     className="shadow-md h-full flex flex-col"
                   >
                     <Card.Meta
-                      title={<Link to={`/blog/${blog._id}`} className="text-lg font-semibold hover:text-blue-600">{blog.title}</Link>}
+                      title={<Link to={`/blogs/${blog._id}`} className="text-lg font-semibold hover:text-blue-600">{blog.title}</Link>}
                       description={
                         <>
-                          <div className="text-gray-500 prose prose-sm max-w-none">
+                          <div className="text-black prose prose-sm max-w-none">
                             <ReactMarkdown>
                               {truncateMarkdown(blog.content, 150)}
                             </ReactMarkdown>
@@ -126,7 +126,7 @@ const AllBlogPage: React.FC = () => {
                               <Tag key={tag} color="blue">{tag}</Tag>
                             ))}
                           </Space>
-                          <div className="mt-4 flex justify-between items-center text-sm text-gray-500">
+                          <div className="mt-4 flex justify-between items-center text-sm text-black">
                             <span><CalendarOutlined className="mr-1" /> {formatDate(blog.createdAt)}</span>
                             <span><UserOutlined className="mr-1" /> {blog.author}</span>
                           </div>

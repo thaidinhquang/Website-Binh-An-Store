@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import mongoosePaginate from 'mongoose-paginate-v2';
+import mongoosePaginate from "mongoose-paginate-v2";
 
 const categorySchema = new mongoose.Schema(
   {
@@ -8,28 +8,10 @@ const categorySchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    desc: {
-      type: String,
-    },
-    slug: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    active: {
-      type: Boolean,
-      default: true,
-    },
-    brands: [
+    details: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Brand",
-      },
-    ],
-    products: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
+        ref: "Detail",
       },
     ],
   },
