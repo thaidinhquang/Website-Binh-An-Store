@@ -4,7 +4,7 @@ import { getAuth, removeAuth, setAuth } from "./AuthHelper";
 import { Navigate, useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
-const fetchUser = async (setCurrentUser) => {
+export const fetchUser = async (setCurrentUser) => {
   const token = localStorage.getItem("token");
   if (!token) {
     removeAuth();
