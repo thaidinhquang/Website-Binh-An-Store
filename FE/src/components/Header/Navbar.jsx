@@ -6,46 +6,12 @@ import { useTanstackQuery } from "../../common/hooks/useTanstackQuery";
 const Navbar = ({ className }) => {
   const [categoryToggle, setToggle] = useState(false);
   const [elementsSize, setSize] = useState("0px");
-  const [categories, setCategories] = useState([]); // State to store categories
-
-  const location = useLocation();
-  const navigate = useNavigate();
 
   const handler = () => {
     setToggle(!categoryToggle);
   };
 
-  const { data, isLoading } = useTanstackQuery('categories', { limit: 100, active: true });
-
-  useEffect(() => {
-    if (data) {
-      setCategories(data.docs);
-    }
-  }, [data]);
-
-  const checkIsCategory = (id) => {
-    return location.search.includes(id);
-  };
-
-  const changeCategory = (newCategories) => {
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set('categories', newCategories);
-    navigate(`?${searchParams.toString()}`);
-  };
-
-  const addCategory = (newCategoryId) => {
-    const searchParams = new URLSearchParams(location.search);
-    const categoriesParam = searchParams.get('categories');
-    const categories = categoriesParam ? categoriesParam.split(',') : [];
-    if (categories.includes(newCategoryId)) {
-      const updatedCategories = categories.filter(id => id !== newCategoryId);
-      searchParams.set('categories', updatedCategories.join(','));
-    } else {
-      categories.push(newCategoryId);
-      searchParams.set('categories', categories.join(','));
-    }
-    navigate(`?${searchParams.toString()}`);
-  };
+  const { data, isLoading } = useTanstackQuery('categories', {}, false);
 
   useEffect(() => {
     if (categoryToggle) {
@@ -115,7 +81,7 @@ const Navbar = ({ className }) => {
                     style={{ height: `${elementsSize} ` }}
                   >
                     <ul className="categories-list">
-                      {categories.map((category) => (
+                      {data?.map((category) => (
                         <li key={category._id} className="category-item">
                           <Link to={`/shop?categories=${category._id}`}>
                             <div className="flex justify-between items-center px-5 h-10 bg-white hover:bg-qh2-green transition-all duration-300 ease-in-out cursor-pointer text-qblack hover:text-white">
