@@ -15,23 +15,22 @@ const cartSchema = new Schema(
                     ref: "Product",
                     required: true,
                 },
+                image:{
+                    type:String
+                },
+                price:{
+                    type: Number,
+                    min: 0,
+                },
                 quantity: {
                     type: Number,
                     required: true,
                     min: 1,
                 },
-                attributesId: [
-                    {
-                        type: Schema.Types.ObjectId,
-                        ref: "Attribute",
-                    },
-                ],
-                valuesId: [
-                    {
-                        type: Schema.Types.ObjectId,
-                        ref: "ValueAttribute",
-                    },
-                ],
+                variants:{
+                    type: [{ key: String, value: String , _id: false,}],
+                   
+                }
             },
         ],
     },
