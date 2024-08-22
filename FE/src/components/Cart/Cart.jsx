@@ -68,7 +68,7 @@ const Cart = ({ className, type }) => {
                             {item.productId.name}
                             <span className="text-gray-400"> * {item.quantity}</span>
                             <div className="mt-2 text-gray-500 text-xs">
-                            {item.variants.map(variant => variant.value).join(", ")}
+                            {item?.variants?.map(variant => variant.value).join(", ")}
                             </div>
                           </div>
                           <p className="price">

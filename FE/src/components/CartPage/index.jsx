@@ -12,7 +12,6 @@ const CartPage = ({ cart = true, className }) => {
   const [isLoadingItem, setIsLoadingItem] = useState(false);
   const [items, setItems] = useState([]);
   const { data, isLoading } = useTanstackQuery("cart");
-  console.log(data);
   const {
     data: cartTotal,
     isLoading: isLoadingCartTotal,
@@ -41,7 +40,7 @@ const CartPage = ({ cart = true, className }) => {
   const { currentUser } = useContext(AuthContext);
 
   const calculateTotalPrice = (item) => {
-    return item.price * item.quantity;
+    return item.productId.price * item.quantity;
   };
 
 
@@ -100,17 +99,18 @@ const CartPage = ({ cart = true, className }) => {
       data.products.forEach((item) => {
         listItem.push({
           productId: item.productId._id,
-          name: item.productId.name,
-          image: item.productId.image||item.image,
-          price: item.price,
           quantity: item.quantity,
-          
+
         });
-      });
+      });      
       setItems(listItem);
       setIsLoadingItem(false);
     }
   }, [data]);
+  // console.log(items);
+  console.log(data);
+  
+  
   if (isLoading) return <p>Loading...</p>;
 
   return (
@@ -165,7 +165,7 @@ const CartPage = ({ cart = true, className }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {!data.products.length ? (
+                        {!data?.products.length > 0 ? (
                           <tr>
                             <td colSpan="6" className="text-center py-4">
                               Không có sản phẩm !
@@ -190,17 +190,17 @@ const CartPage = ({ cart = true, className }) => {
                                   <div className="flex space-x-6 items-center">
                                     <div className="w-[80px] h-[80px] overflow-hidden flex justify-center items-center border border-[#EDEDED]">
                                       <img
-                                        src={item.image||item.productId.image }
+                                        src={item.image || item.productId.image}
                                         alt="product"
                                         className="w-full h-full object-contain"
                                       />
                                     </div>
                                     <div className="flex-1 flex flex-col">
                                       <p className="font-medium text-[15px] text-qblack">
-                                        {item.productId.name}
+                                        {item.name}
                                       </p>
                                       <div>
-                                      {item.variants.map(variant => variant.value).join(", ")}
+                                        {item?.productId?.variants?.map(variant => variant.value).join(", ")}
                                       </div>
                                     </div>
                                   </div>
@@ -209,7 +209,7 @@ const CartPage = ({ cart = true, className }) => {
                                 <td className="text-center py-4 px-2">
                                   <div className="flex space-x-1 items-center justify-center">
                                     <span className="text-[15px] font-normal">
-                                      {formatPrice(item.price)}
+                                      {formatPrice(item.productId.price)}
                                     </span>
                                   </div>
                                 </td>
@@ -245,7 +245,7 @@ const CartPage = ({ cart = true, className }) => {
                                 <td className="text-right py-4">
                                   <div className="flex space-x-1 items-center justify-center">
                                     <span className="text-[15px] font-normal">
-                                    {formatPrice(calculateTotalPrice(item))}
+                                      {formatPrice(calculateTotalPrice(item))}
                                     </span>
                                   </div>
                                 </td>
@@ -289,7 +289,7 @@ const CartPage = ({ cart = true, className }) => {
                         Total
                       </p>
                       <p className="text-[18px] font-medium text-qred">
-                      {formatPrice(!isLoadingCartTotal && cartTotal)}
+                        {formatPrice(!isLoadingCartTotal && cartTotal)}
                       </p>
                     </div>
                   </div>

@@ -60,11 +60,9 @@ const ProductView = ({ className }) => {
     }));
 
     mutate({
-      productId: product?._id,
-      price: variants?.price ,
+      productId: variants?._id,
       quantity,
-      variants: selectedVariant,
-      image: selectedImage || product?.image,
+      name: product?.name,
     });
   };
 

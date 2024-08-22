@@ -5,7 +5,7 @@ export const getCartByUserId = async (req, res, next) => {
     const userId = req.user._id;
     let cart = await Cart.findOne({ userId }).populate({
       path: "products.productId",
-      model: "Product",
+      model: "ProductItem",
     });
 
     if (!cart) {
@@ -24,8 +24,9 @@ export const getCartByUserId = async (req, res, next) => {
 export const addItemToCart = async (req, res, next) => {
   try {
     const userId = req.user._id;
-    const { productId, quantity, variants, image,price } = req.body;
-
+    const { productId, quantity, name } = req.body;
+    console.log(req.body);
+    
     if (quantity <= 0) {
       return res.status(400).json({ message: "Số lượng phải lớn hơn 0" });
     }
@@ -34,20 +35,16 @@ export const addItemToCart = async (req, res, next) => {
     if (!cart) {
       cart = new Cart({
         userId,
-        products: [{ productId, quantity, variants, image, price }],
+        products: [{ productId, quantity, name }],
       });
     } else {
       const productIndex = cart.products.findIndex(
-        (product) =>
-          product.productId == productId &&
-          JSON.stringify(product.variants) === JSON.stringify(variants) &&
-          JSON.stringify(product.image) === JSON.stringify(image) &&
-          JSON.stringify(product.price) === JSON.stringify(price)
+        (product) => product.productId.toString() === productId
       );
       if (productIndex !== -1) {
         cart.products[productIndex].quantity += quantity;
       } else {
-        cart.products.push({ productId, quantity, variants, image, price });
+        cart.products.push({ productId, quantity, name });
       }
     }
     await cart.save();
@@ -182,7 +179,8 @@ export const getCartTotal = async (req, res, next) => {
       return res.status(404).json({ message: "Không tìm thấy giỏ hàng" });
     }
     const total = cart.products.reduce(
-      (acc, product) => acc + product.price * product.quantity,0
+      (acc, product) => acc + product.productId.price * product.quantity,
+      0
     );
     return res.status(200).json({ data: total });
   } catch (error) {
