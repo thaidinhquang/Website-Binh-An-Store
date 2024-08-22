@@ -11,111 +11,111 @@ import { AuthContext } from "../Auth/core/Auth";
 import ThinLove from "../icons/ThinLove";
 
 const ProductView = ({ className }) => {
-  const demoProduct = {
-    name: "Smartphone XYZ",
-    image:
-      "https://cdn.tgdd.vn/Products/Images/7077/306530/befit-watch-fit-den-fix-1.jpg",
-    status: 1,
-    gallery: [
-      "https://cdn.tgdd.vn/Products/Images/7077/306530/befit-watch-fit-vang-1.jpg",
-      "https://cdn.tgdd.vn/Products/Images/7077/306530/befit-watch-fit-hong-2-2.jpg",
-      "https://cdn.tgdd.vn/Products/Images/7077/306530/befit-watch-fit-xanh-la-1-3.jpg",
-    ],
-    parameter: "6.5 inch display, 128GB storage",
-    description:
-      "A high-end smartphone with a 6.5-inch display, advanced camera system, and 128GB of storage.",
-    discount: 10,
-    featured: true,
-    tags: ["smartphone", "electronics", "mobile"],
-    slug: "smartphone-xyz",
-    attributes: [
-      {
-        key: "Display",
-        value: "5 inch",
-      },
-      {
-        key: "Camera",
-        value: "16mp",
-      },
-      {
-        key: "CPU",
-        value: "16mp",
-      },  {
-        key: "Độ phân giải",
-        value: "200 x 320 Pixels",
-      },  {
-        key: "Chất liệu mặt",
-        value: "Mặt kính nhựa",
-      },  {
-        key: "Chất liệu khung viền",
-        value: "Hợp kim nhôm",
-      },  {
-        key: "Tính năng cho sức khỏe:",
-        value: "Đếm số bước chânĐo nồng độ oxy (SpO2)Đo nhịp timTính quãng đường chạyTính lượng calories tiêu thụTheo dõi giấc ngủBài tập thở",
-      },
-    ],
-    active: true,
-    category: "64dfe8b2c9b5a53c12345679",
-    brand: "64dfe8b2c9b5a53c12345670",
-    productItems: [
-      {
-        productId: "64dfe8b2c9b5a53c12345671",
-        name: "Smartphone XYZ",
-        price: 699.99,
-        stock: 120,
-        reviews: ["64dfe8b2c9b5a53c87654321", "64dfe8b2c9b5a53c87654322"],
-        rating: 4.5,
-        variants: [
-          {
-            key: "Color",
-            value: "Red",
-          },
-          {
-            key: "Storage",
-            value: "128GB",
-          },
-        ],
-      },
-      {
-        productId: "64dfe8b2c9b5a53c12345638",
-        name: "Smartphone XYZ",
-        price: 799.99,
-        stock: 140,
-        reviews: ["64dfe8b2c9b5a53c87654321", "64dfe8b2c9b5a53c87654322"],
-        rating: 5,
-        variants: [
-          {
-            key: "Color",
-            value: "Green",
-          },
-          {
-            key: "Storage",
-            value: "128GB",
-          },
-        ],
-      },
-      {
-        productId: "64dfe8b2c9b5a53c12345618",
-        name: "Smartphone XYZ",
-        price: 899.99,
-        stock: 150,
-        reviews: ["64dfe8b2c9b5a53c87654321", "64dfe8b2c9b5a53c87654322"],
-        rating: 4.6,
-        variants: [
-          {
-            key: "Color",
-            value: "Black",
-          },
-          {
-            key: "Storage",
-            value: "526GB",
-          },
-        ],
-      },
-    ],
-    createdAt: "2024-08-20T10:00:00Z",
-    updatedAt: "2024-08-20T12:00:00Z",
-  };
+  // const demoProduct = {
+  //   name: "Smartphone XYZ",
+  //   image:
+  //     "https://cdn.tgdd.vn/Products/Images/7077/306530/befit-watch-fit-den-fix-1.jpg",
+  //   status: 1,
+  //   gallery: [
+  //     "https://cdn.tgdd.vn/Products/Images/7077/306530/befit-watch-fit-vang-1.jpg",
+  //     "https://cdn.tgdd.vn/Products/Images/7077/306530/befit-watch-fit-hong-2-2.jpg",
+  //     "https://cdn.tgdd.vn/Products/Images/7077/306530/befit-watch-fit-xanh-la-1-3.jpg",
+  //   ],
+  //   parameter: "6.5 inch display, 128GB storage",
+  //   description:
+  //     "A high-end smartphone with a 6.5-inch display, advanced camera system, and 128GB of storage.",
+  //   discount: 10,
+  //   featured: true,
+  //   tags: ["smartphone", "electronics", "mobile"],
+  //   slug: "smartphone-xyz",
+  //   attributes: [
+  //     {
+  //       key: "Display",
+  //       value: "5 inch",
+  //     },
+  //     {
+  //       key: "Camera",
+  //       value: "16mp",
+  //     },
+  //     {
+  //       key: "CPU",
+  //       value: "16mp",
+  //     },  {
+  //       key: "Độ phân giải",
+  //       value: "200 x 320 Pixels",
+  //     },  {
+  //       key: "Chất liệu mặt",
+  //       value: "Mặt kính nhựa",
+  //     },  {
+  //       key: "Chất liệu khung viền",
+  //       value: "Hợp kim nhôm",
+  //     },  {
+  //       key: "Tính năng cho sức khỏe:",
+  //       value: "Đếm số bước chânĐo nồng độ oxy (SpO2)Đo nhịp timTính quãng đường chạyTính lượng calories tiêu thụTheo dõi giấc ngủBài tập thở",
+  //     },
+  //   ],
+  //   active: true,
+  //   category: "64dfe8b2c9b5a53c12345679",
+  //   brand: "64dfe8b2c9b5a53c12345670",
+  //   productItems: [
+  //     {
+  //       productId: "64dfe8b2c9b5a53c12345671",
+  //       name: "Smartphone XYZ",
+  //       price: 699.99,
+  //       stock: 120,
+  //       reviews: ["64dfe8b2c9b5a53c87654321", "64dfe8b2c9b5a53c87654322"],
+  //       rating: 4.5,
+  //       variants: [
+  //         {
+  //           key: "Color",
+  //           value: "Red",
+  //         },
+  //         {
+  //           key: "Storage",
+  //           value: "128GB",
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       productId: "64dfe8b2c9b5a53c12345638",
+  //       name: "Smartphone XYZ",
+  //       price: 799.99,
+  //       stock: 140,
+  //       reviews: ["64dfe8b2c9b5a53c87654321", "64dfe8b2c9b5a53c87654322"],
+  //       rating: 5,
+  //       variants: [
+  //         {
+  //           key: "Color",
+  //           value: "Green",
+  //         },
+  //         {
+  //           key: "Storage",
+  //           value: "128GB",
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       productId: "64dfe8b2c9b5a53c12345618",
+  //       name: "Smartphone XYZ",
+  //       price: 899.99,
+  //       stock: 150,
+  //       reviews: ["64dfe8b2c9b5a53c87654321", "64dfe8b2c9b5a53c87654322"],
+  //       rating: 4.6,
+  //       variants: [
+  //         {
+  //           key: "Color",
+  //           value: "Black",
+  //         },
+  //         {
+  //           key: "Storage",
+  //           value: "526GB",
+  //         },
+  //       ],
+  //     },
+  //   ],
+  //   createdAt: "2024-08-20T10:00:00Z",
+  //   updatedAt: "2024-08-20T12:00:00Z",
+  // };
   const { currentUser } = useContext(AuthContext);
   const [variants, setVariant] = useState(null);
   const { data: wishlistProducts } = useTanstackQuery("wishlist/products");
@@ -178,19 +178,18 @@ const ProductView = ({ className }) => {
 
   const checkProductInWishlist = (product) => {
     return (
-      wishlistProducts?.findIndex((item) => item.productId === product._id) !==
-      -1
+      wishlistProducts?.findIndex((item) => item.productId === product._id) !==-1
     );
   };
 
   useEffect(() => {
-    setVariant(() => demoProduct.productItems[0]);
+    setVariant(() => product?.productItems[0]);
   }, []);
   const handleSelectVariant = (variant) => {
     setVariant(variant);
   };
 
-  const [selectedImage, setSelectedImage] = useState(demoProduct.image); // State to hold the selected image
+  const [selectedImage, setSelectedImage] = useState(product?.image); // State to hold the selected image
 
   if (isLoading) return <p>Loading...</p>;
 
@@ -210,13 +209,13 @@ const ProductView = ({ className }) => {
           <div className="w-full h-[600px] border border-qgray-border flex justify-center items-center overflow-hidden relative mb-3">
             <img
               src={selectedImage} // Use selected image
-              alt={demoProduct.name}
+              alt={product.name}
               className="object-contain w-full"
             />
 
-            {getStatus(demoProduct.createdAt) && (
+            {getStatus(product.createdAt) && (
               <div className="w-[80px] h-[80px] rounded-full bg-red-500 text-qblack flex justify-center items-center text-xl font-medium absolute left-[30px] top-[30px]">
-                {getStatus(demoProduct.createdAt)}
+                {getStatus(product.createdAt)}
               </div>
             )}
           </div>
@@ -224,7 +223,7 @@ const ProductView = ({ className }) => {
           <div className="flex overflow-x-auto space-x-2 mb-3">
             {" "}
         
-            {demoProduct.gallery.map((image, index) => (
+            {product.gallery.map((image, index) => (
               <img
                 key={index}
                 src={image}
@@ -242,7 +241,7 @@ const ProductView = ({ className }) => {
               data-aos="fade-up"
               className="text-xl font-medium text-qblack mb-4"
             >
-              {variants?.name}{" "}
+              {product?.name}{" "}
               {variants?.rating ? (
                 <span className="text-sm text-gray-500">
                   ({variants?.rating})
@@ -263,13 +262,13 @@ const ProductView = ({ className }) => {
             </div>
 
             <div className="flex gap-2 mb-4">
-              {demoProduct.productItems.map((productItem, i) => {
+              {product.productItems.map((productItem, i) => {
                 return (
                   <div
                     onClick={() => handleSelectVariant(productItem)}
                     key={i}
                     className={`border-2 flex gap-2 h-[50px]  items-center ${
-                      variants?.productId === productItem.productId
+                      variants?._id === productItem._id
                         ?"border-cyan-500"
                         :  "border-black" 
                     } p-2 cursor-pointer`}
@@ -352,19 +351,19 @@ const ProductView = ({ className }) => {
               <p className="text-[13px] text-qgray leading-7">
                 <span className="text-qblack">Danh mục: </span>
 
-                {demoProduct?.category || "Không có danh mục"}
+                {product?.category?.name || "Không có danh mục"}
               </p>
 
               <p className="text-[13px] text-qgray leading-7">
                 <span className="text-qblack">Nhãn hàng:</span>{" "}
-                {demoProduct?.brand || "không có nhãn hàng"}
+                {product?.brand?.name || "không có nhãn hàng"}
               </p>
             </div>
 
 <div>
   <table className="w-full">
     <tbody>
-      {demoProduct?.attributes.map((attribute, index) => (
+      {product?.attributes.map((attribute, index) => (
         <tr
           key={index}
           className={` ${
