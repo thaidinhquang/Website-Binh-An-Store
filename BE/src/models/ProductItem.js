@@ -7,17 +7,12 @@ const productItemSchema = new mongoose.Schema(
       ref: "Product",
       required: true,
     },
-    name: {
-      type: String,
-      required: true,
-    },
     price: {
       type: Number,
       required: true,
     },
     image: {
       type: String,
-      required: true,
     },
     stock: {
       type: Number,
@@ -34,8 +29,9 @@ const productItemSchema = new mongoose.Schema(
       default: 5,
     },
     variants: {
-      type: [{ key: String, value: [String] }],
+      type: [{ key: String, value: String }],
       default: [],
+      max: 2,
     },
   },
   {
