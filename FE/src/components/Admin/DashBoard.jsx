@@ -50,9 +50,10 @@ const DashBoard = () => {
               { to: "/admin/review", icon: <FontAwesomeIcon icon={faComment} />, text: "Quản lý Đánh giá" },
               { to: "/admin/blogs", icon: <FontAwesomeIcon icon={faRectangleAd} />, text: "Quản lý blogs" },
               { to: "/admin/feedback", icon: <FontAwesomeIcon icon={faRectangleAd} />, text: "Phản hồi" },
-              { to: "/", icon: <IcoLove />, text: "Website", textColor: "text-green-500" }
-       textColor: "text-green-500",
-              },
+              { to: "/", icon: <IcoLove />, text: "Website", textColor: "text-green-500" },
+              
+    
+              
 
             ].map(({ to, icon, text, textColor = "text-qgray" }) => (
               <div

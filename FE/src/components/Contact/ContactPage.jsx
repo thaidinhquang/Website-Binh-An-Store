@@ -1,7 +1,8 @@
 // src/ContactPage.js
 
-import React, { useState } from 'react';
-import { useTanstackMutation } from '../../common/hooks/useTanstackQuery';
+import { useTanstackMutation } from "../../common/hooks/useTanstackQuery";
+
+
 
 const ContactPage = () => {
     const { form, onSubmit } = useTanstackMutation({ path: `feedback`, action: "CREATE", navigatePage: '/' });
@@ -70,7 +71,7 @@ const ContactPage = () => {
                 </div>
             </div>
         </div>
-    );
+    )
 };
 
 export default ContactPage;
