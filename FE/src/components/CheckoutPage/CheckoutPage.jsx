@@ -14,17 +14,24 @@ const CheckoutPage = () => {
         action: "CREATE",
         navigatePage: "/checkoutsuccess",
     });
+
+    const calculateTotalPrice = (item) => {
+        return item.productId.price * item.quantity;
+      };
+
     useEffect(() => {
         if (cartItems?.products?.length > 0) {
             setIsLoadingItem(true)
             let listItem = []
             cartItems.products.forEach(item => {
                 listItem.push({
-                    name: item.productId._id,
+                    productId: item.productId._id,
+                    name: item.productId.name,
                     image: item.productId.image,
-                    price: item.productId.price,
-                    quantity: item.quantity
-                })
+                    price: calculateTotalPrice(item),
+                    quantity: item.quantity,
+                 
+            })
             })
             setItems(listItem)
             setIsLoadingItem(false)
@@ -55,56 +62,40 @@ const CheckoutPage = () => {
         }
         mutate(data)
     }
+    const formatPrice = (price) => {
+        return new Intl.NumberFormat('vi-VN', {
+          style: 'currency',
+          currency: 'VND'
+        }).format(price);
+      };
+
+    
     if (isLoading || isLoadingTotal) return <div>Loading...</div>
     return (
-        <div>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="checkout-main-content w-full">
+        <div className="bg-gray-100 min-h-screen py-10">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="checkout-main-content w-full max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-lg">
                 <div className="container-x mx-auto">
-                    {/* <div className="w-full sm:mb-10 mb-5">
-                        <div className="sm:flex sm:space-x-[18px] s">
-                            <div className="sm:w-1/2 w-full mb-5 h-[70px]">
-                                <a href="#">
-                                    <div className="w-full h-full bg-[#F6F6F6] text-qblack flex justify-center items-center">
-                                        <span className="text-[15px] font-medium">
-                                            Log into your Account
-                                        </span>
-                                    </div>
-                                </a>
-                            </div>
-                            <div className="flex-1 h-[70px]">
-                                <a href="#">
-                                    <div className="w-full h-full bg-[#F6F6F6] text-qblack flex justify-center items-center">
-                                        <span className="text-[15px] font-medium">
-                                            Enter Coupon Code
-                                        </span>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    </div> */}
-                    <div className="w-full lg:flex lg:space-x-[30px]">
+                    <div className="w-full lg:flex lg:space-x-8">
                         <div className="lg:w-1/2 w-full">
-                            <h1 className="sm:text-2xl text-xl text-qblack font-medium mb-5">
-                                Billing Details
+                            <h1 className="sm:text-2xl text-xl text-gray-800 font-semibold mb-5">
+                            Chi tiết thanh toán
                             </h1>
                             <div className="form-area">
                                 <div>
                                     <div className="sm:flex sm:space-x-5 items-center mb-6">
-                                        <div className="sm:w-1/2  mb-5 sm:mb-0">
+                                        <div className="sm:w-1/2 mb-5 sm:mb-0">
                                             <input
                                                 {...form.register("name", { required: 'Name is required' })}
-                                                label="Name*"
-                                                placeholder="Name"
-                                                className="w-full py-2 px-[12px] bg-white"
+                                                placeholder="Tên*"
+                                                className="w-full py-2 px-4 bg-gray-50 border border-gray-300 rounded-md"
                                             />
                                             {form.formState.errors.name && <span className="text-red-500">{form.formState.errors.name.message}</span>}
                                         </div>
                                         <div className="flex-1">
                                             <input
                                                 {...form.register("phone", { required: 'Phone is required' })}
-                                                label="Phone*"
-                                                placeholder="Phone"
-                                                className="w-full py-2 px-[12px] bg-white"
+                                                placeholder="Số điện thoại*"
+                                                className="w-full py-2 px-4 bg-gray-50 border border-gray-300 rounded-md"
                                             />
                                             {form.formState.errors.phone && <span className="text-red-500">{form.formState.errors.phone.message}</span>}
                                         </div>
@@ -112,229 +103,157 @@ const CheckoutPage = () => {
                                     <div className="mb-6">
                                         <input
                                             {...form.register("email", { required: 'Email is required' })}
-                                            label="Email Address*"
-                                            placeholder="demoemial@gmail.com"
-                                            className="w-full py-2 px-[12px] bg-white"
+                                            placeholder="Địa chỉ email*"
+                                            className="w-full py-2 px-4 bg-gray-50 border border-gray-300 rounded-md"
                                         />
                                         {form.formState.errors.email && <span className="text-red-500">{form.formState.errors.email.message}</span>}
                                     </div>
-                                    <div className=" mb-6">
+                                    <div className="mb-6">
                                         <div className="w-full">
                                             <input
                                                 {...form.register("line1", { required: 'Address is required' })}
-                                                label="Địa chỉ 1*"
-                                                placeholder="your address here"
-                                                className="w-full py-2 px-[12px] bg-white"
+                                                placeholder="Địa chỉ 1*"
+                                                className="w-full py-2 px-4 bg-gray-50 border border-gray-300 rounded-md"
                                             />
                                             {form.formState.errors.line1 && <span className="text-red-500">{form.formState.errors.line1.message}</span>}
                                         </div>
                                     </div>
-                                    <div className=" mb-6">
+                                    <div className="mb-6">
                                         <div className="w-full">
                                             <input
                                                 {...form.register("line2")}
-                                                label="Địa chỉ 2"
-                                                placeholder="your address here"
-                                                className="w-full py-2 px-[12px] bg-white"
+                                                placeholder="Địa chỉ 2"
+                                                className="w-full py-2 px-4 bg-gray-50 border border-gray-300 rounded-md"
                                             />
                                         </div>
                                     </div>
                                     <div className="sm:flex sm:space-x-5 items-center mb-6">
-                                        <div className="sm:w-1/2  mb-5 sm:mb-0">
+                                        <div className="sm:w-1/2 mb-5 sm:mb-0">
                                             <input
                                                 {...form.register("country", { required: 'Country is required' })}
-                                                label="Quốc gia*"
-                                                placeholder="enter your country"
-                                                className="w-full py-2 px-[12px] bg-white"
+                                                placeholder="Quốc gia*"
+                                                className="w-full py-2 px-4 bg-gray-50 border border-gray-300 rounded-md"
                                             />
                                             {form.formState.errors.country && <span className="text-red-500">{form.formState.errors.country.message}</span>}
                                         </div>
                                         <div className="flex-1">
                                             <input
                                                 {...form.register("city", { required: 'City is required' })}
-                                                label="Thành phố*"
-                                                placeholder="enter your city"
-                                                className="w-full py-2 px-[12px] bg-white"
+                                                placeholder="Thành phố*"
+                                                className="w-full py-2 px-4 bg-gray-50 border border-gray-300 rounded-md"
                                             />
                                             {form.formState.errors.city && <span className="text-red-500">{form.formState.errors.city.message}</span>}
                                         </div>
                                     </div>
                                     <div className="sm:flex sm:space-x-5 items-center mb-6">
-                                        <div className="sm:w-1/2  mb-5 sm:mb-0">
+                                        <div className="sm:w-1/2 mb-5 sm:mb-0">
                                             <input
                                                 {...form.register("state", { required: 'State is required' })}
-                                                label="Phường/Xã*"
-                                                placeholder="enter your district"
-                                                className="w-full py-2 px-[12px] bg-white"
+                                                placeholder="Phường/Xã*"
+                                                className="w-full py-2 px-4 bg-gray-50 border border-gray-300 rounded-md"
                                             />
                                             {form.formState.errors.state && <span className="text-red-500">{form.formState.errors.state.message}</span>}
                                         </div>
                                         <div className="flex-1">
                                             <input
                                                 {...form.register("postal_code", { required: 'Postal code is required' })}
-                                                label="Mã bưu điện*"
-                                                placeholder="enter your postal code"
-                                                className="w-full py-2 px-[12px] bg-white"
+                                                placeholder="Mã bưu điện*"
+                                                className="w-full py-2 px-4 bg-gray-50 border border-gray-300 rounded-md"
                                             />
                                             {form.formState.errors.postal_code && <span className="text-red-500">{form.formState.errors.postal_code.message}</span>}
                                         </div>
                                     </div>
-                                    {/* <div className="flex space-x-2 items-center mb-10">
-                                        <div>
-                                            <input type="checkbox" name="" id="create" />
-                                        </div>
-                                        <label
-                                            htmlFor="create"
-                                            className="text-qblack text-[15px] select-none"
-                                        >
-                                            Create an account?
-                                        </label>
-                                    </div> */}
-                                    {/* <div>
-                                        <h1 className="text-2xl text-qblack font-medium mb-3">
-                                            Billing Details
-                                        </h1>
-                                        <div className="flex space-x-2 items-center mb-10">
-                                            <div>
-                                                <input type="checkbox" name="" id="address" />
-                                            </div>
-                                            <label
-                                                htmlFor="address"
-                                                className="text-qblack text-[15px] select-none"
-                                            >
-                                                Ship to a different address
-                                            </label>
-                                        </div>
-                                    </div> */}
                                 </div>
                             </div>
                         </div>
                         <div className="flex-1">
-                            <h1 className="sm:text-2xl text-xl text-qblack font-medium mb-5">
-                                Order Summary
+                            <h1 className="sm:text-2xl text-xl text-gray-800 font-semibold mb-5">
+                            Tóm tắt đơn hàng
                             </h1>
 
-                            <div className="w-full px-10 py-[30px] border border-[#EDEDED]">
+                            <div className="w-full px-6 py-8 border border-gray-200 bg-gray-50 rounded-lg">
                                 <div className="sub-total mb-6">
-                                    <div className=" flex justify-between mb-5">
-                                        <p className="text-[13px] font-medium text-qblack uppercase">
-                                            PROduct
+                                    <div className="flex justify-between mb-5">
+                                        <p className="text-sm font-medium text-gray-700 uppercase">
+                                        Sản phẩm
                                         </p>
-                                        <p className="text-[13px] font-medium text-qblack uppercase">
-                                            total
+                                        <p className="text-sm font-medium text-gray-700 uppercase">
+                                        Tổng
                                         </p>
                                     </div>
-                                    <div className="w-full h-[1px] bg-[#EDEDED]"></div>
+                                    <div className="w-full h-px bg-gray-200"></div>
                                 </div>
-                                <div className="product-list w-full mb-[30px]">
+                                <div className="product-list w-full mb-8">
                                     <ul className="flex flex-col space-y-5">
-                                        {cartItems?.products?.map((item, index) => (
-                                            <li key={index}>
-                                                <div className="flex justify-between items-center">
-                                                    <div>
-                                                        <h4 className="text-[15px] text-qblack mb-2.5">
-                                                            {item.productId.name}
-                                                            <sup className="text-[13px] text-qgray ml-2 mt-2">
-                                                                {item.quantity}
-                                                            </sup>
-                                                        </h4>
-                                                        <img src={item.productId.image} alt="" className="w-24" />
-                                                        <p className="text-[13px] text-qgray">
-                                                            64GB, Black, 44mm, Chain Belt
-                                                        </p>
+                                        {cartItems?.products?.map((item, index) => {
+                                            
+                                            return (
+                                                <li key={index}>
+                                                    <div className="flex justify-between items-center">
+                                                        <div>
+                                                            <h4 className="text-base text-gray-800 mb-2.5">
+                                                                {item.name}{" "}
+                                                                <sup className="text-sm text-gray-500 ml-2 mt-2">
+                                                                    {item.quantity}
+                                                                </sup>
+                                                            </h4>
+                                                            <img src={item.productId.image} alt="" className="w-24" />
+                                                            <div>
+                                                            {item?.productId?.variants?.map(variant => variant.value).join(", ")}
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <span className="text-base text-gray-800 font-medium">
+                                                                {formatPrice(calculateTotalPrice(item))}
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <span className="text-[15px] text-qblack font-medium">
-                                                            {item.productId.price * item.quantity}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        ))}
+                                                </li>
+                                            )
+                                        })}
                                     </ul>
                                 </div>
-                                <div className="w-full h-[1px] bg-[#EDEDED]"></div>
-                                <div className="mt-[30px]">
-                                    <div className=" flex justify-between mb-5">
-                                        <p className="text-[13px] font-medium text-qblack uppercase">
+                                <div className="w-full h-px bg-gray-200"></div>
+                                <div className="mt-8">
+                                    <div className="flex justify-between mb-5">
+                                        <p className="text-sm font-medium text-gray-700 uppercase">
                                             SUBTOTAL
                                         </p>
-                                        <p className="text-[15px] font-medium text-qblack uppercase">
-                                            ${cartTotal}
+                                        <p className="text-base font-medium text-gray-800 uppercase">
+                                        {formatPrice(cartTotal)}
                                         </p>
                                     </div>
                                 </div>
 
-                                <div className="w-full mt-[30px]">
+                                <div className="w-full mt-8">
                                     <div className="sub-total mb-6">
-                                        <div className=" flex justify-between mb-5">
+                                        <div className="flex justify-between mb-5">
                                             <div>
-                                                <span className="text-xs text-qgraytwo mb-3 block">
-                                                    SHIPPING
+                                                <span className="text-xs text-gray-500 mb-3 block">
+                                                GIAO HÀNG
                                                 </span>
-                                                <p className="text-base font-medium text-qblack">
-                                                    Free Shipping
+                                                <p className="text-base font-medium text-gray-800">
+                                                Giao hàng miễn phí
                                                 </p>
                                             </div>
-                                            <p className="text-[15px] font-medium text-qblack">+$0</p>
+                                            <p className="text-base font-medium text-gray-800">+0 đ</p>
                                         </div>
-                                        <div className="w-full h-[1px] bg-[#EDEDED]"></div>
+                                        <div className="w-full h-px bg-gray-200"></div>
                                     </div>
                                 </div>
 
-                                <div className="mt-[30px]">
-                                    <div className=" flex justify-between mb-5">
-                                        <p className="text-2xl font-medium text-qblack">Total</p>
-                                        <p className="text-2xl font-medium text-qred">${cartTotal}</p>
+                                <div className="mt-8">
+                                    <div className="flex justify-between mb-5">
+                                        <p className="text-2xl font-medium text-gray-800">Total</p>
+                                        <p className="text-2xl font-medium text-red-600">{formatPrice(cartTotal)}</p>
                                     </div>
                                 </div>
-                                <div className="shipping mt-[30px]">
+                                <div className="shipping mt-8">
                                     <ul className="flex flex-col space-y-1">
-                                        {/* <li className=" mb-5">
-                                            <div className="flex space-x-2.5 items-center mb-4">
-                                                <div className="input-radio">
-                                                    <input
-                                                        type="radio"
-                                                        name="price"
-                                                        className="accent-pink-500"
-                                                        id="transfer"
-                                                    />
-                                                </div>
-                                                <label
-                                                    htmlFor="transfer"
-                                                    className="text-[18px] text-normal text-qblack"
-                                                >
-                                                    Direct Bank Transfer
-                                                </label>
-                                            </div>
-                                            <p className="text-qgraytwo text-[15px] ml-6">
-                                                Make your payment directly into our bank account. Please
-                                                use your Order ID as the payment reference.
-                                            </p>
-                                        </li> */}
-                                        {/* <li>
-                                            <div className="flex space-x-2.5 items-center mb-5">
-                                                <div className="input-radio">
-                                                    <input
-                                                        type="radio"
-                                                        name="price"
-                                                        className="accent-pink-500"
-                                                        id="delivery"
-                                                        checked
-                                                    />
-                                                </div>
-                                                <label
-                                                    htmlFor="delivery"
-                                                    className="text-[18px] text-normal text-qblack"
-                                                >
-                                                    Cash on Delivery
-                                                </label>
-                                            </div>
-                                        </li> */}
                                     </ul>
                                 </div>
                                 <button type="submit" disabled={isLoadingItem}
-                                    className="px-8 z-30 py-2 w-full bg-black text-white relative font-semibold font-sans after:-z-20 after:absolute after:h-1 after:w-1 after:bg-gray-800 after:left-5 overflow-hidden after:bottom-0 after:translate-y-full after:rounded-md after:hover:scale-[300] after:hover:transition-all after:hover:duration-700 after:transition-all after:duration-700 transition-all duration-700 hover:[text-shadow:2px_2px_2px_#fda4af] text-2xl"
+                                    className="px-8 py-2 w-full bg-black text-white font-semibold rounded-md hover:bg-gray-800 transition duration-300"
                                 >
                                     Đặt hàng
                                 </button>

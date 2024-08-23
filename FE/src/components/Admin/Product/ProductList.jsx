@@ -5,6 +5,10 @@ import { Link, useLocation } from "react-router-dom";
 import Pageination from "../../UI/Pagination";
 import { useHookSearch } from "../../../common/hooks/useSearch";
 import { useForm } from "react-hook-form";
+import CommonUtils from "../../../common/CommonUtils/CommonUtils";
+import { Button } from "antd";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileExcel } from '@fortawesome/free-solid-svg-icons';
 
 const ProductList = () => {
   const search = new URLSearchParams(useLocation().search);
@@ -55,6 +59,26 @@ const ProductList = () => {
   const searchForm = (data) => {
     useSearch(data, '/admin/products')
   }
+
+
+  const exportToExcel = async () => {
+    const dataToExport = data?.docs?.map(product => ({
+      ID: product._id,
+      Name: product.name,
+      Slug: product.slug,
+      Active: product.active ? 'Active' : 'False',
+      Price: formatPrice(product.price),
+      Image: product.image,
+      CountInStock: product.countInStock,
+      Category: product.category?.name || '', // Add category name
+      Attributes: product.attributes.map(attr => `${attr.name}: ${attr.values.map(val => `${val.name} (${formatPrice(val.price)})`).join(', ')}`).join('; '),
+      Brand: product.brand?.name || '',
+      CreatedAt: new Date(product.createdAt).toLocaleString(),
+      UpdatedAt: new Date(product.updatedAt).toLocaleString(), 
+      
+     }));
+    await CommonUtils.exportExcel(dataToExport, 'Products', 'ProductList');
+  };
   if (isLoading) return <p>Loading...</p>
   return (
     <>
@@ -65,6 +89,9 @@ const ProductList = () => {
         >
           thêm sản phẩm
         </Link>
+        <Button onClick={exportToExcel} type="default" icon={<FontAwesomeIcon icon={faFileExcel} />}>
+        Xuất Excel
+      </Button>
       </div>
       <form onSubmit={form.handleSubmit(searchForm)} className="flex justify-between gap-3">
         <input

@@ -1,6 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import instance from "../../../config/axios";
 import { toast } from "react-toastify";
+import CommonUtils from "../../../common/CommonUtils/CommonUtils";
+import { Button } from "antd";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 
 const ReviewList = () => {
   const queryClient = useQueryClient();
@@ -27,6 +31,21 @@ const ReviewList = () => {
     },
   });
 
+  const exportToExcel = async () => {
+    const dataToExport = data?.map(review => ({
+      ID: review._id,
+      UserID: review.user,
+      UserName: review.name || "Chưa có tên User",
+      ProductID: review.productId,
+      Comment: review.comment,
+      Rating: review.rating,
+      CreatedAt: new Date(review.createdAt).toLocaleString(), // Format creation date and time
+      UpdatedAt: new Date(review.updatedAt).toLocaleString()  // Format update date and time
+    }));
+    await CommonUtils.exportExcel(dataToExport, 'Reviews', 'ReviewList');
+  };
+
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -48,6 +67,9 @@ const ReviewList = () => {
       <div className="py-8">
         <div className="flex flex-col md:flex-row justify-between items-center mb-6">
           <h2 className="text-2xl font-semibold mb-4 md:mb-0">Danh sách đánh giá</h2>
+          <Button onClick={exportToExcel} type="default" icon={<FontAwesomeIcon icon={faFileExcel} />}>
+          Xuất Excel
+        </Button>
         </div>
         <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
           <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">

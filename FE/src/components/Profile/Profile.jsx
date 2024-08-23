@@ -97,23 +97,7 @@ export const Profile = () => {
                   </div>
                 </Link>
               </div>
-              <div
-                className={`item group transition-transform duration-300 ${activeLink === "/profile/address" ? "bg-gray-200" : ""} ${hoveredLink === "/profile/address" && activeLink !== "/profile/address" ? "bg-gray-100 transform scale-105 shadow-lg" : ""} p-3`}
-                onMouseEnter={() => setHoveredLink("/profile/address")}
-                onMouseLeave={() => setHoveredLink("")}
-                onClick={() => handleLinkClick("/profile/address")}
-              >
-                <Link to="/profile/address">
-                  <div className="flex space-x-3 items-center text-qgray hover:text-black">
-                    <span>
-                      <IcoAdress />
-                    </span>
-                    <span className="font-normal text-base">
-                      Địa chỉ
-                    </span>
-                  </div>
-                </Link>
-              </div>
+          
               <div
                 className={`item group transition-transform duration-300 ${activeLink === "/profile/change-password" ? "bg-gray-200" : ""} ${hoveredLink === "/profile/change-password" && activeLink !== "/profile/change-password" ? "bg-gray-100 transform scale-105 shadow-lg" : ""} p-3`}
                 onMouseEnter={() => setHoveredLink("/profile/change-password")}

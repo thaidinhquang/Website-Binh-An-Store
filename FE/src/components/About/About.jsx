@@ -3,6 +3,7 @@ import { faEnvelope, faLocationDot, faPhone } from '@fortawesome/free-solid-svg-
 import { Link } from 'react-router-dom';
 
 const About = () => {
+
   return (
     <div className="mx-auto container-x ">
       <div className="text-center text-3xl font-bold">
@@ -69,4 +70,5 @@ const About = () => {
   )
 }
 
-export default About
+
+export default About;

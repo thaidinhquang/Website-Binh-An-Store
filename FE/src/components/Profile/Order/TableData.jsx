@@ -1,17 +1,11 @@
 import { Button, Pagination, Space, Table } from "antd";
 import moment from "moment";
 import { Link } from "react-router-dom";
-
-import { toast } from "react-toastify";
-
-import { useFinishOrder } from "../../../common/hooks/useFinishOrder";
 import { ORDER_STATUS } from "../../../constants/order";
 import CancelModal from "../../Admin/order/CancelModal";
+import ReceivedOrderPopup from "./ReceivedOrderPopup";
 
 const TableData = ({ orders, setPage }) => {
-
-  const finishOrder = useFinishOrder();
-
   const dataSource = orders?.docs?.map((order) => ({
     key: order._id,
     code: order?.code ?? order?._id,
@@ -43,6 +37,17 @@ const TableData = ({ orders, setPage }) => {
       dataIndex: "paymentMethod",
       key: "paymentMethod",
       width: "10%",
+      render: (text) => {
+        if (text === "CARD") {
+          return (
+            <span className="text-green-500 font-semibold">Đã thanh toán</span>
+          );
+        } else if (text === "CASH") {
+          return (
+            <span className="text-red-500 font-semibold">Chưa thanh toán</span>
+          );
+        }
+      },
     },
     {
       title: "Trạng thái",
@@ -50,14 +55,28 @@ const TableData = ({ orders, setPage }) => {
       key: "orderStatus",
       width: "10%",
       render: (text) => {
-        if (text === "DELIVERED") {
-          return <span className="text-blue-500 font-semibold">{text}</span>;
+        if (text === "CONFIRMED") {
+          return (
+            <span className="text-blue-500 font-semibold">Đã xác nhận</span>
+          );
+        } else if (text === "SHIPPING") {
+          return (
+            <span className="text-blue-500 font-semibold">Đang giao hàng</span>
+          );
+        } else if (text === "DELIVERED") {
+          return (
+            <span className="text-blue-500 font-semibold">Đã giao hàng</span>
+          );
         } else if (text === "DONE") {
-          return <span className="text-green-500 font-semibold">{text}</span>;
+          return (
+            <span className="text-green-500 font-semibold">Hoàn thành</span>
+          );
         } else if (text === "CANCELLED") {
-          return <span className="text-red-500 font-semibold">{text}</span>;
+          return <span className="text-red-500 font-semibold">Đã hủy</span>;
         }
-        return <span className="text-yellow-500 font-semibold">{text}</span>;
+        return (
+          <span className="text-yellow-500 font-semibold">Chờ xác nhận</span>
+        );
       },
     },
     {
@@ -78,6 +97,8 @@ const TableData = ({ orders, setPage }) => {
       width: "20%",
       render: (value, _record) => {
         const status = _record?.orderStatus?.toLowerCase();
+
+        console.log("status", status);
         return (
           <Space>
             {status === ORDER_STATUS.PENDING && (
@@ -85,30 +106,17 @@ const TableData = ({ orders, setPage }) => {
                 <CancelModal order={_record} />
               </>
             )}
+
             {status === ORDER_STATUS.DELIVERED && (
-              <Button onClick={(e) => handleFinish(e, _record.key)}>
-                Nhận hàng
-              </Button>
+              <ReceivedOrderPopup orderId={_record.key} />
             )}
+
             <Button>{value}</Button>
           </Space>
         );
       },
     },
   ];
-
-  const handleFinish = (e, orderId) => {
-    e.preventDefault();
-
-    finishOrder.mutate(orderId, {
-      onSuccess: () => {
-        toast.success("Finish order successfully");
-      },
-      onError: () => {
-        toast.error("Finish order failed");
-      },
-    });
-  };
 
   return (
     <>

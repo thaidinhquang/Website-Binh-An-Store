@@ -5,7 +5,6 @@ import { RiBillLine } from "react-icons/ri";
 import { CiStar, CiUser } from "react-icons/ci";
 import { ORDER_STATUS } from "../../../constants/order";
 
-
 const OrderProcessing = ({ order }) => {
   const currentStep = () => {
     switch (order?.orderStatus) {
@@ -47,28 +46,28 @@ const OrderProcessing = ({ order }) => {
             className="w-full"
             items={[
               {
-                title: "Đã đặt hàng",
+                title: "Chờ Xác nhận",
                 icon: <CiUser />,
-                className: "text-primary w-[15rem]",
+                className: "text-primary ",
               },
               {
-                title: "Chờ Xác nhận",
+                title: "Đã xác nhận",
                 icon: <FaUserCheck />,
-                className: "text-primary w-[20rem]",
+                className: "text-primary mr-5",
               },
               {
                 title: "Đang giao hàng",
                 icon: <MdLocalShipping />,
-                className: "text-primary w-[20rem]",
+                className: "text-primary mr-5",
               },
               {
                 title: "Đã giao hàng",
-                className: "text-primary w-[20rem]",
+                className: "text-primary mr-5",
                 icon: <RiBillLine />,
               },
               {
                 title: "Hoàn thành",
-                className: "text-primary w-[20rem]",
+                className: "text-primary mr-5",
                 icon: <CiStar />,
               },
             ]}
