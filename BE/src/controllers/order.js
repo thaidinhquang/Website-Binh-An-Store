@@ -15,11 +15,6 @@ export const checkoutSession = async (req, res) => {
       product_data: {
         name: item.name,
         images: [item.image ?? ""],
-        metadata: {
-          productId: item.productId,
-          attributesId: JSON.stringify(item.attributesId), // Ensure attributesId is included
-          valuesId: JSON.stringify(item.valuesId),
-        },
       },
       unit_amount: item.price,
       tax_behavior: "exclusive",
@@ -136,8 +131,7 @@ export const createStripeOrder = async (session) => {
           image: product.images[0] ?? "",
           name: product.name,
           productId: product.metadata.productId,
-          attributesId: JSON.parse(product.metadata.attributesId), // Ensure attributesId is included
-          valuesId: JSON.parse(product.metadata.valuesId),
+
         });
       }
     }
@@ -148,8 +142,7 @@ export const createStripeOrder = async (session) => {
       quantity: item.quantity,
       price: item.amount_total,
       image: item.image,
-      attributesId: item.attributesId,
-      valuesId: item.valuesId,
+
     }));
 
     const order = new Order({
@@ -282,18 +275,7 @@ export const getAllOrdersByUser = async (req, res) => {
   try {
     const orders = await Order.paginate(filter, {
       ...options,
-      populate: [
-        {
-          path: "items.attributesId",
-          model: "Attribute",
-          select: "name",
-        },
-        {
-          path: "items.valuesId",
-          model: "ValueAttribute",
-          select: "name price quantity",
-        },
-      ],
+     
     });
 
     return res.status(200).json({
@@ -315,16 +297,6 @@ export const getAllOrdersByUser = async (req, res) => {
 export const getOrderDetails = async (req, res) => {
   try {
     const order = await Order.findById(req.params.orderId)
-      .populate({
-        path: "items.attributesId",
-        model: "Attribute",
-        select: "name",
-      })
-      .populate({
-        path: "items.valuesId",
-        model: "ValueAttribute",
-        select: "name",
-      })
       .lean();
 
     if (!order) {
@@ -472,18 +444,8 @@ export const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.paginate(filter, {
       ...options,
-      populate: [
-        {
-          path: "items.attributesId",
-          model: "Attribute",
-          select: "name",
-        },
-        {
-          path: "items.valuesId",
-          model: "ValueAttribute",
-          select: "name price quantity",
-        },
-      ],
+    
+    
     });
 
     return res.status(200).json({

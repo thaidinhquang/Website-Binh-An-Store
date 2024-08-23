@@ -8,13 +8,10 @@ import PageTitle from "../UI/PageTitle";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../Auth/core/Auth";
 
-
-
 const CartPage = ({ cart = true, className }) => {
   const [isLoadingItem, setIsLoadingItem] = useState(false);
   const [items, setItems] = useState([]);
   const { data, isLoading } = useTanstackQuery("cart");
-
   const {
     data: cartTotal,
     isLoading: isLoadingCartTotal,
@@ -43,11 +40,9 @@ const CartPage = ({ cart = true, className }) => {
   const { currentUser } = useContext(AuthContext);
 
   const calculateTotalPrice = (item) => {
-    const basePrice = item.productId.price * item.quantity;
-    const valuesPrice = item.valuesId.reduce((total, value) => total + value.price, 0) * item.quantity;
-    return basePrice + valuesPrice;
+    return item.productId.price * item.quantity;
   };
-  
+
 
   const updateProduct = (product, action) => {
     const productId = product.productId._id;
@@ -77,54 +72,47 @@ const CartPage = ({ cart = true, className }) => {
   };
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND'
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
     }).format(price);
   };
 
   const onSubmit = async () => {
     const data = {
-        userId: currentUser._id,
-        items: items.map(item => ({
-            productId: item.productId,
-            name: item.name,
-            image: item.image,
-            price: item.price,
-            quantity: item.quantity,
-            attributesId: item.attributesId.map(attr => attr._id),
-            valuesId: item.valuesId.map(val => val._id),
-        })),
-        currency: "vnd",
+      userId: currentUser._id,
+      items: items,
+      currency: "vnd",
     };
     order(data);
-};
+  };
   useEffect(() => {
     if (response) {
       window.location.replace(response.sessionUrl);
     }
   }, [response]);
 
-
   useEffect(() => {
     if (data?.products?.length > 0) {
-        setIsLoadingItem(true);
-        let listItem = [];
-        data.products.forEach((item) => {
-            listItem.push({
-                productId: item.productId._id,
-                name: item.productId.name,
-                image: item.productId.image,
-                price: calculateTotalPrice(item),
-                quantity: item.quantity,
-                attributesId: item.attributesId,
-                valuesId: item.valuesId,
-            });
+      setIsLoadingItem(true);
+      let listItem = [];
+      data.products.forEach((item) => {
+        listItem.push({
+          name: item.name,
+          image: item.productId.image,
+          price: item.productId.price,
+          quantity: item.quantity,
+          variants: item.productId.variants  
         });
-        setItems(listItem);
-        setIsLoadingItem(false);
+      });      
+      setItems(listItem);
+      setIsLoadingItem(false);
     }
-}, [data]);
+  }, [data]);
+  // console.log(items);
+  console.log(data);
+  
+  
   if (isLoading) return <p>Loading...</p>;
 
   return (
@@ -179,7 +167,7 @@ const CartPage = ({ cart = true, className }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {!data.products.length ? (
+                        {!data?.products.length > 0 ? (
                           <tr>
                             <td colSpan="6" className="text-center py-4">
                               Không có sản phẩm !
@@ -187,120 +175,107 @@ const CartPage = ({ cart = true, className }) => {
                           </tr>
                         ) : (
                           data.products.map((item, index) => {
-                            const productAttributes = item.attributesId.map(attr => ({
-                              ...attr,
-                              values: attr.values.map(valueId =>
-                                item.valuesId.find(value => value._id === valueId)
-                              )
-                            }));
                             return (
-                            <tr
-                              key={index}
-                              className="bg-white border-b hover:bg-gray-50"
-                            >
-                              <td className="text-center py-4 px-2">
-                                <div className="flex space-x-1 items-center justify-center">
-                                  <span className="text-[15px] font-normal">
-                                    {index + 1}
-                                  </span>
-                                </div>
-                              </td>
-
-                              <td className="pl-10 py-4 w-[380px]">
-                                <div className="flex space-x-6 items-center">
-                                  <div className="w-[80px] h-[80px] overflow-hidden flex justify-center items-center border border-[#EDEDED]">
-                                    <img
-                                      src={item.productId.image}
-                                      alt="product"
-                                      className="w-full h-full object-contain"
-                                    />
+                              <tr
+                                key={index}
+                                className="bg-white border-b hover:bg-gray-50"
+                              >
+                                <td className="text-center py-4 px-2">
+                                  <div className="flex space-x-1 items-center justify-center">
+                                    <span className="text-[15px] font-normal">
+                                      {index + 1}
+                                    </span>
                                   </div>
-                                  <div className="flex-1 flex flex-col">
-                                    <p className="font-medium text-[15px] text-qblack">
-                                      {item.productId.name}
-                                    </p>
-                                    <div>
-                                      {productAttributes.map(attr => (
-                                        <div key={attr._id}>
-                                          <p className="mt-2 text-gray-500 text-sm">
-                                            {attr.name}, {attr.values.map(val => val?.name)}
-                                          </p>
-                                        </div>
-                                      ))}
+                                </td>
+
+                                <td className="pl-10 py-4 w-[380px]">
+                                  <div className="flex space-x-6 items-center">
+                                    <div className="w-[80px] h-[80px] overflow-hidden flex justify-center items-center border border-[#EDEDED]">
+                                      <img
+                                        src={item.image || item.productId.image}
+                                        alt="product"
+                                        className="w-full h-full object-contain"
+                                      />
+                                    </div>
+                                    <div className="flex-1 flex flex-col">
+                                      <p className="font-medium text-[15px] text-qblack">
+                                        {item.name}
+                                      </p>
+                                      <div>
+                                        {item?.productId?.variants?.map(variant => variant.value).join(", ")}
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              </td>
+                                </td>
 
-                              <td className="text-center py-4 px-2">
-                              <div className="flex space-x-1 items-center justify-center">
-                                <span className="text-[15px] font-normal">
-                                  {formatPrice(calculateTotalPrice(item))}
-                                </span>
-                              </div>
-                            </td>
+                                <td className="text-center py-4 px-2">
+                                  <div className="flex space-x-1 items-center justify-center">
+                                    <span className="text-[15px] font-normal">
+                                      {formatPrice(item.productId.price)}
+                                    </span>
+                                  </div>
+                                </td>
 
-                              <td className="py-4">
-                                <div className="flex justify-center items-center space-x-2">
-                                  <button
-                                    disabled={item.quantity === 1}
-                                    onClick={() =>
-                                      updateProduct(item, "decrease")
-                                    }
-                                    className="px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded"
-                                  >
-                                    -
-                                  </button>
-                                  <input
-                                    type="text"
-                                    value={item.quantity}
-                                    readOnly
-                                    className="w-12 text-center border border-gray-300 rounded"
-                                  />
-                                  <button
-                                    onClick={() =>
-                                      updateProduct(item, "increase")
-                                    }
-                                    className="px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded"
-                                  >
-                                    +
-                                  </button>
-                                </div>
-                              </td>
+                                <td className="py-4">
+                                  <div className="flex justify-center items-center space-x-2">
+                                    <button
+                                      disabled={item.quantity === 1}
+                                      onClick={() =>
+                                        updateProduct(item, "decrease")
+                                      }
+                                      className="px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded"
+                                    >
+                                      -
+                                    </button>
+                                    <input
+                                      type="text"
+                                      value={item.quantity}
+                                      readOnly
+                                      className="w-12 text-center border border-gray-300 rounded"
+                                    />
+                                    <button
+                                      onClick={() =>
+                                        updateProduct(item, "increase")
+                                      }
+                                      className="px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded"
+                                    >
+                                      +
+                                    </button>
+                                  </div>
+                                </td>
 
-                              <td className="text-right py-4">
-                                <div className="flex space-x-1 items-center justify-center">
-                                  <span className="text-[15px] font-normal">
-                                    {formatPrice(calculateTotalPrice(item))}
-                                  </span>
-                                </div>
-                              </td>
+                                <td className="text-right py-4">
+                                  <div className="flex space-x-1 items-center justify-center">
+                                    <span className="text-[15px] font-normal">
+                                      {formatPrice(calculateTotalPrice(item))}
+                                    </span>
+                                  </div>
+                                </td>
 
-                              <td className="text-right py-4">
-                              <div className="flex space-x-1 items-center p-5 justify-center">
-                              <span
-                                onClick={() => updateProduct(item, "remove")}
-                                className="cursor-pointer hover:text-red-500"
-                              >
-                                <svg
-                                  width="10"
-                                  height="10"
-                                  viewBox="0 0 10 10"
-                                  fill="currentColor" // Change fill to currentColor to inherit text color
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  className="fill-current"
-                                >
-                                  <path
-                                    d="M9.7 0.3C9.3 -0.1 8.7 -0.1 8.3 0.3L5 3.6L1.7 0.3C1.3 -0.1 0.7 -0.1 0.3 0.3C-0.1 0.7 -0.1 1.3 0.3 1.7L3.6 5L0.3 8.3C-0.1 8.7 -0.1 9.3 0.3 9.7C0.7 10.1 1.3 10.1 1.7 9.7L5 6.4L8.3 9.7C8.7 10.1 9.3 10.1 9.7 9.7C10.1 9.3 10.1 8.7 9.7 8.3L6.4 5L9.7 1.7C10.1 1.3 10.1 0.7 9.7 0.3Z"
-                                  />
-                                </svg>
-                              </span>
-                            </div>
-                            
-                              </td>
-                            </tr>
-                                  )})
-                                  
+                                <td className="text-right py-4">
+                                  <div className="flex space-x-1 items-center p-5 justify-center">
+                                    <span
+                                      onClick={() =>
+                                        updateProduct(item, "remove")
+                                      }
+                                      className="cursor-pointer hover:text-red-500"
+                                    >
+                                      <svg
+                                        width="10"
+                                        height="10"
+                                        viewBox="0 0 10 10"
+                                        fill="currentColor" // Change fill to currentColor to inherit text color
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="fill-current"
+                                      >
+                                        <path d="M9.7 0.3C9.3 -0.1 8.7 -0.1 8.3 0.3L5 3.6L1.7 0.3C1.3 -0.1 0.7 -0.1 0.3 0.3C-0.1 0.7 -0.1 1.3 0.3 1.7L3.6 5L0.3 8.3C-0.1 8.7 -0.1 9.3 0.3 9.7C0.7 10.1 1.3 10.1 1.7 9.7L5 6.4L8.3 9.7C8.7 10.1 9.3 10.1 9.7 9.7C10.1 9.3 10.1 8.7 9.7 8.3L6.4 5L9.7 1.7C10.1 1.3 10.1 0.7 9.7 0.3Z" />
+                                      </svg>
+                                    </span>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })
                         )}
                       </tbody>
                     </table>
@@ -310,7 +285,6 @@ const CartPage = ({ cart = true, className }) => {
               {/* ke thuc Chinh sua */}
               <div className="w-full mt-[30px] flex sm:justify-end">
                 <div className="sm:w-[370px] w-full border border-[#EDEDED] px-[30px] py-[26px]">
-              
                   <div className="total mb-6">
                     <div className=" flex justify-between">
                       <p className="text-[18px] font-medium text-qblack">

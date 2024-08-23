@@ -24,9 +24,7 @@ const Cart = ({ className, type }) => {
   };
 
   const calculateTotalPrice = (item) => {
-    const basePrice = item.productId.price * item.quantity;
-    const valuesPrice = item.valuesId.reduce((total, value) => total + value.price, 0) * item.quantity;
-    return basePrice + valuesPrice;
+    return item.productId.price * item.quantity;
   };
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -57,20 +55,17 @@ const Cart = ({ className, type }) => {
                       <div className="flex space-x-[6px] justify-center items-center px-4 my-[20px]">
                         <div className="w-[65px]">
                           <img
-                            src={item.productId.image}
+                            src={item.image||item.productId.image }
                             className="w-full h-full object-cover"
                             alt={item.productId.name}
                           />
                         </div>
                         <div className="flex-1 flex flex-col justify-center">
                           <div className="title mb-2 text-[13px] font-600 text-qblack leading-4 line-clamp-2 hover:text-blue-600">
-                            {item.productId.name}
+                            {item.name}
                             <span className="text-gray-400"> * {item.quantity}</span>
                             <div className="mt-2 text-gray-500 text-xs">
-                              {item.attributesId.map(attr => attr.name).join(", ")}
-                            </div>
-                            <div className="mt-1 text-gray-500 text-xs">
-                              {item.valuesId.map(val => val.name).join(", ")}
+                            {item?.productId?.variants?.map(variant => variant.value).join(", ")}
                             </div>
                           </div>
                           <p className="price">

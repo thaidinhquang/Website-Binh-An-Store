@@ -4,7 +4,7 @@ import QuickViewIco from '../icons/QuickViewIco';
 import ThinLove from '../icons/ThinLove';
 import { useTanstackMutation, useTanstackQuery } from '../../common/hooks/useTanstackQuery';
 import Pageination from '../UI/Pagination';
-import { useContext, useEffect, useMemo } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from "../Auth/core/Auth";
 
 const ProductCard = ({ limit, pagination, className }) => {
@@ -20,6 +20,8 @@ const ProductCard = ({ limit, pagination, className }) => {
   const { data: wishlistProducts } = useTanstackQuery('wishlist/products');
   const { mutate: addToWishlist } = useTanstackMutation({ path: `wishlist/add`, action: "CREATE" });
   const { mutate: removeFromWishlist } = useTanstackMutation({ path: `wishlist/remove`, action: "CREATE" });
+  
+
   useEffect(() => {
     refetch();
   }, [search]);
@@ -41,6 +43,7 @@ const getStatus = (createdAt) => {
   const checkProductInWishlist = (product) => {
     return wishlistProducts?.findIndex((item) => item.productId === product._id) !== -1;
   };
+
   if (isLoading) return <p>Đang tải...</p>;
   if (!data?.docs?.length) {
     return <p>Không có sản phẩm nào</p>;
@@ -57,7 +60,7 @@ const getStatus = (createdAt) => {
               </span>
             )}
               <img
-                className="w-full h-[300px]"
+                className="w-full h-[300px] object-cover"
                 src={product.image}
                 alt=""
               />
@@ -76,11 +79,8 @@ const getStatus = (createdAt) => {
                 </p>
               </Link>
               <p className="price">
-                <span className="main-price text-qgray line-through text-[14px]">
-                  {formatPrice(product.price)}
-                </span>
                 <span className="offer-price text-qred font-semibold text-[15px] ml-2">
-                  {formatPrice(product.price)}
+                {formatPrice(product?.productItems?.[0]?.price)}
                 </span>
               </p>
             </div>
