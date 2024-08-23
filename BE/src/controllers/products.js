@@ -180,7 +180,7 @@ export const updateProduct = async (req, res, next) => {
   session.startTransaction();
 
   try {
-    const { productData, productItemsData } = req.body;
+    const productData = req.body;
 
     // Step 1: Update the Product
     const updatedProduct = await Product.findByIdAndUpdate(id, productData, {
@@ -195,7 +195,7 @@ export const updateProduct = async (req, res, next) => {
     // Step 2: Update or Create ProductItems
     const updatedProductItems = [];
 
-    for (const item of productItemsData) {
+    for (const item of productData.variants) {
       if (item._id) {
         // If the product item already exists, update it
         const updatedItem = await ProductItem.findByIdAndUpdate(
@@ -236,7 +236,7 @@ export const updateProduct = async (req, res, next) => {
     await ProductItem.deleteMany(
       {
         productId: id,
-        _id: { $nin: productItemsData.map((item) => item._id).filter(Boolean) },
+        _id: { $nin: updatedProductItems.map((item) => item._id).filter(Boolean) },
       },
       { session }
     );
