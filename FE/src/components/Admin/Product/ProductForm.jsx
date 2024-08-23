@@ -40,12 +40,30 @@ const ProductForm = () => {
     if (productData?.data) {
       var data = [];
       var variants = [];
+      var variant_1 = [];
+      var variant_2 = [];
       setImage(productData.data.image);
       setImage1(productData.data.gallery[0]);
       setImage2(productData.data.gallery[1]);
       setImage3(productData.data.gallery[2]);
       productData.data.attributes.map((att,index)=>{
         data = {...data,[`attributes_${index}`]: att.value};
+      });
+      productData.data.productItems.map((prdItem,index)=>{
+        prdItem.variants?.map((vriItem,index)=>{
+          if(variant_1.length==0){
+            variant_1 = {name: vriItem.key, list: [{value:vriItem.value}]};
+          }else{
+            if(variant_1.name == vriItem.key){
+              variant_1.list = [...variant_1.list,{value:vriItem.value}];
+            }else if(variant_2.length==0){
+              variant_2 = {name: vriItem.key, list: [{value:vriItem.value}]} 
+            }else{
+              variant_2.list = [...variant_2.list,{value:vriItem.value}];
+            }
+          }
+        });
+        variants = [variant_1,variant_2].filter((it)=>it.list?.length>0);
       });
       form.setFieldsValue({
         name: productData.data.name,
@@ -54,9 +72,9 @@ const ProductForm = () => {
         slug: productData.data.slug,
         category: productData.data.category._id,
         brand: productData.data.brand._id,
-        attributes: data
+        attributes: data,
+        variants: variants,
       });
-
     }
   }, [productData, id]);
 
@@ -160,17 +178,19 @@ const ProductForm = () => {
     var count = 0;
     var newDts = [];
     if(variantForm){
-      if(variantForm.length == 1 || (variantForm[0] && (!variantForm[1] || !variantForm[1]?.list[0])) ){
+      if(variantForm.length == 1 || (variantForm[0] && (!variantForm[1] || !variantForm[1]?.list ||!variantForm[1]?.list[0])) ){
         variantForm.map((item)=>{
           if(item?.list){
             item.list.map((value)=>{
               if(value?.value){
+                var dbProductItem = productData.data.productItems?.filter((prdItem)=>`${item.name}-${value.value}` == prdItem?.variants[0].key+"-"+prdItem?.variants[0].value);
+                debugger
                 var newData = {
                   key: count,
                   label: `${item.name}-${value.value}`,
-                  price: '0',
-                  image: 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg',
-                  stock: '0',
+                  price: dbProductItem.length > 0 ? dbProductItem[0].price : '0',
+                  image: dbProductItem.length > 0 ? dbProductItem[0].image : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg',
+                  stock: dbProductItem.length > 0 ? dbProductItem[0].stock : '0',
                 };
                 newDts = [...newDts, newData];
                 count = count + 1;
@@ -180,17 +200,18 @@ const ProductForm = () => {
         });
       }
 
-      if(variantForm.length == 2 && variantForm[0] && variantForm[1] && variantForm[0]?.list[0] && variantForm[1]?.list[0]){
+      if(variantForm.length == 2 && variantForm[0] && variantForm[1] && variantForm[0]?.list && variantForm[1]?.list && variantForm[0]?.list[0] && variantForm[1]?.list[0]){
         variantForm[0].list.map((value)=>{
           if(value?.value){
             variantForm[1].list.map((value1)=>{
               if(value1?.value){
+                var dbProductItem = productData.data.productItems?.filter((prdItem)=>{(prdItem?.variants[0].key+"-"+prdItem?.variants[0].value+"||"+prdItem?.variants[1].key+"-"+prdItem?.variants[1].value) == (`${variantForm[0].name}-${value.value}||${variantForm[1].name}-${value1.value}`)});
                 var newData = {
                   key: count,
                   label: `${variantForm[0].name}-${value.value}||${variantForm[1].name}-${value1.value}`,
-                  price: '0',
-                  image: 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg',
-                  stock: '0',
+                  price: dbProductItem.length > 0 ? dbProductItem[0].price : '0',
+                  image: dbProductItem.length > 0 ? dbProductItem[0].image : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg',
+                  stock: dbProductItem.length > 0 ? dbProductItem[0].stock : '0',
                 };
                 newDts = [...newDts, newData];
                 count = count + 1;
