@@ -39,57 +39,21 @@ const DashBoard = () => {
         <div className="fixed top-[3.5rem] left-0 w-[236px] min-h-screen border-r border-[rgba(0, 0, 0, 0.1)] bg-white">
           <div className="flex flex-col space-y-4 h-full overflow-y-auto p-4">
             {[
-              {
-                to: "/admin",
-                icon: <IcoDashboard />,
-                text: "Quản lý thông kê",
+
+              { to: "/admin", icon: <IcoDashboard />, text: "Quản lý thông kê" },
+              { to: "/admin/products", icon: <Product />, text: "Quản lý sản phẩm" },
+              { to: "/admin/attribute", icon: <FontAwesomeIcon icon={faList} />, text: "Quản lý thuộc tính" },
+              { to: "/admin/brands", icon: <FontAwesomeIcon icon={faFlag} />, text: "Quản lý nhãn hàng" },
+              { to: "/admin/categories", icon: <FontAwesomeIcon icon={faLayerGroup} />, text: "Quản lý danh mục" },
+              { to: "/admin/users", icon: <IcoPeople />, text: "Quản lý người dùng" },
+              { to: "/admin/orders", icon: <IcoCart />, text: "Quản lý đơn hàng" },
+              { to: "/admin/review", icon: <FontAwesomeIcon icon={faComment} />, text: "Quản lý Đánh giá" },
+              { to: "/admin/blogs", icon: <FontAwesomeIcon icon={faRectangleAd} />, text: "Quản lý blogs" },
+              { to: "/admin/feedback", icon: <FontAwesomeIcon icon={faRectangleAd} />, text: "Phản hồi" },
+              { to: "/", icon: <IcoLove />, text: "Website", textColor: "text-green-500" }
+       textColor: "text-green-500",
               },
-              {
-                to: "/admin/products",
-                icon: <Product />,
-                text: "Quản lý sản phẩm",
-              },
-              {
-                to: "/admin/detail",
-                icon: <FontAwesomeIcon icon={faList} />,
-                text: "Quản lý thuộc tính",
-              },
-              {
-                to: "/admin/brands",
-                icon: <FontAwesomeIcon icon={faFlag} />,
-                text: "Quản lý nhãn hàng",
-              },
-              {
-                to: "/admin/categories",
-                icon: <FontAwesomeIcon icon={faLayerGroup} />,
-                text: "Quản lý danh mục",
-              },
-              {
-                to: "/admin/users",
-                icon: <IcoPeople />,
-                text: "Quản lý người dùng",
-              },
-              {
-                to: "/admin/orders",
-                icon: <IcoCart />,
-                text: "Quản lý đơn hàng",
-              },
-              {
-                to: "/admin/review",
-                icon: <FontAwesomeIcon icon={faComment} />,
-                text: "Quản lý Đánh giá",
-              },
-              {
-                to: "/admin/blogs",
-                icon: <FontAwesomeIcon icon={faRectangleAd} />,
-                text: "Quản lý blogs",
-              },
-              {
-                to: "/",
-                icon: <IcoLove />,
-                text: "Website",
-                textColor: "text-green-500",
-              },
+
             ].map(({ to, icon, text, textColor = "text-qgray" }) => (
               <div
                 key={to}
