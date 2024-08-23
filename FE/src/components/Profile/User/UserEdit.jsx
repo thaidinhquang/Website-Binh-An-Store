@@ -1,16 +1,21 @@
 import { useContext, useEffect } from "react";
-import { AuthContext } from "../../Auth/core/Auth";
+import { AuthContext, fetchUser } from "../../Auth/core/Auth";
 import { useTanstackMutation } from "../../../common/hooks/useTanstackQuery";
 
 const UserEdit = () => {
-    const { currentUser } = useContext(AuthContext);
-    const { form, onSubmit } = useTanstackMutation({
+    const { currentUser, setCurrentUser } = useContext(AuthContext);
+    const { form, onSubmit, isSuccess } = useTanstackMutation({
         path: `users`,
-        action: "UPDATE",
+        action: "PATCH",
         navigatePage: "/profile",
     });
     const { register, handleSubmit, setValue } = form;
-
+    useEffect(() => {
+        if (isSuccess) {
+            fetchUser(setCurrentUser);
+        }
+    }
+    , [isSuccess]);
     useEffect(() => {
         if (currentUser) {
             setValue("name", currentUser.name);

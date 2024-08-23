@@ -57,7 +57,7 @@ export const createUser = async (req, res, next) => {
 export const removeUserById = async (req, res, next) => {
     try {
         const data = await User.findByIdAndUpdate(req.params.id, { active: false }, { new: true });
-        return !data ? res.status(500).json({ message: "Xóa user thất bại" }) : res.status(200).json({ data, message: "Xóa user thành công"});
+        return !data ? res.status(500).json({ message: "Vô hiệu hóa người dùng thất bại" }) : res.status(200).json({ data, message: "Vô hiệu hóa người dùng thành công!" });
     } catch (error) {
         next(error);
     }
@@ -66,7 +66,7 @@ export const removeUserById = async (req, res, next) => {
 export const updateUser = async (req, res, next) => {
     try {
         const data = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        return !data ? res.status(500).json({ message: "Cập nhật thông tin thất bại!" }) : res.status(200).json({ data, message: "Cập nhật thông tin thành công"});
+        return !data ? res.status(500).json({ message: "Cập nhật thông tin thất bại!" }) : res.status(200).json({ data, message: "Cập nhật thông tin thành công" });
     } catch (error) {
         next(error);
     }
@@ -75,7 +75,7 @@ export const updateUser = async (req, res, next) => {
 export const restoreUserById = async (req, res, next) => {
     try {
         const data = await User.findByIdAndUpdate(req.params.id, { active: true }, { new: true });
-        return !data ? res.status(500).json({ message: "Restore user failed" }) : res.status(200).json({ data, message: "Restore user successfully"});
+        return !data ? res.status(500).json({ message: "Khôi phục người dùng thất bại" }) : res.status(200).json({ data, message: "Khôi phục người dùng thành công" });
     } catch (error) {
         next(error);
     }
@@ -86,6 +86,16 @@ export const getUserByEmail = async (req, res, next) => {
         const data = await User.find({ email: req.params.email });
         return !data ? res.status(500).json({ message: "Get user by email failed" }) : res.status(200).json({ data });
     } catch (error) {
+        next(error);
+    }
+}
+
+export const updateUserProfile = async (req, res, next) => {
+    try {
+        const data = await User.findByIdAndUpdate(req.user._id, req.body, { new: true });        
+        return !data ? res.status(500).json({ message: "Update profile failed" }) : res.status(200).json({ data, message: "Cập nhật profile thành công" });
+    }
+    catch (error) {
         next(error);
     }
 }

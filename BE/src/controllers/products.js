@@ -5,6 +5,7 @@ import Product from "../models/Product.js";
 import mongoose from "mongoose";
 import ProductItem from "../models/ProductItem.js";
 
+
 export const getAllProduct = async (req, res, next) => {
   try {
     const options = {
@@ -14,17 +15,19 @@ export const getAllProduct = async (req, res, next) => {
       populate: [
         { path: "category" },
         { path: "brand" },
+        {
+          path: "attributes",
+          populate: { path: "values", select: "name price quantity active" },
+        },
       ],
     };
+
     let query = {};
     if (req.query.id) {
       query._id = req.query.id;
     }
     if (req.query.name) {
       query.name = { $regex: new RegExp(req.query.name, "i") };
-    }
-    if (req.query.productItem) {
-      query.productItem = { $regex: new RegExp(req.query.productItem, "i") };
     }
     if (req.query.slug) {
       query.slug = { $regex: new RegExp(req.query.slug, "i") };
@@ -44,10 +47,32 @@ export const getAllProduct = async (req, res, next) => {
     if (req.query.active) {
       query.active = req.query.active === "true";
     }
-    const data = await Product.paginate(query, options);
-    return !data
-      ? res.status(400).json({ message: "Không tìm thấy sản phẩm nào!" })
-      :  res.status(200).json({ data, message: "Lấy danh sách sản phẩm thành công" });
+
+    const products = await Product.paginate(query, options);
+
+    // Fetch all ProductItems for the retrieved products
+    const productIds = products.docs.map(product => product._id);
+    const productItems = await ProductItem.find({ productId: { $in: productIds } });
+
+    // Group ProductItems by ProductId
+    const productItemsByProduct = productItems.reduce((acc, item) => {
+      if (!acc[item.productId]) {
+        acc[item.productId] = [];
+      }
+      acc[item.productId].push(item);
+      return acc;
+    }, {});
+
+    // Attach ProductItems to their respective Products
+    products.docs = products.docs.map(product => ({
+      ...product.toObject(),
+      productItems: productItemsByProduct[product._id] || [],
+    }));
+
+    return res.status(200).json({
+      data: products,
+      message: "Lấy danh sách sản phẩm thành công",
+    });
   } catch (error) {
     next(error);
   }

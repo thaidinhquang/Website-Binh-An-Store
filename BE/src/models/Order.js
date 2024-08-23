@@ -16,14 +16,6 @@ const OrderItemSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    attributesId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Attribute",
-    },
-    valuesId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Value",
-    },
     price: {
       type: Number,
       required: true,
@@ -36,6 +28,9 @@ const OrderItemSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    variants: {
+      type: [String],
+    }
   },
   {
     _id: false,
