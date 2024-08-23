@@ -11,7 +11,7 @@ const TableDataDetail = ({ order }) => {
         key: item.productId,
         name: (
           <div>
-            <span className="">{item.name}</span>
+            <span className="font-bold">{item.name}</span>
             <br />
             <span className="text-xs text-gray-500">
               {item.variants?.map((variant) => variant.value).join(", ")}
@@ -48,7 +48,6 @@ const TableDataDetail = ({ order }) => {
       title: "Tên sản phẩm",
       dataIndex: "name",
       key: "name",
-      className: "font-bold",
     },
     {
       title: "Hình ảnh",
