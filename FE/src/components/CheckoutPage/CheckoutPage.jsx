@@ -25,11 +25,11 @@ const CheckoutPage = () => {
             let listItem = []
             cartItems.products.forEach(item => {
                 listItem.push({
-                    productId: item.productId._id,
-                    name: item.productId.name,
-                    image: item.productId.image,
-                    price: calculateTotalPrice(item),
+                    name: item?.name,
+                    image: item?.productId?.image,
+                    price: item?.productId?.price,
                     quantity: item.quantity,
+                    variants: item?.productId?.variants  
                  
             })
             })

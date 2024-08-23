@@ -24,7 +24,7 @@ const Cart = ({ className, type }) => {
   };
 
   const calculateTotalPrice = (item) => {
-    return item.productId.price * item.quantity;
+    return item?.productId?.price * item?.quantity;
   };
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', {
@@ -55,9 +55,9 @@ const Cart = ({ className, type }) => {
                       <div className="flex space-x-[6px] justify-center items-center px-4 my-[20px]">
                         <div className="w-[65px]">
                           <img
-                            src={item.image||item.productId.image }
+                            src={item?.image||item?.productId?.image }
                             className="w-full h-full object-cover"
-                            alt={item.productId.name}
+                            alt={item?.productId?.name}
                           />
                         </div>
                         <div className="flex-1 flex flex-col justify-center">

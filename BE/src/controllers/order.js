@@ -15,6 +15,9 @@ export const checkoutSession = async (req, res) => {
       product_data: {
         name: item.name,
         images: [item.image ?? ""],
+        metadata: {
+          ...(item.variants && { variants: JSON.stringify(item.variants) }),
+        },
       },
       unit_amount: item.price,
       tax_behavior: "exclusive",

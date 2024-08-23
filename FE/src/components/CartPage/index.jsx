@@ -40,7 +40,7 @@ const CartPage = ({ cart = true, className }) => {
   const { currentUser } = useContext(AuthContext);
 
   const calculateTotalPrice = (item) => {
-    return item.productId.price * item.quantity;
+    return item?.productId?.price * item?.quantity;
   };
 
 
@@ -98,11 +98,11 @@ const CartPage = ({ cart = true, className }) => {
       let listItem = [];
       data.products.forEach((item) => {
         listItem.push({
-          name: item.name,
-          image: item.productId.image,
-          price: item.productId.price,
+          name: item?.name,
+          image: item?.productId?.image,
+          price: item?.productId?.price,
           quantity: item.quantity,
-          variants: item.productId.variants  
+          variants: item?.productId?.variants  
         });
       });      
       setItems(listItem);
@@ -192,7 +192,7 @@ const CartPage = ({ cart = true, className }) => {
                                   <div className="flex space-x-6 items-center">
                                     <div className="w-[80px] h-[80px] overflow-hidden flex justify-center items-center border border-[#EDEDED]">
                                       <img
-                                        src={item.image || item.productId.image}
+                                        src={item?.image || item?.productId?.image}
                                         alt="product"
                                         className="w-full h-full object-contain"
                                       />
@@ -211,7 +211,7 @@ const CartPage = ({ cart = true, className }) => {
                                 <td className="text-center py-4 px-2">
                                   <div className="flex space-x-1 items-center justify-center">
                                     <span className="text-[15px] font-normal">
-                                      {formatPrice(item.productId.price)}
+                                      {formatPrice(item?.productId?.price)}
                                     </span>
                                   </div>
                                 </td>

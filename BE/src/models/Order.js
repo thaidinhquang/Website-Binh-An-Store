@@ -28,9 +28,18 @@ const OrderItemSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    variants: {
-      type: [String],
-    }
+    variants: [
+      {
+        key: {
+          type: String,
+          required: true,
+        },
+        value: {
+          type: String,
+          required: true,
+        },
+      }
+    ],
   },
   {
     _id: false,
