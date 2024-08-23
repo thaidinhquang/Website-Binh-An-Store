@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const userSchema = new mongoose.Schema(
     {
@@ -7,9 +8,12 @@ const userSchema = new mongoose.Schema(
             required: true,
             unique: true,
         },
+        name: {
+            type: String,
+        },
         password: {
             type: String,
-            required: true,
+            default: ''
         },
         role: {
             type: String,
@@ -31,8 +35,16 @@ const userSchema = new mongoose.Schema(
             type: Boolean,
             default: true,
         },
+        otp: {
+            type: String,
+        },
+        otpCreatedAt: {
+            type: Date,
+        },
     },
     { timestamps: true, versionKey: false }
 );
+
+userSchema.plugin(mongoosePaginate);
 
 export default mongoose.model("User", userSchema);
