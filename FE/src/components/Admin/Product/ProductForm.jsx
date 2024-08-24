@@ -25,7 +25,7 @@ const ProductForm = () => {
   const [dataSource, setDataSource] = useState([]);
   const [detail, setDetail] = useState([]);
 
-  const { data: productData } = useGetDetailProduct(id);
+  const { data: productData, isLoading } = id ? useGetDetailProduct(id) : { data: null };
   const updateProduct = useUpdateProduct(id);
   const createProduct = useCreateProduct(id);
   const queryClient = useQueryClient();
@@ -33,15 +33,11 @@ const ProductForm = () => {
   const { data: categories } = useCategories();
 
   useEffect(() => {
-    queryClient.invalidateQueries({
-      queryKey: [QUERY_KEY.DETAIL, id],
-    });
-
     if (productData?.data) {
       var data = [];
       var variants = [];
-      var variant_1 = [];
-      var variant_2 = [];
+      var variant_1 = {name: null, list:[]};
+      var variant_2 = {name: null, list:[]};
       setImage(productData.data.image);
       setImage1(productData.data.gallery[0]);
       setImage2(productData.data.gallery[1]);
@@ -49,29 +45,32 @@ const ProductForm = () => {
       productData.data.attributes.map((att,index)=>{
         data = {...data,[`attributes_${index}`]: att.value};
       });
-      productData.data.productItems.map((prdItem,index)=>{
-        prdItem.variants?.map((vriItem,index)=>{
-          if(variant_1.length==0){
-            variant_1 = {name: vriItem.key, list: [{value:vriItem.value}]};
+      productData.data.productItems.map((prdItem)=>{
+        prdItem.variants?.map((vriItem)=>{
+          if(!variant_1.name){
+            variant_1.name = vriItem.key;
+            variant_1.list = [{value:vriItem.value}];
           }else{
-            if(variant_1.name == vriItem.key){
+            if(variant_1.name == vriItem.key && !variant_1.list.find((it)=>{return (it.value == vriItem.value)})){
               variant_1.list = [...variant_1.list,{value:vriItem.value}];
-            }else if(variant_2.length==0){
-              variant_2 = {name: vriItem.key, list: [{value:vriItem.value}]} 
-            }else{
+            }else if(!variant_2.name){
+              variant_2.name = vriItem.key;
+              variant_2.list = [{value:vriItem.value}]; 
+            }else if(variant_2.name == vriItem.key && !variant_2.list.find((it)=>{return (it.value == vriItem.value)})){
               variant_2.list = [...variant_2.list,{value:vriItem.value}];
             }
           }
         });
         variants = [variant_1,variant_2].filter((it)=>it.list?.length>0);
       });
+
       form.setFieldsValue({
         name: productData.data.name,
         image: productData.data.image,
         description: productData.data.description,
         slug: productData.data.slug,
-        category: productData.data.category._id,
-        brand: productData.data.brand._id,
+        category: productData.data.category?._id,
+        brand: productData.data.brand?._id,
         attributes: data,
         variants: variants,
       });
@@ -81,8 +80,7 @@ const ProductForm = () => {
   useEffect(() => {
     var gallery = [image1,image2,image3];
     form.setFieldsValue({
-      key: 'gallery',
-      values: gallery,
+      gallery: gallery,
     });
   }, [image1,image3,image2]);
 
@@ -106,6 +104,9 @@ const ProductForm = () => {
     mutationFn: uploadFileCloudinary,
     onSuccess: (data) => {
         setImage(data);
+        form.setFieldsValue({
+          image:data,
+        });
     },
     onError: (error) => {
         console.error("Error uploading image:", error);
@@ -183,14 +184,13 @@ const ProductForm = () => {
           if(item?.list){
             item.list.map((value)=>{
               if(value?.value){
-                var dbProductItem = productData.data.productItems?.filter((prdItem)=>`${item.name}-${value.value}` == prdItem?.variants[0].key+"-"+prdItem?.variants[0].value);
-                debugger
+                var dbProductItem = productData?.data.productItems?.find((prdItem)=>{return `${item.name}-${value.value}` == prdItem?.variants[0].key+"-"+prdItem?.variants[0].value});
                 var newData = {
                   key: count,
                   label: `${item.name}-${value.value}`,
-                  price: dbProductItem.length > 0 ? dbProductItem[0].price : '0',
-                  image: dbProductItem.length > 0 ? dbProductItem[0].image : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg',
-                  stock: dbProductItem.length > 0 ? dbProductItem[0].stock : '0',
+                  price: dbProductItem ? dbProductItem.price : '0',
+                  image: dbProductItem ? dbProductItem.image : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg',
+                  stock: dbProductItem > 0 ? dbProductItem.stock : '0',
                 };
                 newDts = [...newDts, newData];
                 count = count + 1;
@@ -205,13 +205,13 @@ const ProductForm = () => {
           if(value?.value){
             variantForm[1].list.map((value1)=>{
               if(value1?.value){
-                var dbProductItem = productData.data.productItems?.filter((prdItem)=>{(prdItem?.variants[0].key+"-"+prdItem?.variants[0].value+"||"+prdItem?.variants[1].key+"-"+prdItem?.variants[1].value) == (`${variantForm[0].name}-${value.value}||${variantForm[1].name}-${value1.value}`)});
+                var dbProductItem = productData?.data.productItems?.find((prdItem)=>{return (prdItem?.variants[0].key+"-"+prdItem?.variants[0].value+"||"+prdItem?.variants[1].key+"-"+prdItem?.variants[1].value) == (`${variantForm[0].name}-${value.value}||${variantForm[1].name}-${value1.value}`)});
                 var newData = {
                   key: count,
                   label: `${variantForm[0].name}-${value.value}||${variantForm[1].name}-${value1.value}`,
-                  price: dbProductItem.length > 0 ? dbProductItem[0].price : '0',
-                  image: dbProductItem.length > 0 ? dbProductItem[0].image : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg',
-                  stock: dbProductItem.length > 0 ? dbProductItem[0].stock : '0',
+                  price: dbProductItem ? dbProductItem.price : '0',
+                  image: dbProductItem ? dbProductItem.image : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg',
+                  stock: dbProductItem ? dbProductItem.stock : '0',
                 };
                 newDts = [...newDts, newData];
                 count = count + 1;
@@ -314,7 +314,7 @@ const ProductForm = () => {
         variants: dtVariants
       };
     });
-    var dataSubmit = {...values,image:image1,gallery:dataDallery,attributes:dataAttribute,variants:dataVariants}
+    var dataSubmit = {...values,attributes:dataAttribute,variants:dataVariants}
     console.log(dataSubmit);
 
     if(id){
