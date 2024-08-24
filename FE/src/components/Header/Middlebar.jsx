@@ -1,19 +1,19 @@
-import { Link } from 'react-router-dom'
-import Cart from '../Cart/Cart'
-import Compair from '../icons/Compair'
-import ThinBag from '../icons/ThinBag'
-import ThinLove from '../icons/ThinLove'
-import ThinPeople from '../icons/ThinPeople'
+import { Link } from "react-router-dom";
+import Cart from "../Cart/Cart";
+import Compair from "../icons/Compair";
+import ThinBag from "../icons/ThinBag";
+import ThinLove from "../icons/ThinLove";
+import ThinPeople from "../icons/ThinPeople";
 import { useContext, useEffect } from "react";
-import AuthenticationModal from './AuthenticationModal'
-import { AuthContext } from '../Auth/core/Auth'
-import { useTanstackQuery } from '../../common/hooks/useTanstackQuery'
-import ThinLove1 from '../icons/ThinLove1'
+import AuthenticationModal from "./AuthenticationModal";
+import { AuthContext } from "../Auth/core/Auth";
+import { useTanstackQuery } from "../../common/hooks/useTanstackQuery";
+import ThinLove1 from "../icons/ThinLove1";
 
 const Middlebar = ({ className }) => {
   const { currentUser } = useContext(AuthContext);
-  const { data: cartCount } = useTanstackQuery('cart/count');
-  const { data: wishlistCount } = useTanstackQuery('wishlist/count');
+  const { data: cartCount } = useTanstackQuery("cart/count");
+  const { data: wishlistCount } = useTanstackQuery("wishlist/count");
   return (
     <div>
       <div className={`w-full h-[86px] bg-white ${className}`}>
@@ -21,16 +21,15 @@ const Middlebar = ({ className }) => {
           <div className="relative h-full">
             <div className="flex justify-between items-center h-full">
               <div>
-                <Link to={'/'}>
-                <h1 className="text-[22px] font-bold text-qblack italic">Bình An Store</h1>
+                <Link to={"/"}>
+                  <img className="w-40" src="/assets/images/logo.png" alt="" />
                 </Link>
               </div>
               {/* <div className="w-[517px] h-[44px]">
                 <SearchBox className="search-com" />
               </div> */}
-              {currentUser ?
+              {currentUser ? (
                 <div className="flex space-x-6 items-center">
-
                   <div className="favorite relative">
                     <Link to="/wishlist">
                       <span>
@@ -64,16 +63,17 @@ const Middlebar = ({ className }) => {
                     </Link>
                   </div>
                 </div>
-                :
+              ) : (
                 <div>
                   <AuthenticationModal />
-                </div>}
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Middlebar
+export default Middlebar;
