@@ -43,7 +43,7 @@ const ProductForm = () => {
       setImage2(productData.data.gallery[1]);
       setImage3(productData.data.gallery[2]);
       productData.data.attributes.map((att,index)=>{
-        data = {...data,[`attributes_${index}`]: att.value};
+        data = {...data, [att.key]: att.value};
       });
       productData.data.productItems.map((prdItem)=>{
         prdItem.variants?.map((vriItem)=>{
@@ -458,8 +458,8 @@ const ProductForm = () => {
               }));
               if(det.isSelectedInputType){
                 return (
-                  <Form.Item
-                    name={"attributes_"+index}
+                  <Form.Item key={det.key}
+                    name={det.key}
                     label={det.key}
                     rules={rules}
                   >
@@ -469,8 +469,8 @@ const ProductForm = () => {
               }
               if(!det.isSelectedInputType){
                 return (
-                  <Form.Item
-                    name={"attributes_"+index}
+                  <Form.Item key={det.key}
+                    name={det.key}
                     label={det.key}
                     rules={rules}
                   >
@@ -578,11 +578,13 @@ const EditableCell = ({
   const [image, setImage] = useState("");
   const inputRef = useRef(null);
   const form = useContext(EditableContext);
+
   useEffect(() => {
     if (editing) {
       inputRef.current?.focus();
     }
   }, [editing]);
+
   useEffect(() => {
     if (image) {
       toggleEdit();
@@ -591,12 +593,14 @@ const EditableCell = ({
       handleSave(newRc);
     }
   }, [image]);
+
   const toggleEdit = () => {
     setEditing(!editing);
     form.setFieldsValue({
       [dataIndex]: record[dataIndex],
     });
   };
+
   const save = async () => {
     try {
       const values = await form.validateFields();
@@ -609,6 +613,7 @@ const EditableCell = ({
       console.log('Save failed:', errInfo);
     }
   };
+
   const uploadMutation = useMutation({
     mutationFn: uploadFileCloudinary,
     onSuccess: (data) => {
@@ -619,13 +624,16 @@ const EditableCell = ({
         toast.error("Không thể tải ảnh lên");
     },
   });
-  const handleVariantImageChange = async ( { target } ) => {
+
+  const handleVariantImageChange = async ({ target }) => {
     if (target.files?.length > 0) {
         const file = target.files[0];
         await uploadMutation.mutate(file);
     }
   };
+
   let childNode = children;
+
   if (editable) {
     childNode = editing ? (
       <Form.Item
@@ -640,9 +648,9 @@ const EditableCell = ({
           },
         ]}
       >
-        {dataIndex == "image" ? (
+        {dataIndex === "image" ? (
           <>
-            <img src={record.image}  alt="Blog preview" className="w-[100px] h-a object-cover rounded-lg mb-4" />
+            <img src={record.image} alt="Blog preview" className="w-[100px] h-a object-cover rounded-lg mb-4" />
             <button type="button"
                 onClick={() => document.getElementById(`vim${record['key']}`)?.click()}
                 className="w-[100px] text-base text-indigo-100 focus:outline-none bg-[#202142] rounded-lg border border-indigo-200 hover:bg-indigo-900 focus:z-10 focus:ring-4 focus:ring-indigo-200 ">
@@ -652,14 +660,13 @@ const EditableCell = ({
               type="file" 
               id={`vim${record['key']}`} 
               accept="image/jpg, image/jpeg, image/png" 
-              onChange={(value)=>handleVariantImageChange(value)}
+              onChange={handleVariantImageChange}
               className="invisible inline" 
             />
           </>
         ) : (
           <Input ref={inputRef} onPressEnter={save} onBlur={save} />
         )}
-        
       </Form.Item>
     ) : (
       <div
@@ -669,14 +676,15 @@ const EditableCell = ({
         }}
         onClick={toggleEdit}
       >
-        {dataIndex == "image" ? [undefined,(
-          <img src={children[1]} alt="Blog preview" className="inline w-[100px] h-a object-cover rounded-lg mb-4" />       
-        )] : (
+        {dataIndex === "image" ? (
+          <img src={children[1]} alt="Blog preview" className="inline w-[100px] h-a object-cover rounded-lg mb-4" />
+        ) : (
           children
         )}
       </div>
     );
   }
+
   return <td {...restProps}>{childNode}</td>;
 };
 

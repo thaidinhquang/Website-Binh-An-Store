@@ -1,3 +1,4 @@
+import mongoose from "mongoose"; // Add this line
 import Stripe from "stripe";
 import Order from "../models/Order.js";
 import { ORDER_STATUS } from "../constants/order.js";
@@ -263,7 +264,9 @@ export const createStripeOrder = async (session) => {
       .status(200)
       .json({ message: "Order saved successfully", success: true });
   } catch (error) {
-    await mongooseSession.abortTransaction();
+    if (mongooseSession.inTransaction()) {
+      await mongooseSession.abortTransaction();
+    }
     mongooseSession.endSession();
     return console.error(
       "Error processing checkout.session.completed event:",
