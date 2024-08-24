@@ -36,9 +36,7 @@ export const Profile = () => {
     <div className="profile-page-wrapper w-full">
       <div className="w-full bg-white px-10 py-9">
         <div className="title-area w-full flex justify-between items-center">
-          <h1 className="text-[22px] font-bold text-qblack">
-            Your Profile
-          </h1>
+          <h1 className="text-[22px] font-bold text-qblack">Your Profile</h1>
         </div>
         <div className="profile-wrapper w-full mt-8 flex">
           {/* Sidebar */}
@@ -46,7 +44,13 @@ export const Profile = () => {
             <div className="flex flex-col space-y-4">
               {currentUser?.role === "admin" && (
                 <div
-                  className={`item group transition-transform duration-300 ${activeLink === "/admin" ? "bg-gray-200" : ""} ${hoveredLink === "/admin" && activeLink !== "/admin" ? "bg-gray-100 transform scale-105 shadow-lg" : ""} p-3`} 
+                  className={`item group transition-transform duration-300 ${
+                    activeLink === "/admin" ? "bg-gray-200" : ""
+                  } ${
+                    hoveredLink === "/admin" && activeLink !== "/admin"
+                      ? "bg-gray-100 transform scale-105 shadow-lg"
+                      : ""
+                  } p-3`}
                   onMouseEnter={() => setHoveredLink("/admin")}
                   onMouseLeave={() => setHoveredLink("")}
                   onClick={() => handleLinkClick("/admin")}
@@ -64,7 +68,13 @@ export const Profile = () => {
                 </div>
               )}
               <div
-                className={`item group transition-transform duration-300 ${activeLink === "/profile" ? "bg-gray-200" : ""} ${hoveredLink === "/profile" && activeLink !== "/profile" ? "bg-gray-100 transform scale-105 shadow-lg" : ""} p-3`}
+                className={`item group transition-transform duration-300 ${
+                  activeLink === "/profile" ? "bg-gray-200" : ""
+                } ${
+                  hoveredLink === "/profile" && activeLink !== "/profile"
+                    ? "bg-gray-100 transform scale-105 shadow-lg"
+                    : ""
+                } p-3`}
                 onMouseEnter={() => setHoveredLink("/profile")}
                 onMouseLeave={() => setHoveredLink("")}
                 onClick={() => handleLinkClick("/profile")}
@@ -81,7 +91,14 @@ export const Profile = () => {
                 </Link>
               </div>
               <div
-                className={`item group transition-transform duration-300 ${activeLink === "/profile/orders" ? "bg-gray-200" : ""} ${hoveredLink === "/profile/orders" && activeLink !== "/profile/orders" ? "bg-gray-100 transform scale-105 shadow-lg" : ""} p-3`}
+                className={`item group transition-transform duration-300 ${
+                  activeLink === "/profile/orders" ? "bg-gray-200" : ""
+                } ${
+                  hoveredLink === "/profile/orders" &&
+                  activeLink !== "/profile/orders"
+                    ? "bg-gray-100 transform scale-105 shadow-lg"
+                    : ""
+                } p-3`}
                 onMouseEnter={() => setHoveredLink("/profile/orders")}
                 onMouseLeave={() => setHoveredLink("")}
                 onClick={() => handleLinkClick("/profile/orders")}
@@ -91,15 +108,20 @@ export const Profile = () => {
                     <span>
                       <IcoCart />
                     </span>
-                    <span className="font-normal text-base">
-                      Đơn mua
-                    </span>
+                    <span className="font-normal text-base">Đơn mua</span>
                   </div>
                 </Link>
               </div>
-          
+
               <div
-                className={`item group transition-transform duration-300 ${activeLink === "/profile/change-password" ? "bg-gray-200" : ""} ${hoveredLink === "/profile/change-password" && activeLink !== "/profile/change-password" ? "bg-gray-100 transform scale-105 shadow-lg" : ""} p-3`}
+                className={`item group transition-transform duration-300 ${
+                  activeLink === "/profile/change-password" ? "bg-gray-200" : ""
+                } ${
+                  hoveredLink === "/profile/change-password" &&
+                  activeLink !== "/profile/change-password"
+                    ? "bg-gray-100 transform scale-105 shadow-lg"
+                    : ""
+                } p-3`}
                 onMouseEnter={() => setHoveredLink("/profile/change-password")}
                 onMouseLeave={() => setHoveredLink("")}
                 onClick={() => handleLinkClick("/profile/change-password")}
@@ -109,36 +131,19 @@ export const Profile = () => {
                     <span>
                       <IcoPassword />
                     </span>
-                    <span className="font-normal text-base">
-                      Đổi mật khẩu
-                    </span>
+                    <span className="font-normal text-base">Đổi mật khẩu</span>
                   </div>
                 </Link>
               </div>
-              <div
-                className={`item group transition-transform duration-300 ${activeLink === "/profile#support" ? "bg-gray-200" : ""} ${hoveredLink === "/profile#support" && activeLink !== "/profile#support" ? "bg-gray-100 transform scale-105 shadow-lg" : ""} p-3`}
-                onMouseEnter={() => setHoveredLink("/profile#support")}
-                onMouseLeave={() => setHoveredLink("")}
-                onClick={() => handleLinkClick("/profile#support")}
-              >
-                <Link to="/profile#support">
-                  <div className="flex space-x-3 items-center text-qgray hover:text-black">
-                    <span>
-                      <IcoSupport />
-                    </span>
-                    <span className="font-normal text-base">
-                      Support Voucher
-                    </span>
-                  </div>
-                </Link>
-              </div>
+
               <div className="item group">
-                <button 
-                  onClick={() => handleLogout()} 
-                  className="button-logout w-full py-2 px-4 border border-gray-300 rounded-md bg-red-500 text-white"
+              <span
+                  onClick={() => handleLogout()}
+                  className="cursor-pointer inline-block py-2 px-4 border border-gray-300 rounded-md bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 transition-all duration-300 shadow-md"
+              
                 >
                   {confirmLogout ? "Xác nhận" : "Đăng xuất"}
-                </button>
+                </span>
               </div>
             </div>
           </div>

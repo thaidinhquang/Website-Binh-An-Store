@@ -3,10 +3,14 @@ import { useTanstackMutation, useTanstackQuery } from "../../../common/hooks/use
 import { useContext, useEffect, useState } from "react";
 import socket from "/src/config/socket";
 import { AuthContext } from "../../Auth/core/Auth";
+import { Form, Input, Select, Button, Spin } from "antd"; // Nhập các thành phần từ Ant Design
+
+const { Option } = Select;
 
 const CategorytForm = () => {
     const { id } = useParams();
-    const { form, mutate } = useTanstackMutation({
+    const [form] = Form.useForm(); // Khởi tạo form
+    const { mutate } = useTanstackMutation({
         path: `categories`,
         action: id ? "UPDATE" : "CREATE",
         navigatePage: "/admin/categories",
@@ -15,14 +19,15 @@ const CategorytForm = () => {
     const [listDetailSelected, setListDetailSelected] = useState(['']);
     const { data, isLoading } = id ? useTanstackQuery(`categories/details/${id}`, {}, false) : { data: null };
     const { data: listDetail, isLoading: isLoadingListDetail } = useTanstackQuery(`/details`, {}, false);
-    if (id) {
-        const userEditingPost = { id: currentUser._id, post_id: id, fullname: currentUser.email };
-        const handleUnload = () => {
-            socket.emit('leaveEditPost', userEditingPost);
-        };
-        useEffect(() => {
+
+    useEffect(() => {
+        if (id) {
+            const userEditingPost = { id: currentUser._id, post_id: id, fullname: currentUser.email };
+            const handleUnload = () => {
+                socket.emit('leaveEditPost', userEditingPost);
+            };
             if (data) {
-                form.reset(data);
+                form.setFieldsValue(data); // Đảm bảo rằng form được thiết lập với dữ liệu danh mục
                 setListDetailSelected(data.details.map((detail) => detail._id));
             }
             window.addEventListener('unload', handleUnload);
@@ -32,8 +37,9 @@ const CategorytForm = () => {
                 socket.emit('leaveEditPost', userEditingPost);
                 window.removeEventListener('unload', handleUnload);
             };
-        }, [data]);
-    }
+        }
+    }, [data, id, form, currentUser]);
+
     const handleSelectChange = (index, value) => {
         const newList = [...listDetailSelected];
         newList[index] = value;
@@ -51,66 +57,65 @@ const CategorytForm = () => {
 
     const onSubmit = (data) => {
         const filteredListDetailSelected = listDetailSelected.filter(detail => detail !== '');
-        mutate({ ...data, details: filteredListDetailSelected });
+        // Kiểm tra xem id có tồn tại không trước khi gửi
+        if (id) {
+            mutate({ ...data, details: filteredListDetailSelected, _id: id }); // Gửi id cùng với dữ liệu
+        } else {
+            mutate({ ...data, details: filteredListDetailSelected }); // Chỉ gửi dữ liệu cho tạo mới
+        }
     };
 
-    if (isLoading || isLoadingListDetail) return <div className="flex justify-center items-center h-screen"><div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div></div>;
-    return (
-        <>
-            <div>{id ? <div className="text-lg font-bold mb-4">Sửa thông tin danh mục</div> : <div className="text-lg font-bold mb-4">Thêm danh mục mới</div>}</div>
-            <div className="flex justify-end">
-                <Link to="admin/category">
-                    <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
-                        Quay lại
-                    </button>
-                </Link>
-            </div>
+    if (isLoading || isLoadingListDetail) return <Spin size="large" />;
 
-            <div>
-                <div>
-                    <div>
-                        <form onSubmit={form.handleSubmit(onSubmit)}>
-                            <div>
-                                <label className="block text-gray-700 text-sm font-bold mb-2">
-                                    Tên Danh Mục:
-                                </label>
-                                <input
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                                    {...form.register("name", { required: 'Category name is required', minLength: { value: 6, message: 'Category name must be at least 6 characters' } })}
-                                    type="text"
-                                />
-                                {form.formState.errors.name && <span className="text-red-500">{form.formState.errors.name.message}</span>}
-                            </div>
-                            <div>
-                                {listDetailSelected.map((selectedDetail, index) => {
-                                    return (
-                                        <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                                            <select
-                                                value={selectedDetail}
-                                                onChange={(e) => handleSelectChange(index, e.target.value)}
-                                            >
-                                                <option value="">Select detail</option>
-                                                {listDetail && listDetail
-                                                    .filter(detail => !listDetailSelected.includes(detail._id) || detail._id === selectedDetail)
-                                                    .map(detail => (
-                                                        <option key={detail._id} value={detail._id}>{detail.key}</option>
-                                                    ))}
-                                                {}
-                                            </select>
-                                            <button type="button" onClick={() => handleDelete(index)} style={{ marginLeft: '10px' }}>Delete</button>
-                                        </div>
-                                    );
-                                })}
-                                <button type="button" onClick={handleAddNew}>Add New Detail</button>
-                            </div>
-                            <button className="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900">
-                                {id ? "Sửa" : "Thêm"}
-                            </button>
-                        </form>
-                    </div>
+    return (
+        <div className="bg-gray-100 min-h-screen p-6">
+            <div className="bg-white rounded-lg shadow-md p-6">
+                <h2 className="text-lg font-bold mb-4">{id ? "Sửa thông tin danh mục" : "Thêm danh mục mới"}</h2>
+                <div className="flex justify-end mb-4">
+                    <Link to="/admin/categories">
+                        <Button type="default">Quay lại</Button>
+                    </Link>
                 </div>
+
+                <Form form={form} onFinish={onSubmit} layout="vertical">
+                    <Form.Item
+                        label="Tên Danh Mục"
+                        name="name"
+                        rules={[{ required: true, message: 'Category name is required' }, { min: 6, message: 'Category name must be at least 6 characters' }]}
+                    >
+                        <Input placeholder="Nhập tên danh mục" />
+                    </Form.Item>
+
+                    {listDetailSelected.map((selectedDetail, index) => (
+                        <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                            <Form.Item style={{ flex: 1 }}>
+                                <Select
+                                    value={selectedDetail}
+                                    onChange={(value) => handleSelectChange(index, value)}
+                                    placeholder="Chọn chi tiết"
+                                >
+                                    <Option value="">Select detail</Option>
+                                    {listDetail && listDetail
+                                        .filter(detail => !listDetailSelected.includes(detail._id) || detail._id === selectedDetail)
+                                        .map(detail => (
+                                            <Option key={detail._id} value={detail._id}>{detail.key}</Option>
+                                        ))}
+                                </Select>
+                            </Form.Item>
+                            <Button type="link" onClick={() => handleDelete(index)}>Xóa</Button>
+                        </div>
+                    ))}
+                    <Button type="dashed" onClick={handleAddNew} style={{ width: '100%' }}>
+                        Thêm Chi Tiết Mới
+                    </Button>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit" className="my-8 px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out">
+                            {id ? "Sửa" : "Thêm"}
+                        </Button>
+                    </Form.Item>
+                </Form>
             </div>
-        </>
+        </div>
     );
 };
 
