@@ -149,8 +149,8 @@ export const createOrder = async (req, res) => {
 // };
 
 export const createStripeOrder = async (session) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
+  const mongooseSession = await mongoose.startSession();
+  mongooseSession.startTransaction();
 
   try {
     const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
@@ -198,7 +198,7 @@ export const createStripeOrder = async (session) => {
     // Loop through the products in the order and decrease the stock
     for (const item of dataItems) {
       const productItem = await ProductItem.findById(item.productId).session(
-        session
+        mongooseSession
       );
 
       if (!productItem) {
@@ -210,11 +210,11 @@ export const createStripeOrder = async (session) => {
       }
 
       productItem.stock -= item.quantity;
-      await productItem.save({ session });
+      await productItem.save({ mongooseSession });
     }
 
-    await session.commitTransaction();
-    session.endSession();
+    await mongooseSession.commitTransaction();
+    mongooseSession.endSession();
 
     console.log("Order saved successfully");
 
@@ -263,8 +263,8 @@ export const createStripeOrder = async (session) => {
       .status(200)
       .json({ message: "Order saved successfully", success: true });
   } catch (error) {
-    await session.abortTransaction();
-    session.endSession();
+    await mongooseSession.abortTransaction();
+    mongooseSession.endSession();
     return console.error(
       "Error processing checkout.session.completed event:",
       error
@@ -400,8 +400,13 @@ export const getOrderDetails = async (req, res) => {
 // };
 
 export const cancelOrder = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
-    const foundedOrder = await Order.findById(req.body.orderId);
+    const foundedOrder = await Order.findById(req.body.orderId).session(
+      session
+    );
     if (!foundedOrder) {
       return res.status(404).json({
         message: `Order not found with id ${req.body.orderId}`,
@@ -417,8 +422,29 @@ export const cancelOrder = async (req, res) => {
       foundedOrder.cancelledReason = req.body.content;
     }
 
+    if (foundedOrder.orderStatus === ORDER_STATUS.CANCELLED) {
+      throw new Error("This order is already cancelled.");
+    }
+
+    // Loop through the products in the order and increase the stock
+    for (const item of foundedOrder.items) {
+      const product = await ProductItem.findById(item.productId).session(
+        session
+      );
+
+      if (!product) {
+        throw new Error("Product not found");
+      }
+
+      product.stock += item.quantity;
+      await product.save({ session });
+    }
+
     foundedOrder.orderStatus = ORDER_STATUS.CANCELLED;
     await foundedOrder.save();
+
+    await session.commitTransaction();
+    session.endSession();
 
     // Sending email after the order is canceled
     const user = await User.findById(foundedOrder.userId);

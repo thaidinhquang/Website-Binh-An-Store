@@ -42,7 +42,7 @@ const DashBoard = () => {
 
               { to: "/admin", icon: <IcoDashboard />, text: "Quản lý thông kê" },
               { to: "/admin/products", icon: <Product />, text: "Quản lý sản phẩm" },
-              { to: "/admin/attribute", icon: <FontAwesomeIcon icon={faList} />, text: "Quản lý thuộc tính" },
+              { to: "/admin/detail", icon: <FontAwesomeIcon icon={faList} />, text: "Quản lý thuộc tính" },
               { to: "/admin/brands", icon: <FontAwesomeIcon icon={faFlag} />, text: "Quản lý nhãn hàng" },
               { to: "/admin/categories", icon: <FontAwesomeIcon icon={faLayerGroup} />, text: "Quản lý danh mục" },
               { to: "/admin/users", icon: <IcoPeople />, text: "Quản lý người dùng" },
