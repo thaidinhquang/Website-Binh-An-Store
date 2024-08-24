@@ -90,16 +90,15 @@ const ProductForm = () => {
     }
   }, [categoryForm]);
 
-  const brandOptions = brands?.map((brand) => ({
-    label: brand.name,
-    value: brand._id,
-  }));
+const brandOptions = Array.isArray(brands) ? brands.map((brand) => ({
+  label: brand.name,
+  value: brand._id,
+})) : [];
 
-  const categoryOptions = categories?.map((category) => ({
-    label: category.name,
-    value: category._id,
-  }));
-
+const categoryOptions = Array.isArray(categories) ? categories.map((category) => ({
+  label: category.name,
+  value: category._id,
+})) : [];
   const uploadImg = useMutation({
     mutationFn: uploadFileCloudinary,
     onSuccess: (data) => {
@@ -178,49 +177,49 @@ const ProductForm = () => {
   useEffect(() => {
     var count = 0;
     var newDts = [];
-    if(variantForm){
-      if(variantForm.length == 1 || (variantForm[0] && (!variantForm[1] || !variantForm[1]?.list ||!variantForm[1]?.list[0])) ){
-        variantForm.map((item)=>{
-          if(item?.list){
-            item.list.map((value)=>{
-              if(value?.value){
-                var dbProductItem = productData?.data.productItems?.find((prdItem)=>{return `${item.name}-${value.value}` == prdItem?.variants[0].key+"-"+prdItem?.variants[0].value});
+    if (variantForm) {
+      if (variantForm.length === 1 || (variantForm[0] && (!variantForm[1] || !variantForm[1]?.list || !variantForm[1]?.list[0]))) {
+        variantForm.forEach((item) => {
+          if (item?.list) {
+            item.list.forEach((value) => {
+              if (value?.value) {
+                var dbProductItem = productData?.data.productItems?.find((prdItem) => `${item.name}-${value.value}` === `${prdItem?.variants[0].key}-${prdItem?.variants[0].value}`);
                 var newData = {
                   key: count,
                   label: `${item.name}-${value.value}`,
                   price: dbProductItem ? dbProductItem.price : '0',
                   image: dbProductItem ? dbProductItem.image : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg',
-                  stock: dbProductItem > 0 ? dbProductItem.stock : '0',
+                  stock: dbProductItem ? dbProductItem.stock : '0',
                 };
                 newDts = [...newDts, newData];
-                count = count + 1;
+                count += 1;
               }
             });
           }
         });
       }
 
-      if(variantForm.length == 2 && variantForm[0] && variantForm[1] && variantForm[0]?.list && variantForm[1]?.list && variantForm[0]?.list[0] && variantForm[1]?.list[0]){
-        variantForm[0].list.map((value)=>{
-          if(value?.value){
-            variantForm[1].list.map((value1)=>{
-              if(value1?.value){
-                var dbProductItem = productData?.data.productItems?.find((prdItem)=>{return (prdItem?.variants[0].key+"-"+prdItem?.variants[0].value+"||"+prdItem?.variants[1].key+"-"+prdItem?.variants[1].value) == (`${variantForm[0].name}-${value.value}||${variantForm[1].name}-${value1.value}`)});
-                var newData = {
-                  key: count,
-                  label: `${variantForm[0].name}-${value.value}||${variantForm[1].name}-${value1.value}`,
-                  price: dbProductItem ? dbProductItem.price : '0',
-                  image: dbProductItem ? dbProductItem.image : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg',
-                  stock: dbProductItem ? dbProductItem.stock : '0',
-                };
-                newDts = [...newDts, newData];
-                count = count + 1;
-              }
-            });
+      if (variantForm.length === 2 && variantForm[0]?.list && variantForm[1]?.list) {
+        for (let i = 0; i < variantForm[0].list.length; i++) {
+          const value = variantForm[0].list[i];
+          const value1 = variantForm[1].list[i];
+          if (value?.value && value1?.value) {
+            var dbProductItem = productData?.data.productItems?.find((prdItem) => 
+              `${prdItem?.variants[0].key}-${prdItem?.variants[0].value}||${prdItem?.variants[1].key}-${prdItem?.variants[1].value}` === 
+              `${variantForm[0].name}-${value.value}||${variantForm[1].name}-${value1.value}`
+            );
+            var newData = {
+              key: count,
+              label: `${variantForm[0].name}-${value.value}||${variantForm[1].name}-${value1.value}`,
+              price: dbProductItem ? dbProductItem.price : '0',
+              image: dbProductItem ? dbProductItem.image : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg',
+              stock: dbProductItem ? dbProductItem.stock : '0',
+            };
+            newDts = [...newDts, newData];
+            count += 1;
           }
-        });
+        }
       }
-      
     }
     setDataSource(newDts);
   }, [variantForm]);
