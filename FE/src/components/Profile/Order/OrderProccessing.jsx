@@ -16,7 +16,7 @@ const OrderProcessing = ({ order }) => {
         return 2;
       case ORDER_STATUS.DELIVERED:
         return 3;
-      case ORDER_STATUS.COMPLETED:
+      case ORDER_STATUS.DONE:
         return 4;
       default:
         return 0;

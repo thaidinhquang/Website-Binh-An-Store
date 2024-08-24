@@ -9,7 +9,15 @@ const TableDataDetail = ({ order }) => {
   const dataSource = order?.items?.length
     ? order.items.map((item) => ({
         key: item.productId,
-        name: item.name,
+        name: (
+          <div>
+            <span className="font-bold">{item.name}</span>
+            <br />
+            <span className="text-xs text-gray-500">
+              {item.variants?.map((variant) => variant.value).join(", ")}
+            </span>
+          </div>
+        ),
         image: (
           <img
             src={item.image}
@@ -40,7 +48,6 @@ const TableDataDetail = ({ order }) => {
       title: "Tên sản phẩm",
       dataIndex: "name",
       key: "name",
-      className: "font-bold",
     },
     {
       title: "Hình ảnh",

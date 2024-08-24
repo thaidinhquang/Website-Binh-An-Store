@@ -5,8 +5,22 @@ const TableDataDetail = ({ order }) => {
     order?.items && order?.items?.length
       ? order?.items?.map((item) => ({
           key: item._id,
-          name: item.name,
-          image: <img src={item.image} alt={item.name} className="w-16 h-16" />,
+          name: (
+            <div>
+              <span className="font-bold">{item.name}</span>
+              <br />
+              <span className="text-xs text-gray-500">
+                {item.variants?.map((variant) => variant.value).join(", ")}
+              </span>
+            </div>
+          ),
+          image: (
+            <img
+              src={item.image}
+              alt={item.name}
+              className="w-16 h-16 object-cover rounded-lg"
+            />
+          ),
           quantity: item.quantity,
           price: item.price,
           subTotal: item.quantity * item.price,

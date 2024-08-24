@@ -9,16 +9,21 @@ import CommonUtils from "../../../common/CommonUtils/CommonUtils";
 import { Button } from "antd";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileExcel } from '@fortawesome/free-solid-svg-icons';
+import TableProduct from "./TableProduct";
 
 const ProductList = () => {
+
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const search = new URLSearchParams(useLocation().search);
-  const page = search.get('page') || 1;
+  // const page = search.get('page') || 1;
   const sort = search.get('sort') || '';
   const name = search.get('name') || '';
   const active = search.get('active') || '';
   const form = useForm();
   const useSearch = useHookSearch();
-  const { data, isLoading, refetch } = useTanstackQuery('products', { active, page, sort, name })
+  const { data, isLoading, refetch } = useTanstackQuery('products', { active,  page: page,
+    limit: limit, sort, name })
   console.log(data)
   const { mutate } = useTanstackMutation({
     path: `products`,
@@ -114,73 +119,14 @@ const ProductList = () => {
           Tìm kiếm
         </button>
       </form>
-      <div className="relative shadow-md sm:rounded-lg">
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr>
-              <td scope="col" className="px-6 py-3">Mã ID</td>
-              <td scope="col" className="px-6 py-3">Ảnh</td>
-              <td scope="col" className="px-6 py-3" >Tên</td>
-              <td scope="col" className="px-6 py-3">Giá</td>
-              <td scope="col" className="px-6 py-3">Số Lượng</td>
-              <td scope="col" className="px-6 py-3">action</td>
-              <td scope="col" className="px-6 py-3">active</td>
-            </tr>
-          </thead>
-          <tbody>
-            {data?.docs?.length > 0 ? data.docs.map((product, index) => (
-              <tr key={product._id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <th className="px-6 py-4">{product._id}</th>
-                <th className="px-6 py-4">
-                  <img src={product.image} width={80} className=" rounded-lg" alt="" />
-                </th>
-                <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  <p className="inline-block">{product.name}</p> <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${getStatus(product.createdAt) === 0 ? 'text-white bg-green-500' : 'text-transparent bg-transparent'}`}>
-                  {getStatus(product.createdAt) === 0 ? "New" : ""}
-                </span>
-                  {isUserEditing(product._id)}
-                </th>
-         
-                <th className="px-6 py-4">
-                {product.priceOld ? (
-                  <div className="flex items-center space-x-2">
-                    <span className="text-gray-500 line-through">{formatPrice(product.priceOld)}</span>
-                    <span className="text-red-600 font-semibold">{formatPrice(product.price)}</span>
-                  </div>
-                ) : (
-                  <span className="text-red-600 font-semibold">{formatPrice(product.price)}</span>
-                )}
-              </th>
-              
-                <th className="px-6 py-4">{product.countInStock}</th>
-                <th className="px-6 py-4">
-                  <div className="dropdown dropdown-hover dropdown-bottom dropdown-end">
-                    <div tabIndex={0} role="button" className="btn m-1"><svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
-                      <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
-                    </svg></div>
-                    <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                      <li> <Link to={`/admin/products/detail/${product._id}`}>Chi tiết</Link></li>
-                      <li> <Link to={`/admin/products/edit/${product._id}`}>Sửa</Link></li>
-                    </ul>
-                  </div>
-                </th>
-                <th>
-                  <label className="inline-flex items-center me-5 cursor-pointer">
-                    <input type="checkbox" value="" className="sr-only peer" checked={product.active} onChange={() => mutate(product)} />
-                    <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
-                  </label>
-                </th>
-              </tr>
-            )) :
-              <tr>
-                <td colSpan={6} className="text-center">Không có sản phẩm nào</td>
-              </tr>}
-          </tbody>
-        </table>
-        <Pageination data={data} />
-      </div>
+      <TableProduct
+      product={data}
+      setPage={setPage}
+      setLimit={setLimit}
+    />
     </>
   );
 };
 
 export default ProductList;
+        // <Pageination data={data} />

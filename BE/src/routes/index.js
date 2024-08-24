@@ -12,6 +12,7 @@ import routerBrand from "./brand.js";
 import routerBlog from "./blog.js";
 import routerWishlist from "./wishlist.js";
 import routerDetail from "./detail.js";
+import routerFeedback from "./feedback.js";
 
 const router = Router();
 
@@ -28,5 +29,6 @@ router.use("/details", routerDetail);
 router.use("/blogs", routerBlog);
 router.use("/brands", routerBrand);
 router.use("/wishlist", routerWishlist);
+router.use("/feedback", routerFeedback);
 
 export default router;
