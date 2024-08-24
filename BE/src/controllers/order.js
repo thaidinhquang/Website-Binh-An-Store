@@ -14,6 +14,7 @@ export const checkoutSession = async (req, res) => {
       currency: req.body.currency,
       product_data: {
         name: item.name,
+        name: item.name,
         images: [item.image ?? ""],
         metadata: {
           ...(item.variants && { variants: JSON.stringify(item.variants) }),

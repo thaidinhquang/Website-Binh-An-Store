@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 
 const CheckoutPage = () => {
     const { data: cartItems, isLoading } = useTanstackQuery('cart')
+    console.log(cartItems)
     const { data: cartTotal, isLoading: isLoadingTotal } = useTanstackQuery('cart/total')
     const [isLoadingItem, setIsLoadingItem] = useState(false)
     const [items, setItems] = useState([])
@@ -15,9 +16,9 @@ const CheckoutPage = () => {
         navigatePage: "/checkoutsuccess",
     });
 
-    const calculateTotalPrice = (item) => {
-        return item.productId.price * item.quantity;
-      };
+    const calculateTotalPrice = (items) => {
+        return items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+    };
 
     useEffect(() => {
         if (cartItems?.products?.length > 0) {
@@ -44,9 +45,11 @@ const CheckoutPage = () => {
         }
     }, [currentUser])
     const onSubmit = (formData) => {
+        const totalPrice = calculateTotalPrice(items);
         const data = {
             userId: currentUser._id,
             items: items,
+            totalPrice: totalPrice,
             customerInfo: {
                 name: formData.name,
                 phone: formData.phone,
@@ -205,7 +208,7 @@ const CheckoutPage = () => {
                                                         </div>
                                                         <div>
                                                             <span className="text-base text-gray-800 font-medium">
-                                                                {formatPrice(calculateTotalPrice(item))}
+                                                                {formatPrice(item?.productId.price)}
                                                             </span>
                                                         </div>
                                                     </div>

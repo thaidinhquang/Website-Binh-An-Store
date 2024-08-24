@@ -12,7 +12,7 @@ import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
 const { Option } = Select;
 
 const OrderAdmin = () => {
-  const [page, setPage] = useState(1);
+    const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [limit, setLimit] = useState(10);
   const [paymentMethod, setPaymentMethod] = useState("");
