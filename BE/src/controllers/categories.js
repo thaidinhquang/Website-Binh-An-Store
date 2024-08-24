@@ -32,7 +32,10 @@ export const updateCategory = async (req, res, next) => {
 
 export const getAllCategory = async (req, res, next) => {
   try {
-    const categories = await Category.find({});
+    const categories = await Category.find({}).populate({
+      path: "details",
+      select: "-_id -__v -createdAt -updatedAt",
+    });
     return res.status(200).json(categories);
   } catch (error) {
     next(error);

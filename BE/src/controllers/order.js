@@ -4,6 +4,7 @@ import { ORDER_STATUS } from "../constants/order.js";
 import { ROLES } from "../constants/Role.js";
 import sendEmail from "../utils/sendEmail.js";
 import User from "../models/User.js";
+import ProductItem from "../models/ProductItem.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -53,13 +54,36 @@ export const checkoutSession = async (req, res) => {
 
 // @POST CREATE ORDER BY CASH
 export const createOrder = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
     const order = new Order({
       ...req.body,
       userId: req.user?._id?.toString(),
     });
+    await order.save({ session });
 
-    await order.save();
+    // Loop through the products in the order and decrease the stock
+    for (const item of req.body?.items) {
+      const productItem = await ProductItem.findById(item.productId).session(
+        session
+      );
+
+      if (!productItem) {
+        throw new Error("Product not found");
+      }
+
+      if (productItem.stock < item.quantity) {
+        throw new Error("Not enough stock");
+      }
+
+      productItem.stock -= item.quantity;
+      await productItem.save({ session });
+    }
+
+    await session.commitTransaction();
+    session.endSession();
 
     return res.status(200).json({
       message: "Created a new order.",
@@ -67,6 +91,8 @@ export const createOrder = async (req, res) => {
       metadata: null,
     });
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     return console.log("Something went wrong...", error);
   }
 };
@@ -123,6 +149,9 @@ export const createOrder = async (req, res) => {
 // };
 
 export const createStripeOrder = async (session) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
     const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
 
@@ -165,6 +194,28 @@ export const createStripeOrder = async (session) => {
     });
 
     await order.save();
+
+    // Loop through the products in the order and decrease the stock
+    for (const item of dataItems) {
+      const productItem = await ProductItem.findById(item.productId).session(
+        session
+      );
+
+      if (!productItem) {
+        throw new Error("Product not found");
+      }
+
+      if (productItem.stock < item.quantity) {
+        throw new Error("Not enough stock");
+      }
+
+      productItem.stock -= item.quantity;
+      await productItem.save({ session });
+    }
+
+    await session.commitTransaction();
+    session.endSession();
+
     console.log("Order saved successfully");
 
     // Sending email after saving the order
@@ -207,8 +258,17 @@ export const createStripeOrder = async (session) => {
     } else {
       console.error("Failed to send email");
     }
+
+    return res
+      .status(200)
+      .json({ message: "Order saved successfully", success: true });
   } catch (error) {
-    console.error("Error processing checkout.session.completed event:", error);
+    await session.abortTransaction();
+    session.endSession();
+    return console.error(
+      "Error processing checkout.session.completed event:",
+      error
+    );
   }
 };
 
@@ -280,7 +340,6 @@ export const getAllOrdersByUser = async (req, res) => {
   try {
     const orders = await Order.paginate(filter, {
       ...options,
-     
     });
 
     return res.status(200).json({
@@ -301,8 +360,7 @@ export const getAllOrdersByUser = async (req, res) => {
 // @GET ORDER DETAIL
 export const getOrderDetails = async (req, res) => {
   try {
-    const order = await Order.findById(req.params.orderId)
-      .lean();
+    const order = await Order.findById(req.params.orderId).lean();
 
     if (!order) {
       throw new Error(`Not found any order with id: ${req.params.orderId} `);
@@ -449,8 +507,6 @@ export const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.paginate(filter, {
       ...options,
-    
-    
     });
 
     return res.status(200).json({

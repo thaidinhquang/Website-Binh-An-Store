@@ -35,7 +35,6 @@ const productItemSchema = new mongoose.Schema(
     },
   },
   {
-    _id: false,
     versionKey: false,
     timestamps: false,
   }
