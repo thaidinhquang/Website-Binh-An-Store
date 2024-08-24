@@ -81,7 +81,7 @@ const ProductView = ({ className }) => {
 
   useEffect(() => {
     setVariant(() => product?.productItems[0]);
-    setSelectedImage(product?.productItems[0]?.image); // Set initial selected image
+    setSelectedImage(product?.image|| product?.productItems[0]?.image);  // Set initial selected image
   }, [product]);
 
   const handleSelectVariant = (variant) => {

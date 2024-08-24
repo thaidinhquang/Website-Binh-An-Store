@@ -15,7 +15,12 @@ export const checkoutSession = async (req, res) => {
       currency: req.body.currency,
       product_data: {
         name: item.name,
+        name: item.name,
         images: [item.image ?? ""],
+        metadata: {
+          ...(item.variants && { variants: JSON.stringify(item.variants) }),
+          productId: item.productId,
+        },
       },
       unit_amount: item.price,
       tax_behavior: "exclusive",
@@ -160,6 +165,7 @@ export const createStripeOrder = async (session) => {
           image: product.images[0] ?? "",
           name: product.name,
           productId: product.metadata.productId,
+          variants: product.metadata.variants ? JSON.parse(product.metadata.variants) : [],
         });
       }
     }
@@ -170,6 +176,7 @@ export const createStripeOrder = async (session) => {
       quantity: item.quantity,
       price: item.amount_total,
       image: item.image,
+      variants: item.variants,
     }));
 
     const order = new Order({

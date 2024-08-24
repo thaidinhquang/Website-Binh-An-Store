@@ -10,7 +10,7 @@ const OrderItemSchema = new mongoose.Schema(
   {
     productId: {
       type: String,
-      ref: "Product",
+      ref: "ProductItem",
     },
     name: {
       type: String,
@@ -28,6 +28,18 @@ const OrderItemSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    variants: [
+      {
+        key: {
+          type: String,
+          required: true,
+        },
+        value: {
+          type: String,
+          required: true,
+        },
+      }
+    ],
   },
   {
     _id: false,

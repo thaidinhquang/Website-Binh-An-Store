@@ -39,6 +39,8 @@ import BlogForm from "../components/Admin/Blog/BlogForm";
 import BlogEdit from "../components/Admin/Blog/BlogEdit";
 import ReviewList from "../components/Admin/Review/ReviewForm";
 import DetailList from "../components/Admin/Detail/DetailList";
+import ContactPage from "../components/Contact/ContactPage";
+import FeedbackList from "../components/Admin/Feedback/FeedbackList";
 
 const Router = () => {
   return (
@@ -73,6 +75,12 @@ const Router = () => {
               <LoginRoute>
                 <Wishlist />
               </LoginRoute>
+            }
+          />
+          <Route
+            path="contact"
+            element={
+                <ContactPage />
             }
           />
           <Route
@@ -139,6 +147,9 @@ const Router = () => {
           <Route path="orders">
             <Route index element={<OrderAdmin />} />
             <Route path=":id" element={<DetailOrder />} />
+          </Route>
+          <Route path="feedback">
+            <Route index element={<FeedbackList />} />
           </Route>
           <Route path="review">
             <Route index element={<ReviewList />} />

@@ -13,13 +13,24 @@ const reviewSchema = new mongoose.Schema(
       required: true,
       ref: "User",
     },
-    updateCount: { type: Number, default: 0 },
+    updateCount: {
+      type: Number,
+      default: 0,
+    },
     active: {
       type: Boolean,
       default: true,
     },
-    comment: { type: String, required: true },
-    rating: { type: Number, required: true, min: 1, max: 5 },
+    comment: {
+      type: String,
+      required: true,
+    },
+    rating: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 5,
+    },
   },
   { timestamps: true, versionKey: false }
 );
