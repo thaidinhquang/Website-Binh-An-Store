@@ -29,7 +29,8 @@ const CheckoutPage = () => {
                     image: item?.productId?.image,
                     price: item?.productId?.price,
                     quantity: item.quantity,
-                    variants: item?.productId?.variants  
+                    variants: item?.productId?.variants,
+                    productId: item?.productId?._id
                  
             })
             })

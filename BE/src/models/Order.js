@@ -10,7 +10,7 @@ const OrderItemSchema = new mongoose.Schema(
   {
     productId: {
       type: String,
-      ref: "Product",
+      ref: "ProductItem",
     },
     name: {
       type: String,
