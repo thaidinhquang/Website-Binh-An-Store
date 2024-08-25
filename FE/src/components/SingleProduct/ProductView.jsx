@@ -6,6 +6,7 @@ import {
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../Auth/core/Auth";
 import ThinLove from "../icons/ThinLove";
+import { toast } from 'react-toastify';
 
 const ProductView = ({ className }) => {
   const { currentUser } = useContext(AuthContext);
@@ -54,11 +55,10 @@ const ProductView = ({ className }) => {
 
   const handleAddToCart = (event) => {
     event.preventDefault();
-    const selectedVariant = variants?.variants.map((variant) => ({
-      key: variant.key,
-      value: variant.value,
-    }));
-
+    if (variants?.stock <= 0) {
+      toast.error("Không thể thêm sản phẩm vì sản phẩm đã hết hàng.");
+      return;
+    }
     mutate({
       productId: variants?._id,
       quantity,
@@ -81,7 +81,7 @@ const ProductView = ({ className }) => {
 
   useEffect(() => {
     setVariant(() => product?.productItems[0]);
-    setSelectedImage(product?.image|| product?.productItems[0]?.image);  // Set initial selected image
+    setSelectedImage(product?.image || product?.productItems[0]?.image);  // Set initial selected image
   }, [product]);
 
   const handleSelectVariant = (variant) => {
@@ -137,6 +137,9 @@ const ProductView = ({ className }) => {
             </div>
             <div className="my-2">
               <span>Số Lượng: {variants?.stock}</span>
+              {variants?.stock === 0 && (
+                <span className="text-red-500 ml-2">(Hết hàng)</span>
+              )}
             </div>
 
             <div className="flex gap-2 mb-4">
@@ -193,7 +196,7 @@ const ProductView = ({ className }) => {
               </div>
 
               <div className="flex-1 h-full">
-                <button type="submit" className="black-btn text-sm font-semibold w-full h-full">
+                <button type="submit" className={`black-btn text-sm font-semibold w-full h-full ${variants?.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={variants?.stock === 0}>
                   Add To Cart
                 </button>
               </div>

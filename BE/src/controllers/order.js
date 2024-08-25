@@ -63,10 +63,11 @@ export const createOrder = async (req, res) => {
       ...req.body,
       userId: req.user?._id?.toString(),
     });
+
     await order.save({ session });
 
     // Loop through the products in the order and decrease the stock
-    for (const item of req.body?.items) {
+    for (const item of req.body.items) {
       const productItem = await ProductItem.findById(item.productId).session(
         session
       );
@@ -166,7 +167,9 @@ export const createStripeOrder = async (session) => {
           image: product.images[0] ?? "",
           name: product.name,
           productId: product.metadata.productId,
-          variants: product.metadata.variants ? JSON.parse(product.metadata.variants) : [],
+          variants: product.metadata.variants
+            ? JSON.parse(product.metadata.variants)
+            : [],
         });
       }
     }
