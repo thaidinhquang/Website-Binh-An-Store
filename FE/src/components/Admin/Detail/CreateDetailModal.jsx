@@ -22,6 +22,9 @@ const CreateDetailModal = ({open, onclose}) => {
       },
       {
         onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: [QUERY_KEY.DETAILS],
+          });
           toast.success("Thêm thông số thành công");
         },
       }

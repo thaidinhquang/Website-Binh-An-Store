@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { Button, Card, Form, Input, Select, Space, Table, Typography } from "antd";
 import { useBrands } from "../../../common/hooks/brand/useBrands";
 import { useCategories } from "../../../common/hooks/category/useCategories";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useGetDetailProduct } from "../../../common/hooks/product/useGetDetailProduct";
 import { useUpdateProduct } from "../../../common/hooks/product/useUpdateProduct";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 const ProductForm = () => {
   const { id } = useParams();
   const [form] = Form.useForm();
+  const navigate = useNavigate();
   const variantForm = Form.useWatch('variants', { form, preserve: true });
   const categoryForm = Form.useWatch('category', { form, preserve: true });
 
@@ -325,6 +326,7 @@ const categoryOptions = Array.isArray(categories) ? categories.map((category) =>
               queryKey: [QUERY_KEY.DETAIL, id],
             });
             toast.success("Cập nhật sản phẩm thành công");
+            navigate("/admin/products")
           },
         }
       );
@@ -333,7 +335,11 @@ const categoryOptions = Array.isArray(categories) ? categories.map((category) =>
         dataSubmit,
         {
           onSuccess: () => {
+            queryClient.invalidateQueries({
+              queryKey: [QUERY_KEY.DETAILS],
+            });
             toast.success("Thêm mới sản phẩm thành công");
+            navigate("/admin/products")
           },
         }
       );
@@ -635,8 +641,9 @@ const EditableCell = ({
         rules={[
           {
             required: true,
-            message: `${title} is required.`,
+            message: `${title} không được để trống.`,
           },
+        
         ]}
       >
         {dataIndex == "image" ? (
