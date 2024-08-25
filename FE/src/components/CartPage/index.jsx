@@ -7,8 +7,19 @@ import BreadcrumbCom from "../UI/BreadcrumbCom";
 import PageTitle from "../UI/PageTitle";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../Auth/core/Auth";
+import { useCart } from "../../common/contexts/CartContext";
+import { Checkbox } from "antd";
 
 const CartPage = ({ cart = true, className }) => {
+  const [products, setProducts] = useState([]);
+  const { state, dispatch } = useCart();
+
+  const handleAddItem = (item) => {
+    dispatch({ type: "ADD_ITEMS", payload: item });
+  };
+  const handleRemoveItem = (id) => {
+    dispatch({ type: "REMOVE_ITEMS", payload: id });
+  };
   const [isLoadingItem, setIsLoadingItem] = useState(false);
   const [items, setItems] = useState([]);
   const { data, isLoading } = useTanstackQuery("cart");
@@ -17,6 +28,25 @@ const CartPage = ({ cart = true, className }) => {
     isLoading: isLoadingCartTotal,
     refetch,
   } = useTanstackQuery("cart/total");
+  useEffect(() => {
+    dispatch({ type: "SET_ITEMS_CART", payload: data?.products });
+  }, [data, dispatch]);
+
+  const onchangeItemsChecked = (e, productVariation) => {
+    const updatedItems = items.map(item => {
+      if (item._id === productVariation._id) {
+        return { ...item, checked: e.target.checked };
+      }
+      return item;
+    });
+    setItems(updatedItems);
+    if (!e.target.checked) {
+      handleRemoveItem(productVariation._id);
+    } else if (e.target.checked) {
+      handleAddItem(productVariation);
+    }
+  };
+
   const { mutate: increaseProduct } = useTanstackMutation({
     path: `cart/increase-quantity`,
     action: "CREATE",
@@ -43,41 +73,40 @@ const CartPage = ({ cart = true, className }) => {
     return item?.productId?.price * item?.quantity;
   };
 
+  const onHandleRemove = (productId) => {
+    removeProduct({ productId });
+    handleRemoveItem(productId); // Remove from global state
+    setProducts((prevProducts) => prevProducts.filter(item => item.productId._id !== productId));
+  };
 
-  const handleUpdateProduct = (product, action) => {
+  const handleClearCart = () => {
+    clearCart();
+    dispatch({ type: "REMOVE_ALL" });
+    setItems([]);
+  };
+
+
+  const updateProduct = (product, action) => {
     const productId = product.productId._id;
-    const cartProduct = data.products.find((item) => item.productId._id === productId);
-    const quantity = cartProduct.quantity;
-    const stock = product.productId.stock;
-
+    const quantity = data.products.find(
+      (item) => item.productId._id === productId
+    ).quantity;
     if (action === "increase") {
-      if (quantity < stock) {
-        cartProduct.quantity++;
-      } else {
-        alert("Không thể thêm sản phẩm vì số lượng vượt quá tồn kho.");
-      }
+      increaseProduct({ productId });
+      data.products.find((item) => item.productId._id === productId).quantity++;
     }
     if (action === "decrease") {
       if (quantity > 1) {
-        cartProduct.quantity--;
+        decreaseProduct({ productId });
+        data.products.find((item) => item.productId._id === productId)
+          .quantity--;
       }
     }
     if (action === "remove") {
-      data.products = data.products.filter((item) => item.productId._id !== productId);
-    }
-    setItems([...data.products]);
-  };
-
-  const handleUpdateProductEnd = (product, action) => {
-    const productId = product.productId._id;
-    if (action === "increase") {
-      increaseProduct({ productId });
-    }
-    if (action === "decrease") {
-      decreaseProduct({ productId });
-    }
-    if (action === "remove") {
       removeProduct({ productId });
+      data.products = data.products.filter(
+        (item) => item.productId._id !== productId
+      );
     }
     setTimeout(() => {
       refetch();
@@ -88,7 +117,7 @@ const CartPage = ({ cart = true, className }) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
-    }).format(price);
+    }).format(price || 0);
   };
 
   const onSubmit = async () => {
@@ -99,6 +128,7 @@ const CartPage = ({ cart = true, className }) => {
     };
     order(data);
   };
+
   useEffect(() => {
     if (response) {
       window.location.replace(response.sessionUrl);
@@ -109,24 +139,24 @@ const CartPage = ({ cart = true, className }) => {
     if (data?.products?.length > 0) {
       setIsLoadingItem(true);
       let listItem = [];
-      data.products.forEach((item) => {
+      state?.items?.forEach((item) => {
         listItem.push({
           name: item?.name,
           image: item?.productId?.image,
           price: item?.productId?.price,
           quantity: item.quantity,
-          variants: item?.productId?.variants ,
-          productId: item.productId._id
+          variants: item?.productId?.variants,
+          productId: item?.productId?._id,
+          _id: item?._id,
+          checked: false,
         });
-      });      
+      });
       setItems(listItem);
       setIsLoadingItem(false);
     }
-  }, [data]);
-  // console.log(items);
-  console.log(data);
-  
-  
+  }, [data, state.items]);
+
+  console.log(state?.items);
   if (isLoading) return <p>Loading...</p>;
 
   return (
@@ -162,9 +192,7 @@ const CartPage = ({ cart = true, className }) => {
                     <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                       <thead>
                         <tr>
-                          <th className="py-4 whitespace-nowrap text-center">
-                            ID
-                          </th>
+                          <th className="py-4 whitespace-nowrap text-center"></th>
                           <td className="py-4 pl-10 block whitespace-nowrap min-w-[300px]">
                             Product
                           </td>
@@ -181,7 +209,7 @@ const CartPage = ({ cart = true, className }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {!data?.products.length > 0 ? (
+                        {!data?.products.length > 0 && state.items ? (
                           <tr>
                             <td colSpan="6" className="text-center py-4">
                               Không có sản phẩm !
@@ -189,6 +217,10 @@ const CartPage = ({ cart = true, className }) => {
                           </tr>
                         ) : (
                           data.products.map((item, index) => {
+                            const demo = state?.items?.some(
+                              (v) => v._id === item._id
+                            );
+                            console.log(demo);
                             return (
                               <tr
                                 key={index}
@@ -196,9 +228,12 @@ const CartPage = ({ cart = true, className }) => {
                               >
                                 <td className="text-center py-4 px-2">
                                   <div className="flex space-x-1 items-center justify-center">
-                                    <span className="text-[15px] font-normal">
-                                      {index + 1}
-                                    </span>
+                                    <Checkbox
+                                      onChange={(e) =>
+                                        onchangeItemsChecked(e, item)
+                                      }
+                                      checked={demo}
+                                    />
                                   </div>
                                 </td>
 
@@ -206,7 +241,9 @@ const CartPage = ({ cart = true, className }) => {
                                   <div className="flex space-x-6 items-center">
                                     <div className="w-[80px] h-[80px] overflow-hidden flex justify-center items-center border border-[#EDEDED]">
                                       <img
-                                        src={item?.image || item?.productId?.image}
+                                        src={
+                                          item?.image || item?.productId?.image
+                                        }
                                         alt="product"
                                         className="w-full h-full object-contain"
                                       />
@@ -216,7 +253,9 @@ const CartPage = ({ cart = true, className }) => {
                                         {item.name}
                                       </p>
                                       <div>
-                                        {item?.productId?.variants?.map(variant => variant.value).join(", ")}
+                                        {item?.productId?.variants
+                                          ?.map((variant) => variant.value)
+                                          .join(", ")}
                                       </div>
                                     </div>
                                   </div>
@@ -234,8 +273,9 @@ const CartPage = ({ cart = true, className }) => {
                                   <div className="flex justify-center items-center space-x-2">
                                     <button
                                       disabled={item.quantity === 1}
-                                      onMouseDown={() => handleUpdateProduct(item, "decrease")}
-                                      onMouseUp={() => handleUpdateProductEnd(item, "decrease")}
+                                      onClick={() =>
+                                        updateProduct(item, "decrease")
+                                      }
                                       className="px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded"
                                     >
                                       -
@@ -247,10 +287,13 @@ const CartPage = ({ cart = true, className }) => {
                                       className="w-12 text-center border border-gray-300 rounded"
                                     />
                                     <button
-                                      onMouseDown={() => handleUpdateProduct(item, "increase")}
-                                      onMouseUp={() => handleUpdateProductEnd(item, "increase")}
+                                    onClick={() =>
+                                      updateProduct(item, "increase")
+                                    }
                                       className="px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded"
-                                      disabled={item.quantity >= item.productId.stock}
+                                      disabled={
+                                        item?.quantity >= item.productId?.stock
+                                      }
                                     >
                                       +
                                     </button>
@@ -269,7 +312,7 @@ const CartPage = ({ cart = true, className }) => {
                                   <div className="flex space-x-1 items-center p-5 justify-center">
                                     <span
                                       onClick={() =>
-                                        handleUpdateProduct(item, "remove")
+                                        onHandleRemove(item.productId._id)
                                       }
                                       className="cursor-pointer hover:text-red-500"
                                     >
@@ -292,46 +335,58 @@ const CartPage = ({ cart = true, className }) => {
                         )}
                       </tbody>
                     </table>
+                     
                   </div>
                 </div>
+              
               </div>
               {/* ke thuc Chinh sua */}
-              <div className="w-full mt-[30px] flex sm:justify-end">
-                <div className="sm:w-[370px] w-full border border-[#EDEDED] px-[30px] py-[26px]">
-                  <div className="total mb-6">
-                    <div className=" flex justify-between">
-                      <p className="text-[18px] font-medium text-qblack">
-                        Total
-                      </p>
-                      <p className="text-[18px] font-medium text-qred">
-                        {formatPrice(!isLoadingCartTotal && cartTotal)}
-                      </p>
-                    </div>
-                  </div>
-                  {data.products.length > 0 ? (
-                    <>
-                      <button
-                        onClick={() => onSubmit()}
-                        disabled={isLoadingItem}
-                        className="w-full h-[50px] black-btn flex justify-center items-center text-sm font-semibold"
-                      >
-                        Thanh toán online
-                      </button>
-                      <Link to="/checkout">
-                        <div className="mt-4 w-full h-[50px] black-btn flex justify-center items-center">
-                          <span className="text-sm font-semibold">
-                            Trả tiền khi nhận hàng
-                          </span>
-                        </div>
-                      </Link>
-                    </>
-                  ) : (
-                    <div className="w-full h-[50px] black-btn flex justify-center items-center text-sm font-semibold opacity-50 cursor-not-allowed">
-                      Không có sản phẩm để thanh toán
-                    </div>
-                  )}
-                </div>
+              <div className="w-full mt-[30px] flex justify-between">
+              <div className="flex justify-start">
+              <button
+              onClick={handleClearCart}
+              className="h-[50px] px-4 black-btn flex justify-center items-center text-sm font-semibold hover:bg-gray-700"
+            >
+              Xóa Giỏ hàng
+            </button>
               </div>
+              <div className="sm:w-[370px] w-full border border-[#EDEDED] px-[30px] py-[26px]">
+                <div className="total mb-6">
+                  <div className="flex justify-between">
+                    <p className="text-[18px] font-medium text-qblack">Total</p>
+                    <p className="text-[18px] font-medium text-qred">
+                      {formatPrice(
+                        state?.items?.reduce(
+                          (total, item) =>
+                            total + item?.productId?.price * item?.quantity,
+                          0
+                        )
+                      )}
+                    </p>
+                  </div>
+                </div>
+                {data.products.length > 0 ? (
+                  <>
+                    <button
+                      onClick={() => onSubmit()}
+                      disabled={isLoadingItem}
+                      className="w-full h-[50px] black-btn flex justify-center items-center text-sm font-semibold"
+                    >
+                      Thanh toán online
+                    </button>
+                    <Link to="/checkout">
+                      <div className="mt-4 w-full h-[50px] black-btn flex justify-center items-center">
+                        <span className="text-sm font-semibold">Trả tiền khi nhận hàng</span>
+                      </div>
+                    </Link>
+                  </>
+                ) : (
+                  <div className="w-full h-[50px] black-btn flex justify-center items-center text-sm font-semibold opacity-50 cursor-not-allowed">
+                    Không có sản phẩm để thanh toán
+                  </div>
+                )}
+              </div>
+            </div>
             </div>
           </div>
         </div>

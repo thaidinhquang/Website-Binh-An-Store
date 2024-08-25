@@ -61,9 +61,6 @@ const CategoryTable = ({ data, isUserEditing, mutate }) => {
           <Link to={`/admin/categories/edit/${record._id}`}>
             <Button icon={<EditOutlined />} />
           </Link>
-          <Button type="link" onClick={() => mutate(record._id)}>
-            <Button icon={<DeleteOutlined />} danger />
-          </Button>
         </div>
       ),
     },
