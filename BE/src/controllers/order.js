@@ -87,7 +87,7 @@ export const createOrder = async (req, res) => {
     session.endSession();
 
     return res.status(200).json({
-      message: "Created a new order.",
+      message: "Đặt hàng thành công",
       success: true,
       metadata: null,
     });

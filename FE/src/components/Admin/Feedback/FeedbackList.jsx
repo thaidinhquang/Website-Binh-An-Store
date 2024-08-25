@@ -116,7 +116,7 @@ const FeedbackList = () => {
           <div className="flex flex-wrap -mx-3 mb-4">
             <div className="w-full md:w-3/5 px-3 mb-4 md:mb-0">
               <Input
-                placeholder="Tìm kiếm theo tên hoặc ID danh mục..."
+                placeholder="Tìm kiếm theo tên..."
                 {...form.register("query")}
               />
             </div>

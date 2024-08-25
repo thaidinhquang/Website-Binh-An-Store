@@ -5,15 +5,21 @@ import { useState } from "react";
 import CreateDetailModal from "./CreateDetailModal";
 import { useDeleteDetail } from "../../../common/hooks/detail/useDeleteDetail";
 import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEY } from "../../../constants/queryKey";
 
 const DetailList = () => {
   const { data: details, refetch } = useGetAllDetails();
   const [open, setOpen] = useState(false);
   const deleteDetail = useDeleteDetail();
+  const queryClient = useQueryClient();
 
   const handleDelete = (id) => {
     deleteDetail.mutate({id},{
       onSuccess: (data) => {
+        queryClient.invalidateQueries({
+          queryKey:[QUERY_KEY.DETAILS]
+        })
         toast.success("Xóa thành công");
       }
     });

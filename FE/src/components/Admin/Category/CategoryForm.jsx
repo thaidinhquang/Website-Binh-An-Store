@@ -81,7 +81,7 @@ const CategorytForm = () => {
                     <Form.Item
                         label="Tên Danh Mục"
                         name="name"
-                        rules={[{ required: true, message: 'Category name is required' }, { min: 6, message: 'Category name must be at least 6 characters' }]}
+                        rules={[{ required: true, message: 'Vui lòng nhập tên danh mục' }, { min: 6, message: 'Tên danh mục phải có ít nhất 6 ký tự' }]}
                     >
                         <Input placeholder="Nhập tên danh mục" />
                     </Form.Item>

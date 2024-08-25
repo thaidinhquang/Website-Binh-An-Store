@@ -58,7 +58,16 @@ const AuthenticationModal = () => {
         const { data } = await getUserByToken();
         setCurrentUser(data)
         setAuth(data)
-        toast.success(`${status} successfully`)
+        // toast.success(`${status} successfully`)
+        if(status == 'login'){
+          toast.success('Đăng nhập thành công')
+        }
+        else if(status == 'register'){
+          toast.success('Đăng kí thành công')
+        }
+        else if(status == 'recover password'){
+          toast.success('Khôi phục mật khẩu thành công')
+        }
       }
     }
     catch (error) {
@@ -168,7 +177,7 @@ const AuthenticationModal = () => {
                     <svg className='absolute top-1/2 left-2 transform -translate-y-1/2 w-[16px]' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z" /></svg>
                     <input
                       type="password"
-                      {...form.register('password', { required: 'Mật khẩu không được để trống!' })}
+                      {...form.register('password', { required: 'Mật khẩu không được để trống!',  pattern: { value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/, message: 'Mật khẩu phải chứa ít nhất 8 ký tự, bao gồm ít nhất một chữ cái viết thường, một chữ cái viết hoa, một số, và một ký tự đặc biệt (!@#$%^&*)' } })}
                       placeholder="••••••••"
                       className="pl-8 bg-white border-b-2 border-gray-300 text-gray-900 text-sm focus:outline-none focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                       autoComplete="current-password"
@@ -189,7 +198,7 @@ const AuthenticationModal = () => {
                         <svg className='absolute top-1/2 left-2 transform -translate-y-1/2 w-[16px]' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M144 144v48H304V144c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192V144C80 64.5 144.5 0 224 0s144 64.5 144 144v48h16c35.3 0 64 28.7 64 64V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V256c0-35.3 28.7-64 64-64H80z" /></svg>
                         <input
                           type="password"
-                          {...form.register('cPassword', { required: 'Mật khẩu không được để trống!' })}
+                          {...form.register('cPassword', { required: 'Mật khẩu không được để trống!',  pattern: { value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/, message: 'Mật khẩu phải chứa ít nhất 8 ký tự, bao gồm ít nhất một chữ cái viết thường, một chữ cái viết hoa, một số, và một ký tự đặc biệt (!@#$%^&*)' } })}
                           placeholder="••••••••"
                           className="pl-8 bg-white border-b-2 border-gray-300 text-gray-900 text-sm focus:outline-none focus:ring-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                           autoComplete="current-password"

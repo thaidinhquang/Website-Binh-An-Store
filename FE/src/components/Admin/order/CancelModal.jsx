@@ -23,10 +23,10 @@ const CancelModal = ({ order }) => {
       {
         onSuccess: () => {
           setOpen(false);
-          toast.success("Cancel order successfully");
+          toast.success("Hủy đơn hàng thành công");
         },
         onError: () => {
-          toast.error("Cancel order failed");
+          toast.error("Hủy đơn hàng thất bại");
         },
       }
     );
