@@ -17,7 +17,7 @@ const ConfirmDeliveredPopup = ({ orderId }) => {
   const handleOk = () => {
     deliveredOrder.mutate(orderId, {
       onSuccess: () => {
-        toast.success("Delivered successfully");
+        toast.success("Đã giao hàng thành công");
         navigate(0);
         setOpen(false);
       },
@@ -34,7 +34,7 @@ const ConfirmDeliveredPopup = ({ orderId }) => {
 
   return (
     <Popconfirm
-      title="Confirm to delivery successfully?"
+      title="Xác nhận giao hàng thành công?"
       okText="Yes"
       okType="danger"
       open={open}

@@ -3,7 +3,7 @@ import { Table } from 'antd';
 const TopSellingProductsTable = ({ data, isLoading, formatPrice }) => {
   const columns = [
     {
-      title: 'Order',
+      title: 'Đơn hàng',
       dataIndex: 'order',
       key: 'order',
       render: (_, __, index) => index + 1,
@@ -31,7 +31,7 @@ const TopSellingProductsTable = ({ data, isLoading, formatPrice }) => {
       key: 'totalQuantity',
     },
     {
-      title: 'Total',
+      title: 'Tổng',
       dataIndex: 'total',
       key: 'total',
       render: (_, record) => formatPrice(record.productPrice * record.totalQuantity),

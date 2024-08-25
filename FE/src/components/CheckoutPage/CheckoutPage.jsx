@@ -89,7 +89,7 @@ const CheckoutPage = () => {
                                     <div className="sm:flex sm:space-x-5 items-center mb-6">
                                         <div className="sm:w-1/2 mb-5 sm:mb-0">
                                             <input
-                                                {...form.register("name", { required: 'Name is required' })}
+                                                {...form.register("name", { required: 'Vui lòng nhập tên' })}
                                                 placeholder="Tên*"
                                                 className="w-full py-2 px-4 bg-gray-50 border border-gray-300 rounded-md"
                                             />
@@ -97,7 +97,7 @@ const CheckoutPage = () => {
                                         </div>
                                         <div className="flex-1">
                                             <input
-                                                {...form.register("phone", { required: 'Phone is required' })}
+                                                {...form.register("phone", { required: 'Vui lòng nhập số điện thoại', pattern: {value: /^[0-9]+$/, message: 'Vui lòng nhập số'} })}
                                                 placeholder="Số điện thoại*"
                                                 className="w-full py-2 px-4 bg-gray-50 border border-gray-300 rounded-md"
                                             />
@@ -106,7 +106,7 @@ const CheckoutPage = () => {
                                     </div>
                                     <div className="mb-6">
                                         <input
-                                            {...form.register("email", { required: 'Email is required' })}
+                                            {...form.register("email", { required: 'Vui lòng nhập email', pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Email không đúng định dạng'} })}
                                             placeholder="Địa chỉ email*"
                                             className="w-full py-2 px-4 bg-gray-50 border border-gray-300 rounded-md"
                                         />
@@ -115,7 +115,7 @@ const CheckoutPage = () => {
                                     <div className="mb-6">
                                         <div className="w-full">
                                             <input
-                                                {...form.register("line1", { required: 'Address is required' })}
+                                                {...form.register("line1", { required: 'Vui lòng nhập địa chỉ' })}
                                                 placeholder="Địa chỉ 1*"
                                                 className="w-full py-2 px-4 bg-gray-50 border border-gray-300 rounded-md"
                                             />
@@ -134,7 +134,7 @@ const CheckoutPage = () => {
                                     <div className="sm:flex sm:space-x-5 items-center mb-6">
                                         <div className="sm:w-1/2 mb-5 sm:mb-0">
                                             <input
-                                                {...form.register("country", { required: 'Country is required' })}
+                                                {...form.register("country", { required: 'Vui lòng nhập quốc gia' })}
                                                 placeholder="Quốc gia*"
                                                 className="w-full py-2 px-4 bg-gray-50 border border-gray-300 rounded-md"
                                             />
@@ -142,7 +142,7 @@ const CheckoutPage = () => {
                                         </div>
                                         <div className="flex-1">
                                             <input
-                                                {...form.register("city", { required: 'City is required' })}
+                                                {...form.register("city", { required: 'Vui lòng nhập thành phố' })}
                                                 placeholder="Thành phố*"
                                                 className="w-full py-2 px-4 bg-gray-50 border border-gray-300 rounded-md"
                                             />
@@ -152,7 +152,7 @@ const CheckoutPage = () => {
                                     <div className="sm:flex sm:space-x-5 items-center mb-6">
                                         <div className="sm:w-1/2 mb-5 sm:mb-0">
                                             <input
-                                                {...form.register("state", { required: 'State is required' })}
+                                                {...form.register("state", { required: 'Vui lòng nhập phường/xã' })}
                                                 placeholder="Phường/Xã*"
                                                 className="w-full py-2 px-4 bg-gray-50 border border-gray-300 rounded-md"
                                             />
@@ -160,7 +160,7 @@ const CheckoutPage = () => {
                                         </div>
                                         <div className="flex-1">
                                             <input
-                                                {...form.register("postal_code", { required: 'Postal code is required' })}
+                                                {...form.register("postal_code", { required: 'Vui lòng nhập mã bưu điện',  pattern: {value: /^[0-9]+$/, message: 'Vui lòng nhập số'} })}
                                                 placeholder="Mã bưu điện*"
                                                 className="w-full py-2 px-4 bg-gray-50 border border-gray-300 rounded-md"
                                             />
@@ -221,7 +221,7 @@ const CheckoutPage = () => {
                                 <div className="mt-8">
                                     <div className="flex justify-between mb-5">
                                         <p className="text-sm font-medium text-gray-700 uppercase">
-                                            SUBTOTAL
+                                            Tổng phụ
                                         </p>
                                         <p className="text-base font-medium text-gray-800 uppercase">
                                         {formatPrice(cartTotal)}
@@ -248,7 +248,7 @@ const CheckoutPage = () => {
 
                                 <div className="mt-8">
                                     <div className="flex justify-between mb-5">
-                                        <p className="text-2xl font-medium text-gray-800">Total</p>
+                                        <p className="text-2xl font-medium text-gray-800">Tổng</p>
                                         <p className="text-2xl font-medium text-red-600">{formatPrice(cartTotal)}</p>
                                     </div>
                                 </div>

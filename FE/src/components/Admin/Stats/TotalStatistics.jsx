@@ -8,7 +8,7 @@ const TotalStatistics = ({ stats }) => {
       <Col span={7}>
         <Card bordered={false} className="shadow-lg cursor-pointer">
           <Statistic
-            title="Products"
+            title="Sản phẩm"
             value={stats?.totalProducts ?? 0}
             prefix={<FaLuggageCart />}
             className="font-bold text-lg"
@@ -18,7 +18,7 @@ const TotalStatistics = ({ stats }) => {
       <Col span={7}>
         <Card bordered={false} className="shadow-lg cursor-pointer">
           <Statistic
-            title="Orders"
+            title="Đơn hàng"
             value={stats?.totalOrders ?? 0}
             prefix={<LuReceipt />}
             className="font-bold text-lg"
@@ -28,7 +28,7 @@ const TotalStatistics = ({ stats }) => {
       <Col span={7}>
         <Card bordered={false} className="shadow-lg cursor-pointer">
           <Statistic
-            title="Users"
+            title="Tài khoản"
             value={stats?.totalUsers ?? 0}
             prefix={<FaUserEdit />}
             className="font-bold text-lg"
