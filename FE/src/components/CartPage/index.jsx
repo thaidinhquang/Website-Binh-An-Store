@@ -44,27 +44,40 @@ const CartPage = ({ cart = true, className }) => {
   };
 
 
-  const updateProduct = (product, action) => {
+  const handleUpdateProduct = (product, action) => {
     const productId = product.productId._id;
-    const quantity = data.products.find(
-      (item) => item.productId._id === productId
-    ).quantity;
+    const cartProduct = data.products.find((item) => item.productId._id === productId);
+    const quantity = cartProduct.quantity;
+    const stock = product.productId.stock;
+
     if (action === "increase") {
-      increaseProduct({ productId });
-      data.products.find((item) => item.productId._id === productId).quantity++;
+      if (quantity < stock) {
+        cartProduct.quantity++;
+      } else {
+        alert("Không thể thêm sản phẩm vì số lượng vượt quá tồn kho.");
+      }
     }
     if (action === "decrease") {
       if (quantity > 1) {
-        decreaseProduct({ productId });
-        data.products.find((item) => item.productId._id === productId)
-          .quantity--;
+        cartProduct.quantity--;
       }
     }
     if (action === "remove") {
+      data.products = data.products.filter((item) => item.productId._id !== productId);
+    }
+    setItems([...data.products]);
+  };
+
+  const handleUpdateProductEnd = (product, action) => {
+    const productId = product.productId._id;
+    if (action === "increase") {
+      increaseProduct({ productId });
+    }
+    if (action === "decrease") {
+      decreaseProduct({ productId });
+    }
+    if (action === "remove") {
       removeProduct({ productId });
-      data.products = data.products.filter(
-        (item) => item.productId._id !== productId
-      );
     }
     setTimeout(() => {
       refetch();
@@ -221,9 +234,8 @@ const CartPage = ({ cart = true, className }) => {
                                   <div className="flex justify-center items-center space-x-2">
                                     <button
                                       disabled={item.quantity === 1}
-                                      onClick={() =>
-                                        updateProduct(item, "decrease")
-                                      }
+                                      onMouseDown={() => handleUpdateProduct(item, "decrease")}
+                                      onMouseUp={() => handleUpdateProductEnd(item, "decrease")}
                                       className="px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded"
                                     >
                                       -
@@ -235,10 +247,10 @@ const CartPage = ({ cart = true, className }) => {
                                       className="w-12 text-center border border-gray-300 rounded"
                                     />
                                     <button
-                                      onClick={() =>
-                                        updateProduct(item, "increase")
-                                      }
+                                      onMouseDown={() => handleUpdateProduct(item, "increase")}
+                                      onMouseUp={() => handleUpdateProductEnd(item, "increase")}
                                       className="px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded"
+                                      disabled={item.quantity >= item.productId.stock}
                                     >
                                       +
                                     </button>
@@ -257,7 +269,7 @@ const CartPage = ({ cart = true, className }) => {
                                   <div className="flex space-x-1 items-center p-5 justify-center">
                                     <span
                                       onClick={() =>
-                                        updateProduct(item, "remove")
+                                        handleUpdateProduct(item, "remove")
                                       }
                                       className="cursor-pointer hover:text-red-500"
                                     >

@@ -59,6 +59,10 @@ const ProductView = ({ className }) => {
       toast.error("Không thể thêm sản phẩm vì sản phẩm đã hết hàng.");
       return;
     }
+    if (quantity > variants?.stock) {
+      toast.error("Không thể thêm sản phẩm vì số lượng vượt quá tồn kho.");
+      return;
+    }
     mutate({
       productId: variants?._id,
       quantity,
@@ -87,7 +91,7 @@ const ProductView = ({ className }) => {
   const handleSelectVariant = (variant) => {
     setVariant(variant);
     setSelectedImage(variant?.image);
-    setSelectedVariantId(variant._id); // Set the selected variant ID
+    // setSelectedVariantId(variant._id); // Set the selected variant ID
   };
 
   if (isLoading) return <p>Loading...</p>;
@@ -149,7 +153,7 @@ const ProductView = ({ className }) => {
                     onClick={() => handleSelectVariant(productItem)}
                     key={i}
                     className={`border-2 flex gap-2 h-[50px] items-center ${
-                      selectedVariantId === productItem._id ? "border-cyan-500" : "border-black"
+                      variants?._id === productItem?._id ? "border-cyan-500" : "border-black"
                     } p-2 cursor-pointer`}
                   >
                     {productItem.variants.map((item, index) => (
@@ -167,7 +171,7 @@ const ProductView = ({ className }) => {
                 <div className="flex justify-between items-center w-full">
                   <button onClick={handleDecrement} type="button" className="text-base text-qgray">-</button>
                   <span className="text-qblack">{quantity}</span>
-                  <button onClick={handleIncrement} type="button" className="text-base text-qgray">+</button>
+                  <button onClick={handleIncrement} type="button" className="text-base text-qgray" disabled={quantity >= variants?.stock}>+</button>
                 </div>
               </div>
 
