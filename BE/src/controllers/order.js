@@ -6,7 +6,6 @@ import { ROLES } from "../constants/Role.js";
 import sendEmail from "../utils/sendEmail.js";
 import User from "../models/User.js";
 import ProductItem from "../models/ProductItem.js";
-import mongoose from "mongoose";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -268,8 +267,10 @@ export const createStripeOrder = async (session) => {
       .status(200)
       .json({ message: "Order saved successfully", success: true });
   } catch (error) {
-    await session.abortTransaction();
-    session.endSession();
+    if (mongooseSession.inTransaction()) {
+      await mongooseSession.abortTransaction();
+    }
+    mongooseSession.endSession();
     return console.error(
       "Error processing checkout.session.completed event:",
       error
