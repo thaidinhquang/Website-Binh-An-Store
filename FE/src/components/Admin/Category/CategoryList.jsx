@@ -9,10 +9,10 @@ import Pageination from "../../UI/Pagination";
 import { useHookSearch } from "../../../common/hooks/useSearch";
 import { useForm } from "react-hook-form";
 import CommonUtils from "../../../common/CommonUtils/CommonUtils";
-import { Button, Table } from "antd"; // Nhập Table từ Ant Design
+import { Button } from "antd"; // Nhập Table từ Ant Design
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileExcel } from "@fortawesome/free-solid-svg-icons";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import CategoryTable from "./CategoryTable";
 
 const CategoryList = () => {
   const search = new URLSearchParams(useLocation().search);
@@ -59,12 +59,11 @@ const CategoryList = () => {
   };
 
   const exportToExcel = async () => {
-    const dataToExport = data?.docs?.map((category) => ({
+    const dataToExport = data?.docs?.map((category, index) => ({
+      STT: index + 1,
       ID: category._id,
       Name: category.name,
-      Slug: category.slug,
-      ProductCount: category.products.length,
-      ProductID: category.products.join(", "),
+      Details: category.details.map(detail => detail.key).join(', '),
       CreatedAt: new Date(category.createdAt).toLocaleString(),
       UpdatedAt: new Date(category.updatedAt).toLocaleString(),
     }));
@@ -78,60 +77,8 @@ const CategoryList = () => {
       </div>
     );
 
-  // Cấu hình cột cho bảng
-  const columns = [
-    {
-      title: 'STT',
-      render: (text, record, index) => index + 1,
-    },
-    {
-      title: "Tên Danh Mục",
-      dataIndex: "name",
-      key: "name",
-      render: (text, record) => (
-        <div>
-          <span>{text}</span>
-          <div className="text-gray-500 text-sm">{record._id}</div>
-          {isUserEditing(record._id)}
-        </div>
-      ),
-    },
-    {
-      title: "Chi tiết",
-      dataIndex: "details",
-      key: "details",
-      render: (details) => (
-        <>
-          {details.map((detail, index) => (
-            <span
-              key={index}
-              className="bg-purple-500 text-white mr-1 py-1 px-2 rounded-lg"
-            >
-              {detail.key}
-            </span>
-          ))}
-        </>
-      ),
-    },
-    {
-      title: "Hành động",
-      key: "action",
-      render: (text, record) => (
-        <div className="flex items-center text-sm">
-          <Link to={`/admin/categories/edit/${record._id}`}>
-            <Button icon={<EditOutlined />} />
-          </Link>
-          <Button type="link" onClick={() => mutate(record._id)}>
-            <Button icon={<DeleteOutlined />} danger />
-          </Button>
-        </div>
-      ),
-    },
-  ];
-
   return (
     <div className="">
-   
       <div className="py-8">
         <div className="flex flex-col md:flex-row justify-between items-center mb-6">
           <Link
@@ -180,15 +127,11 @@ const CategoryList = () => {
             </div>
           </div>
         </form>
-    
-          <Table
-            dataSource={data}
-            columns={columns}
-            rowKey="_id"
-            pagination={false}
-            
-          />
-      
+        <CategoryTable
+          data={data}
+          isUserEditing={isUserEditing}
+          mutate={mutate}
+        />
         <Pageination data={data} />
       </div>
     </div>

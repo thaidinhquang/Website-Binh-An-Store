@@ -65,25 +65,20 @@ const ProductList = () => {
     useSearch(data, '/admin/products')
   }
 
-
   const exportToExcel = async () => {
-    const dataToExport = data?.docs?.map(product => ({
-      ID: product._id,
-      Name: product.name,
-      Slug: product.slug,
-      Active: product.active ? 'Active' : 'False',
-      Price: formatPrice(product.price),
-      Image: product.image,
-      CountInStock: product.countInStock,
-      Category: product.category?.name || '', // Add category name
-      Attributes: product.attributes.map(attr => `${attr.name}: ${attr.values.map(val => `${val.name} (${formatPrice(val.price)})`).join(', ')}`).join('; '),
-      Brand: product.brand?.name || '',
-      CreatedAt: new Date(product.createdAt).toLocaleString(),
-      UpdatedAt: new Date(product.updatedAt).toLocaleString(), 
-      
-     }));
+    const dataToExport = data?.docs?.map((product, index) => ({
+      STT: index + 1,
+      'Tên sản phẩm': product.name,
+      'Hình ảnh': product.image,
+      'Biến thể': product.productItems.map(item => 
+        item.variants.map(variant => `${variant.key}: ${variant.value}`).join(', ')
+      ).join(' | '),
+      'Giá': formatPrice(product.productItems[0]?.price),
+      'Số lượng': product.productItems.reduce((total, item) => total + item.stock, 0), 
+    }));
     await CommonUtils.exportExcel(dataToExport, 'Products', 'ProductList');
   };
+
   if (isLoading) return <p>Loading...</p>
   return (
     <>
@@ -120,13 +115,11 @@ const ProductList = () => {
         </button>
       </form>
       <TableProduct
-      product={data}
-      setPage={setPage}
-      setLimit={setLimit}
-
-      
-    />
-    <Pageination data={data} />
+        product={data}
+        setPage={setPage}
+        setLimit={setLimit}
+      />
+      <Pageination data={data} />
     </>
   );
 };
