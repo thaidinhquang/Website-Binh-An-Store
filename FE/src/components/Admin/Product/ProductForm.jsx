@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Button, Card, Form, Input, Select, Space, Table, Typography } from "antd";
+import { Button, Card, Form, Input, InputNumber, Select, Space, Table, Typography } from "antd";
 import { useBrands } from "../../../common/hooks/brand/useBrands";
 import { useCategories } from "../../../common/hooks/category/useCategories";
 import { useNavigate, useParams } from "react-router-dom";
@@ -643,7 +643,11 @@ const EditableCell = ({
             required: true,
             message: `${title} không được để trống.`,
           },
-        
+          {
+            type: 'number',
+            min: 0,
+            message: `${title} không được âm.`,
+          },
         ]}
       >
         {dataIndex == "image" ? (
@@ -663,7 +667,14 @@ const EditableCell = ({
             />
           </>
         ) : (
-          <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+          <InputNumber ref={inputRef} onPressEnter={save} onBlur={save} 
+            onKeyDown={(e) => {
+              // Ngăn không cho nhập các ký tự không phải số
+              if (isNaN(Number(e.key)) && e.key !== 'Backspace' && e.key !== 'Tab' && e.key !== '-') {
+                e.preventDefault();
+              }
+            }}
+          />
         )}
         
       </Form.Item>
