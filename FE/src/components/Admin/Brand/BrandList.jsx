@@ -126,7 +126,7 @@ const BrandList = () => {
   ];
 
   return (
-    <div className="container mx-auto px-4 sm:px-8">
+    <div className="">
       <h2 className="ant-space css-dev-only-do-not-override-1uq9j6g ant-space-horizontal ant-space-align-center ant-space-gap-row-small ant-space-gap-col-small font-semibold text-lg rounded-md bg-[#E9E9E9] w-full p-4">
         Danh sách nhãn hàng
       </h2>
@@ -188,8 +188,8 @@ const BrandList = () => {
             </div>
           </div>
         </form>
-        <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
-          <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
+        <div>
+          <div className="">
             <Table
               dataSource={data?.docs}
               columns={columns}

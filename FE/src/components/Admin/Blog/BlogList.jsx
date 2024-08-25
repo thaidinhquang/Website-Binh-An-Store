@@ -107,7 +107,7 @@ const BlogList = () => {
       <h2 className="ant-space css-dev-only-do-not-override-1uq9j6g ant-space-horizontal ant-space-align-center ant-space-gap-row-small ant-space-gap-col-small font-semibold text-lg rounded-md bg-[#E9E9E9] w-full p-4 my-8">
         Danh sách blog
       </h2>
-      <div className="p-4 bg-white rounded-lg shadow">
+      <div className="">
         <div className="flex justify-between items-center mb-4">
           <Link
             to="/admin/blogs/add"

@@ -22,8 +22,8 @@ const ProductList = () => {
   const active = search.get('active') || '';
   const form = useForm();
   const useSearch = useHookSearch();
-  const { data, isLoading, refetch } = useTanstackQuery('products', { active,  page: page,
-    limit: limit, sort, name })
+  const { data, isLoading, refetch } = useTanstackQuery('products', { active,  page,
+    limit, sort, name })
   console.log(data)
   const { mutate } = useTanstackMutation({
     path: `products`,
@@ -123,10 +123,13 @@ const ProductList = () => {
       product={data}
       setPage={setPage}
       setLimit={setLimit}
+
+      
     />
+    <Pageination data={data} />
     </>
   );
 };
 
 export default ProductList;
-        // <Pageination data={data} />
+        

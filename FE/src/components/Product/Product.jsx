@@ -53,20 +53,22 @@ const getStatus = (createdAt) => {
       <div className={className}>
         {data?.docs.map((product) => (
           <div key={product._id} className="product-card-one bg-white relative group overflow-hidden shadow-md">
-            <div className="product-card-img h-80 overflow-hidden">
+            <div className="product-card-img  overflow-hidden">
             {getStatus(product.createdAt) && (
               <span className="new-product-label absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-full">
                 {getStatus(product.createdAt)}
               </span>
             )}
+              <div       className="product-card-img w-full h-[300px] flex items-center">
               <img
-                className="w-full h-[300px] object-cover"
+          
                 src={product.image}
                 alt=""
               />
+              </div>
             </div>
-            <div className="product-card-details px-[30px] pb-[80px] relative">
-              <div className="absolute w-full h-10 px-[30px] left-0 top-60 group-hover:top-[85px] transition-all duration-300 ease-in-out">
+            <div className="product-card-details px-[30px] pb-[30px] relative">
+              <div className="absolute w-full h-10 px-[30px] left-0 top-40 group-hover:top-[50px] transition-all duration-300 ease-in-out">
                 <Link to={`/detail/${product._id}`} className={isPending ? "blue-btn" : "yellow-btn"}>
                   <div className="flex items-center space-x-3">
                     <span>{isPending ? "..." : "Xem chi tiết"}</span>

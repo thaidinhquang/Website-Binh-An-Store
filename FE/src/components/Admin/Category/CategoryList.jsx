@@ -91,7 +91,7 @@ const CategoryList = () => {
       render: (text, record) => (
         <div>
           <span>{text}</span>
-          <div className="text-gray-500 text-sm">Mã ID: {record._id}</div>
+          <div className="text-gray-500 text-sm">{record._id}</div>
           {isUserEditing(record._id)}
         </div>
       ),
@@ -130,10 +130,8 @@ const CategoryList = () => {
   ];
 
   return (
-    <div className="container mx-auto px-4 sm:px-8">
-      <h2 className="ant-space css-dev-only-do-not-override-1uq9j6g ant-space-horizontal ant-space-align-center ant-space-gap-row-small ant-space-gap-col-small font-semibold text-lg rounded-md bg-[#E9E9E9] w-full p-4">
-        Danh sách danh mục
-      </h2>
+    <div className="">
+   
       <div className="py-8">
         <div className="flex flex-col md:flex-row justify-between items-center mb-6">
           <Link
@@ -182,15 +180,15 @@ const CategoryList = () => {
             </div>
           </div>
         </form>
-        <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+    
           <Table
             dataSource={data}
             columns={columns}
             rowKey="_id"
             pagination={false}
-            className="mt-4"
+            
           />
-        </div>
+      
         <Pageination data={data} />
       </div>
     </div>

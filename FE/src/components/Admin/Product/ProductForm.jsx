@@ -669,7 +669,7 @@ const EditableCell = ({
         onClick={toggleEdit}
       >
         {dataIndex == "image" ? [undefined,(
-          <img src={children[1]} alt="Blog preview" className="inline w-[100px] h-a object-cover rounded-lg mb-4" />       
+          <img src={children[1]} key={children} alt="Blog preview" className="inline w-[100px] h-a object-cover rounded-lg mb-4" />       
         )] : (
           children
         )}

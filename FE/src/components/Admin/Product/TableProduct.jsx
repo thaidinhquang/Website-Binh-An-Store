@@ -9,8 +9,10 @@ const TableProduct = ({product,setPage}) => {
           currency: "VND",
         }).format(value);
       };
-    const dataSource = product?.docs?.map((product) => ({
+    const dataSource = product?.docs?.map((product,index) => ({
+      
         key:product._id,
+        index:index+1,
         id: product?._id,
         name: (
           <div>
@@ -28,15 +30,20 @@ const TableProduct = ({product,setPage}) => {
       }));
 
       const columns = [
-        {
-          title: "Hình ảnh",
-          dataIndex: "image",
-          key: "image",
+      {
+          title: "",
+          dataIndex: "index",
+          key: "index",
         },
         {
           title: "Tên sản phẩm",
           dataIndex: "name",
           key: "name",
+        },
+            {
+          title: "Hình ảnh",
+          dataIndex: "image",
+          key: "image",
         },
         {
           title: "Số lượng",
@@ -50,7 +57,7 @@ const TableProduct = ({product,setPage}) => {
           render: (text) => formatCurrency(text),
         },
           {
-          title: "Giá",
+          title: "Thao tác",
           dataIndex: "action",
           key: "action",
        
@@ -62,7 +69,7 @@ const TableProduct = ({product,setPage}) => {
    <Table 
    dataSource={dataSource}
    columns={columns}
-     className="mt-10 min-h-[68vh]"
+     className="mt-10"
      pagination={false}
 
    />
