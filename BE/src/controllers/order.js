@@ -6,6 +6,7 @@ import { ROLES } from "../constants/Role.js";
 import sendEmail from "../utils/sendEmail.js";
 import User from "../models/User.js";
 import ProductItem from "../models/ProductItem.js";
+import mongoose from "mongoose";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -63,10 +64,11 @@ export const createOrder = async (req, res) => {
       ...req.body,
       userId: req.user?._id?.toString(),
     });
+
     await order.save({ session });
 
     // Loop through the products in the order and decrease the stock
-    for (const item of req.body?.items) {
+    for (const item of req.body.items) {
       const productItem = await ProductItem.findById(item.productId).session(
         session
       );
@@ -166,7 +168,9 @@ export const createStripeOrder = async (session) => {
           image: product.images[0] ?? "",
           name: product.name,
           productId: product.metadata.productId,
-          variants: product.metadata.variants ? JSON.parse(product.metadata.variants) : [],
+          variants: product.metadata.variants
+            ? JSON.parse(product.metadata.variants)
+            : [],
         });
       }
     }
@@ -264,10 +268,8 @@ export const createStripeOrder = async (session) => {
       .status(200)
       .json({ message: "Order saved successfully", success: true });
   } catch (error) {
-    if (mongooseSession.inTransaction()) {
-      await mongooseSession.abortTransaction();
-    }
-    mongooseSession.endSession();
+    await session.abortTransaction();
+    session.endSession();
     return console.error(
       "Error processing checkout.session.completed event:",
       error
