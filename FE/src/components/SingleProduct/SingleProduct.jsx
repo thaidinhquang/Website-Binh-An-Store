@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import BreadcrumbCom from "../UI/BreadcrumbCom";
 import Reviews from "./Reviews";
 import ProductView from "./ProductView";
@@ -17,6 +17,10 @@ const SingleProduct = () => {
   const toggleDescriptionVisibility = () => {
     setShowFullDescription(!showFullDescription);
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div>

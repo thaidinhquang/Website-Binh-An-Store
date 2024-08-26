@@ -96,20 +96,14 @@ const ProductList = () => {
       <form onSubmit={form.handleSubmit(searchForm)} className="flex justify-between gap-3">
         <input
           {...form.register('name')}
-          type="text" placeholder="Tìm kiếm theo tên danh mục" className="border border-gray-300 dark:border-gray-700 p-2 h-[50px] w-full outline-none focus:border-pink-500" />
+          type="text" placeholder="Tìm kiếm theo tên sản phẩm" className="border border-gray-300 dark:border-gray-700 p-2 h-[50px] w-full outline-none focus:border-pink-500" />
         <select
           {...form.register('sort')}
           className="border border-gray-300 dark:border-gray-700 p-2 h-[50px] w-[200px]">
           <option value="">Mới {'->'} cũ</option>
           <option value="createdAt:1">Cũ {'->'} mới</option>
         </select>
-        <select
-          {...form.register('active')}
-          className="border border-gray-300 dark:border-gray-700 p-2 h-[50px] w-[200px]">
-          <option value="">Tất cả</option>
-          <option value={true}>Đang hoạt động</option>
-          <option value={false}>Không hoạt động</option>
-        </select>
+       
         <button type="submit" className="text-white  bg-blue-700 hover:bg-blue-800 font-medium text-sm px-5 py-2.5 me-2 mb-2  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 h-[50px] w-[300px]">
           Tìm kiếm
         </button>
