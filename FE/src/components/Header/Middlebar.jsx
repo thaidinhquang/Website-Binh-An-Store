@@ -4,7 +4,7 @@ import Compair from "../icons/Compair";
 import ThinBag from "../icons/ThinBag";
 import ThinLove from "../icons/ThinLove";
 import ThinPeople from "../icons/ThinPeople";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import AuthenticationModal from "./AuthenticationModal";
 import { AuthContext } from "../Auth/core/Auth";
 import { useTanstackQuery } from "../../common/hooks/useTanstackQuery";
