@@ -9,6 +9,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../Auth/core/Auth";
 import { useCart } from "../../common/contexts/CartContext";
 import { Checkbox } from "antd";
+import { toast } from "react-toastify";
 
 const CartPage = ({ cart = true, className }) => {
   const [products, setProducts] = useState([]);
@@ -33,6 +34,10 @@ const CartPage = ({ cart = true, className }) => {
   }, [data, dispatch]);
 
   const onchangeItemsChecked = (e, productVariation) => {
+    if (productVariation.productId.stock === 0) {
+      toast.error("Sản phẩm đã hết hàng");
+      return;
+    }
     const updatedItems = items.map(item => {
       if (item._id === productVariation._id) {
         return { ...item, checked: e.target.checked };
@@ -84,7 +89,6 @@ const CartPage = ({ cart = true, className }) => {
     dispatch({ type: "REMOVE_ALL" });
     setItems([]);
   };
-
 
   const updateProduct = (product, action) => {
     const productId = product.productId._id;
@@ -140,16 +144,20 @@ const CartPage = ({ cart = true, className }) => {
       setIsLoadingItem(true);
       let listItem = [];
       state?.items?.forEach((item) => {
-        listItem.push({
-          name: item?.name,
-          image: item?.productId?.image,
-          price: item?.productId?.price,
-          quantity: item.quantity,
-          variants: item?.productId?.variants,
-          productId: item?.productId?._id,
-          _id: item?._id,
-          checked: false,
-        });
+        if (item.productId.stock > 0) {
+          listItem.push({
+            name: item?.name,
+            image: item?.productId?.image,
+            price: item?.productId?.price,
+            quantity: item.quantity,
+            variants: item?.productId?.variants,
+            productId: item?.productId?._id,
+            _id: item?._id,
+            checked: false,
+          });
+        } else {
+          handleRemoveItem(item._id);
+        }
       });
       setItems(listItem);
       setIsLoadingItem(false);
@@ -158,6 +166,11 @@ const CartPage = ({ cart = true, className }) => {
 
   console.log(state?.items);
   if (isLoading) return <p>Loading...</p>;
+
+  const totalPrice = state?.items?.reduce(
+    (total, item) => total + item?.productId?.price * item?.quantity,
+    0
+  );
 
   return (
     <div className={cart ? "pt-0 pb-0" : ""}>
@@ -232,13 +245,14 @@ const CartPage = ({ cart = true, className }) => {
                                       onChange={(e) =>
                                         onchangeItemsChecked(e, item)
                                       }
-                                      checked={demo}
+                                      checked={item.productId.stock > 0 && demo}
+                                      disabled={item.productId.stock === 0}
                                     />
                                   </div>
                                 </td>
 
                                 <td className="pl-10 py-4 w-[380px]">
-                                  <div className="flex space-x-6 items-center">
+                                  <div className="flex space-x-6 items-center relative">
                                     <div className="w-[80px] h-[80px] overflow-hidden flex justify-center items-center border border-[#EDEDED]">
                                       <img
                                         src={
@@ -247,6 +261,12 @@ const CartPage = ({ cart = true, className }) => {
                                         alt="product"
                                         className="w-full h-full object-contain"
                                       />
+                                       {item.productId.stock === 0 && (
+                                        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white font-bold">
+                                          Hết hàng
+                                        </div>
+                                      )}
+                                     
                                     </div>
                                     <div className="flex-1 flex flex-col">
                                       <p className="font-medium text-[15px] text-qblack">
@@ -267,6 +287,7 @@ const CartPage = ({ cart = true, className }) => {
                                       {formatPrice(item?.productId?.price)}
                                     </span>
                                   </div>
+                                  
                                 </td>
 
                                 <td className="py-4">
@@ -287,9 +308,9 @@ const CartPage = ({ cart = true, className }) => {
                                       className="w-12 text-center border border-gray-300 rounded"
                                     />
                                     <button
-                                    onClick={() =>
-                                      updateProduct(item, "increase")
-                                    }
+                                      onClick={() =>
+                                        updateProduct(item, "increase")
+                                      }
                                       className="px-2 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded"
                                       disabled={
                                         item?.quantity >= item.productId?.stock
@@ -320,7 +341,7 @@ const CartPage = ({ cart = true, className }) => {
                                         width="10"
                                         height="10"
                                         viewBox="0 0 10 10"
-                                        fill="currentColor" // Change fill to currentColor to inherit text color
+                                        fill="currentColor"
                                         xmlns="http://www.w3.org/2000/svg"
                                         className="fill-current"
                                       >
@@ -331,6 +352,7 @@ const CartPage = ({ cart = true, className }) => {
                                 </td>
                               </tr>
                             );
+                            
                           })
                         )}
                       </tbody>
@@ -355,13 +377,7 @@ const CartPage = ({ cart = true, className }) => {
                   <div className="flex justify-between">
                     <p className="text-[18px] font-medium text-qblack">Total</p>
                     <p className="text-[18px] font-medium text-qred">
-                      {formatPrice(
-                        state?.items?.reduce(
-                          (total, item) =>
-                            total + item?.productId?.price * item?.quantity,
-                          0
-                        )
-                      )}
+                      {formatPrice(totalPrice)}
                     </p>
                   </div>
                 </div>
@@ -375,7 +391,7 @@ const CartPage = ({ cart = true, className }) => {
                       Thanh toán online
                     </button>
                     <Link to="/checkout">
-                      <div className="mt-4 w-full h-[50px] black-btn flex justify-center items-center">
+                      <div className={`mt-4 w-full h-[50px] black-btn flex justify-center items-center ${totalPrice > 50000000 ? 'opacity-50 cursor-not-allowed' : ''}`}>
                         <span className="text-sm font-semibold">Trả tiền khi nhận hàng</span>
                       </div>
                     </Link>

@@ -9,6 +9,7 @@ import AuthenticationModal from "./AuthenticationModal";
 import { AuthContext } from "../Auth/core/Auth";
 import { useTanstackQuery } from "../../common/hooks/useTanstackQuery";
 import ThinLove1 from "../icons/ThinLove1";
+import SearchBox from "../SearchBox";
 
 const Middlebar = ({ className }) => {
   const { currentUser } = useContext(AuthContext);
@@ -25,9 +26,9 @@ const Middlebar = ({ className }) => {
                   <img className="w-40" src="/assets/images/logo.png" alt="" />
                 </Link>
               </div>
-              {/* <div className="w-[517px] h-[44px]">
-                <SearchBox className="search-com" />
-              </div> */}
+              <div className={`w-[517px] h-[44px]`}>
+              <SearchBox className={``} type={1} />
+            </div>
               {currentUser ? (
                 <div className="flex space-x-6 items-center">
                   <div className="favorite relative">

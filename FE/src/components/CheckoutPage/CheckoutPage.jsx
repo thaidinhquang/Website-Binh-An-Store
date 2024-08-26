@@ -1,3 +1,4 @@
+import { useCart } from "../../common/contexts/CartContext";
 import { useTanstackMutation, useTanstackQuery } from "../../common/hooks/useTanstackQuery";
 import { AuthContext } from "../Auth/core/Auth";
 
@@ -5,8 +6,7 @@ import { useContext, useEffect, useState } from "react";
 
 const CheckoutPage = () => {
     const { data: cartItems, isLoading } = useTanstackQuery('cart')
-    console.log(cartItems)
-    const { data: cartTotal, isLoading: isLoadingTotal } = useTanstackQuery('cart/total')
+    // const { data: cartTotal, isLoading: isLoadingTotal } = useTanstackQuery('cart/total')
     const [isLoadingItem, setIsLoadingItem] = useState(false)
     const [items, setItems] = useState([])
     const { currentUser } = useContext(AuthContext);
@@ -15,30 +15,32 @@ const CheckoutPage = () => {
         action: "CREATE",
         navigatePage: "/checkoutsuccess",
     });
-
+    const { state } = useCart();
+        console.log(state)
     const calculateTotalPrice = (items) => {
         return items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
     };
 
     useEffect(() => {
-        if (cartItems?.products?.length > 0) {
+        if (state?.items?.length > 0) {
             setIsLoadingItem(true)
             let listItem = []
-            cartItems.products.forEach(item => {
+            state?.items?.forEach(item => {
                 listItem.push({
                     name: item?.name,
                     image: item?.productId?.image,
                     price: item?.productId?.price,
                     quantity: item.quantity,
                     variants: item?.productId?.variants,
-                    productId: item?.productId?._id
+                    productId: item?.productId?._id,
+                    _id: item?._id,
                  
             })
             })
             setItems(listItem)
             setIsLoadingItem(false)
         }
-    }, [cartItems])
+    }, [state])
     useEffect(() => {
         if (currentUser) {
             form.reset(currentUser)
@@ -74,7 +76,7 @@ const CheckoutPage = () => {
       };
 
     
-    if (isLoading || isLoadingTotal) return <div>Loading...</div>
+    if (isLoading) return <div>Loading...</div>
     return (
         <div className="bg-gray-100 min-h-screen py-10">
             <form onSubmit={form.handleSubmit(onSubmit)} className="checkout-main-content w-full max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-lg">
@@ -189,8 +191,8 @@ const CheckoutPage = () => {
                                 </div>
                                 <div className="product-list w-full mb-8">
                                     <ul className="flex flex-col space-y-5">
-                                        {cartItems?.products?.map((item, index) => {
-                                            
+                                        {state?.items?.map((item, index) => {
+                                            console.log(item)
                                             return (
                                                 <li key={index}>
                                                     <div className="flex justify-between items-center">
@@ -224,7 +226,13 @@ const CheckoutPage = () => {
                                             Tổng phụ
                                         </p>
                                         <p className="text-base font-medium text-gray-800 uppercase">
-                                        {formatPrice(cartTotal)}
+                                        {formatPrice(
+                                            state?.items?.reduce(
+                                              (total, item) =>
+                                                total + item?.productId?.price * item?.quantity,
+                                              0
+                                            )
+                                          )}
                                         </p>
                                     </div>
                                 </div>
@@ -249,7 +257,13 @@ const CheckoutPage = () => {
                                 <div className="mt-8">
                                     <div className="flex justify-between mb-5">
                                         <p className="text-2xl font-medium text-gray-800">Tổng</p>
-                                        <p className="text-2xl font-medium text-red-600">{formatPrice(cartTotal)}</p>
+                                        <p className="text-2xl font-medium text-red-600">  {formatPrice(
+                                            state?.items?.reduce(
+                                              (total, item) =>
+                                                total + item?.productId?.price * item?.quantity,
+                                              0
+                                            )
+                                          )}</p>
                                     </div>
                                 </div>
                                 <div className="shipping mt-8">

@@ -75,6 +75,20 @@ const ProductForm = () => {
         attributes: data,
         variants: variants,
       });
+
+      // Set dataSource with _id
+      const newDataSource = productData.data.productItems.map((prdItem, index) => {
+        const label = prdItem.variants.map(v => `${v.key}-${v.value}`).join('||');
+        return {
+          key: index,
+          _id: prdItem._id,
+          label: label,
+          price: prdItem.price,
+          image: prdItem.image,
+          stock: prdItem.stock,
+        };
+      });
+      setDataSource(newDataSource);
     }
   }, [productData, id]);
 
@@ -187,6 +201,7 @@ const categoryOptions = Array.isArray(categories) ? categories.map((category) =>
                 var dbProductItem = productData?.data.productItems?.find((prdItem) => `${item.name}-${value.value}` === `${prdItem?.variants[0].key}-${prdItem?.variants[0].value}`);
                 var newData = {
                   key: count,
+                  _id: dbProductItem ? dbProductItem._id : undefined, // Preserve _id if exists
                   label: `${item.name}-${value.value}`,
                   price: dbProductItem ? dbProductItem.price : '0',
                   image: dbProductItem ? dbProductItem.image : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg',
@@ -211,6 +226,7 @@ const categoryOptions = Array.isArray(categories) ? categories.map((category) =>
             );
             var newData = {
               key: count,
+              _id: dbProductItem ? dbProductItem._id : undefined, // Preserve _id if exists
               label: `${variantForm[0].name}-${value.value}||${variantForm[1].name}-${value1.value}`,
               price: dbProductItem ? dbProductItem.price : '0',
               image: dbProductItem ? dbProductItem.image : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg',
@@ -308,6 +324,7 @@ const categoryOptions = Array.isArray(categories) ? categories.map((category) =>
         }
       });
       return {
+        _id: item._id, // Ensure the existing _id is preserved
         price: item.price,
         image: item.image,
         stock: item.stock,
