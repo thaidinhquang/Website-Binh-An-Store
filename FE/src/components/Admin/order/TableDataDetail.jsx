@@ -22,8 +22,8 @@ const TableDataDetail = ({ order }) => {
             />
           ),
           quantity: item.quantity,
-          price: item.price,
-          subTotal: item.quantity * item.price,
+          price: item.productId.price,
+          subTotal: item.quantity * item.productId.price,
         }))
       : [];
 

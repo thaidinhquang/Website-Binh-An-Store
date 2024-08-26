@@ -164,7 +164,7 @@ const CartPage = ({ cart = true, className }) => {
     }
   }, [data, state.items]);
 
-  console.log(state?.items);
+
   if (isLoading) return <p>Loading...</p>;
 
   const totalPrice = state?.items?.reduce(
@@ -233,7 +233,7 @@ const CartPage = ({ cart = true, className }) => {
                             const demo = state?.items?.some(
                               (v) => v._id === item._id
                             );
-                            console.log(demo);
+              
                             return (
                               <tr
                                 key={index}

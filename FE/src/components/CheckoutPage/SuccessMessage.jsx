@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { useTanstackMutation } from "../../common/hooks/useTanstackQuery";
 
 const SuccessMessage = () => {
   
