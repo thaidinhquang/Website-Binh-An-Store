@@ -381,7 +381,7 @@ const CartPage = ({ cart = true, className }) => {
                     </p>
                   </div>
                 </div>
-                {data.products.length > 0 ? (
+                {data.products.length > 0 && totalPrice > 0 ? (
                   <>
                     <button
                       onClick={() => onSubmit()}
