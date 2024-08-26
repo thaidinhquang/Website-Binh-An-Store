@@ -5,6 +5,7 @@ import {
   getAllProduct,
   getDetailProduct,
   getDetailProductPopulate,
+  getProductRelated,
   restoreProduct,
   updateProduct,
 } from "../controllers/products.js";
@@ -15,6 +16,7 @@ import { checkPermission } from "../middlewares/checkPermission.js";
 const routerProduct = Router();
 routerProduct.get("/", getAllProduct);
 routerProduct.get("/:id", getDetailProductPopulate);
+routerProduct.get("/related/:id", getProductRelated);
 routerProduct.get("/not-populate/:id", getDetailProduct);
 routerProduct.delete("/:id", checkPermission("delete_product"), deleteProduct);
 routerProduct.delete(

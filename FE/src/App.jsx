@@ -6,9 +6,10 @@ function App() {
     <>
       <Router />
       <ToastContainer
-        limit={3}
+        className="w-full max-w-full break-words"
+        toastClassName="max-h-24 overflow-y-auto truncate whitespace-nowrap"
         newestOnTop={true}
-        position="top-right"
+        position="top-center"
         autoClose={3000}
         hideProgressBar={false}
         closeOnClick

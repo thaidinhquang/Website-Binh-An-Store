@@ -5,6 +5,7 @@ import ProductView from "./ProductView";
 import { useParams } from "react-router-dom";
 import { useTanstackQuery } from "../../common/hooks/useTanstackQuery";
 import ProductNew from "../Product/ProductNew";
+import ProductRelated from "../Product/ProductRelated";
 
 const SingleProduct = () => {
   const [tab, setTab] = useState("des");
@@ -55,11 +56,10 @@ const SingleProduct = () => {
                   <li>
                     <span
                       onClick={() => setTab("des")}
-                      className={`py-[15px] sm:text-[15px] text-sm sm:block border-b font-medium cursor-pointer ${
-                        tab === "des"
+                      className={`py-[15px] sm:text-[15px] text-sm sm:block border-b font-medium cursor-pointer ${tab === "des"
                           ? "border-qyellow text-qblack "
                           : "border-transparent text-qgray"
-                      }`}
+                        }`}
                     >
                       Mô Tả
                     </span>
@@ -67,11 +67,10 @@ const SingleProduct = () => {
                   <li>
                     <span
                       onClick={() => setTab("review")}
-                      className={`py-[15px] sm:text-[15px] text-sm sm:block border-b font-medium cursor-pointer ${
-                        tab === "review"
+                      className={`py-[15px] sm:text-[15px] text-sm sm:block border-b font-medium cursor-pointer ${tab === "review"
                           ? "border-qyellow text-qblack "
                           : "border-transparent text-qgray"
-                      }`}
+                        }`}
                     >
                       Đánh Giá
                     </span>
@@ -116,6 +115,7 @@ const SingleProduct = () => {
               <div className="w-full py-[60px]">
                 <h1 className="sm:text-3xl text-xl font-600 text-qblacktext leading-none mb-[30px]">
                 </h1>
+                <ProductNew related={id} category={product?.category._id} />
                 <ProductNew />
               </div>
             </div>

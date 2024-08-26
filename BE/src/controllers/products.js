@@ -103,6 +103,47 @@ export const getDetailProduct = async (req, res, next) => {
   }
 };
 
+export const getProductRelated = async (req, res, next) => {
+  try {
+    const data = await Product.findById(req.params.id);
+    const products = await Product.find({
+      category: data.category,
+      _id: { $ne: data._id },
+    })
+      .sort({ createdAt: -1 }) // Sort by newest
+      .limit(4); // Limit to 4 products
+
+    if (!products) {
+      return res.status(400).json({ message: "Không tìm thấy sản phẩm liên quan!" });
+    }
+
+    // Extract product IDs
+    const productIds = products.map(product => product._id);
+
+    // Fetch ProductItems
+    const productItems = await ProductItem.find({ productId: { $in: productIds } });
+
+    // Group ProductItems by ProductId
+    const productItemsByProduct = productItems.reduce((acc, item) => {
+      if (!acc[item.productId]) {
+        acc[item.productId] = [];
+      }
+      acc[item.productId].push(item);
+      return acc;
+    }, {});
+
+    // Attach ProductItems to their respective Products
+    const productsWithItems = products.map(product => ({
+      ...product.toObject(),
+      productItems: productItemsByProduct[product._id] || [],
+    }));
+
+    return res.status(200).json({ data: { docs: productsWithItems } });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const deleteProduct = async (req, res, next) => {
   try {
     const data = await Product.findByIdAndUpdate(
