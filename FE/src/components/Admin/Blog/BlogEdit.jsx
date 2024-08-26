@@ -141,6 +141,7 @@ const BlogEdit = () => {
                                 htmlType="submit" 
                                 loading={isLoading || mutation.isPending || uploadMutation.isPending}
                                 disabled={isLoading || mutation.isPending || uploadMutation.isPending}
+                                className="bg-blue-500"
                             >
                                 {isLoading || mutation.isPending ? "Đang Cập nhật..." : "Cập nhật"}
                             </Button>

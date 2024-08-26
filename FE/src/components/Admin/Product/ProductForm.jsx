@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Button, Card, Form, Input, Select, Space, Table, Typography } from "antd";
+import { Button, Card, Form, Input, InputNumber, Select, Space, Table, Typography } from "antd";
 import { useBrands } from "../../../common/hooks/brand/useBrands";
 import { useCategories } from "../../../common/hooks/category/useCategories";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useGetDetailProduct } from "../../../common/hooks/product/useGetDetailProduct";
 import { useUpdateProduct } from "../../../common/hooks/product/useUpdateProduct";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 const ProductForm = () => {
   const { id } = useParams();
   const [form] = Form.useForm();
+  const navigate = useNavigate();
   const variantForm = Form.useWatch('variants', { form, preserve: true });
   const categoryForm = Form.useWatch('category', { form, preserve: true });
 
@@ -43,7 +44,7 @@ const ProductForm = () => {
       setImage2(productData.data.gallery[1]);
       setImage3(productData.data.gallery[2]);
       productData.data.attributes.map((att,index)=>{
-        data = {...data,[`attributes_${index}`]: att.value};
+        data = {...data, [att.key]: att.value};
       });
       productData.data.productItems.map((prdItem)=>{
         prdItem.variants?.map((vriItem)=>{
@@ -74,6 +75,20 @@ const ProductForm = () => {
         attributes: data,
         variants: variants,
       });
+
+      // Set dataSource with _id
+      const newDataSource = productData.data.productItems.map((prdItem, index) => {
+        const label = prdItem.variants.map(v => `${v.key}-${v.value}`).join('||');
+        return {
+          key: index,
+          _id: prdItem._id,
+          label: label,
+          price: prdItem.price,
+          image: prdItem.image,
+          stock: prdItem.stock,
+        };
+      });
+      setDataSource(newDataSource);
     }
   }, [productData, id]);
 
@@ -90,16 +105,15 @@ const ProductForm = () => {
     }
   }, [categoryForm]);
 
-  const brandOptions = brands?.map((brand) => ({
-    label: brand.name,
-    value: brand._id,
-  }));
+const brandOptions = Array.isArray(brands) ? brands.map((brand) => ({
+  label: brand.name,
+  value: brand._id,
+})) : [];
 
-  const categoryOptions = categories?.map((category) => ({
-    label: category.name,
-    value: category._id,
-  }));
-
+const categoryOptions = Array.isArray(categories) ? categories.map((category) => ({
+  label: category.name,
+  value: category._id,
+})) : [];
   const uploadImg = useMutation({
     mutationFn: uploadFileCloudinary,
     onSuccess: (data) => {
@@ -178,49 +192,51 @@ const ProductForm = () => {
   useEffect(() => {
     var count = 0;
     var newDts = [];
-    if(variantForm){
-      if(variantForm.length == 1 || (variantForm[0] && (!variantForm[1] || !variantForm[1]?.list ||!variantForm[1]?.list[0])) ){
-        variantForm.map((item)=>{
-          if(item?.list){
-            item.list.map((value)=>{
-              if(value?.value){
-                var dbProductItem = productData?.data.productItems?.find((prdItem)=>{return `${item.name}-${value.value}` == prdItem?.variants[0].key+"-"+prdItem?.variants[0].value});
+    if (variantForm) {
+      if (variantForm.length === 1 || (variantForm[0] && (!variantForm[1] || !variantForm[1]?.list || !variantForm[1]?.list[0]))) {
+        variantForm.forEach((item) => {
+          if (item?.list) {
+            item.list.forEach((value) => {
+              if (value?.value) {
+                var dbProductItem = productData?.data.productItems?.find((prdItem) => `${item.name}-${value.value}` === `${prdItem?.variants[0].key}-${prdItem?.variants[0].value}`);
                 var newData = {
                   key: count,
+                  _id: dbProductItem ? dbProductItem._id : undefined, // Preserve _id if exists
                   label: `${item.name}-${value.value}`,
                   price: dbProductItem ? dbProductItem.price : '0',
                   image: dbProductItem ? dbProductItem.image : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg',
-                  stock: dbProductItem > 0 ? dbProductItem.stock : '0',
+                  stock: dbProductItem ? dbProductItem.stock : '0',
                 };
                 newDts = [...newDts, newData];
-                count = count + 1;
+                count += 1;
               }
             });
           }
         });
       }
 
-      if(variantForm.length == 2 && variantForm[0] && variantForm[1] && variantForm[0]?.list && variantForm[1]?.list && variantForm[0]?.list[0] && variantForm[1]?.list[0]){
-        variantForm[0].list.map((value)=>{
-          if(value?.value){
-            variantForm[1].list.map((value1)=>{
-              if(value1?.value){
-                var dbProductItem = productData?.data.productItems?.find((prdItem)=>{return (prdItem?.variants[0].key+"-"+prdItem?.variants[0].value+"||"+prdItem?.variants[1].key+"-"+prdItem?.variants[1].value) == (`${variantForm[0].name}-${value.value}||${variantForm[1].name}-${value1.value}`)});
-                var newData = {
-                  key: count,
-                  label: `${variantForm[0].name}-${value.value}||${variantForm[1].name}-${value1.value}`,
-                  price: dbProductItem ? dbProductItem.price : '0',
-                  image: dbProductItem ? dbProductItem.image : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg',
-                  stock: dbProductItem ? dbProductItem.stock : '0',
-                };
-                newDts = [...newDts, newData];
-                count = count + 1;
-              }
-            });
+      if (variantForm.length === 2 && variantForm[0]?.list && variantForm[1]?.list) {
+        for (let i = 0; i < variantForm[0].list.length; i++) {
+          const value = variantForm[0].list[i];
+          const value1 = variantForm[1].list[i];
+          if (value?.value && value1?.value) {
+            var dbProductItem = productData?.data.productItems?.find((prdItem) => 
+              `${prdItem?.variants[0].key}-${prdItem?.variants[0].value}||${prdItem?.variants[1].key}-${prdItem?.variants[1].value}` === 
+              `${variantForm[0].name}-${value.value}||${variantForm[1].name}-${value1.value}`
+            );
+            var newData = {
+              key: count,
+              _id: dbProductItem ? dbProductItem._id : undefined, // Preserve _id if exists
+              label: `${variantForm[0].name}-${value.value}||${variantForm[1].name}-${value1.value}`,
+              price: dbProductItem ? dbProductItem.price : '0',
+              image: dbProductItem ? dbProductItem.image : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg',
+              stock: dbProductItem ? dbProductItem.stock : '0',
+            };
+            newDts = [...newDts, newData];
+            count += 1;
           }
-        });
+        }
       }
-      
     }
     setDataSource(newDts);
   }, [variantForm]);
@@ -308,6 +324,7 @@ const ProductForm = () => {
         }
       });
       return {
+        _id: item._id, // Ensure the existing _id is preserved
         price: item.price,
         image: item.image,
         stock: item.stock,
@@ -326,6 +343,7 @@ const ProductForm = () => {
               queryKey: [QUERY_KEY.DETAIL, id],
             });
             toast.success("Cập nhật sản phẩm thành công");
+            navigate("/admin/products")
           },
         }
       );
@@ -334,7 +352,11 @@ const ProductForm = () => {
         dataSubmit,
         {
           onSuccess: () => {
+            queryClient.invalidateQueries({
+              queryKey: [QUERY_KEY.DETAILS],
+            });
             toast.success("Thêm mới sản phẩm thành công");
+            navigate("/admin/products")
           },
         }
       );
@@ -458,8 +480,8 @@ const ProductForm = () => {
               }));
               if(det.isSelectedInputType){
                 return (
-                  <Form.Item
-                    name={"attributes_"+index}
+                  <Form.Item key={det.key}
+                    name={det.key}
                     label={det.key}
                     rules={rules}
                   >
@@ -469,8 +491,8 @@ const ProductForm = () => {
               }
               if(!det.isSelectedInputType){
                 return (
-                  <Form.Item
-                    name={"attributes_"+index}
+                  <Form.Item key={det.key}
+                    name={det.key}
                     label={det.key}
                     rules={rules}
                   >
@@ -636,7 +658,12 @@ const EditableCell = ({
         rules={[
           {
             required: true,
-            message: `${title} is required.`,
+            message: `${title} không được để trống.`,
+          },
+          {
+            type: 'number',
+            min: 0,
+            message: `${title} không được âm.`,
           },
         ]}
       >
@@ -657,7 +684,14 @@ const EditableCell = ({
             />
           </>
         ) : (
-          <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+          <InputNumber ref={inputRef} onPressEnter={save} onBlur={save} 
+            onKeyDown={(e) => {
+              // Ngăn không cho nhập các ký tự không phải số
+              if (isNaN(Number(e.key)) && e.key !== 'Backspace' && e.key !== 'Tab' && e.key !== '-') {
+                e.preventDefault();
+              }
+            }}
+          />
         )}
         
       </Form.Item>
@@ -670,7 +704,7 @@ const EditableCell = ({
         onClick={toggleEdit}
       >
         {dataIndex == "image" ? [undefined,(
-          <img src={children[1]} alt="Blog preview" className="inline w-[100px] h-a object-cover rounded-lg mb-4" />       
+          <img src={children[1]} key={children} alt="Blog preview" className="inline w-[100px] h-a object-cover rounded-lg mb-4" />       
         )] : (
           children
         )}

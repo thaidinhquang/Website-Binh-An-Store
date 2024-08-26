@@ -16,7 +16,7 @@ export const addparamstoUrl = (url, params) => {
   return newUrl;
 };
 
-export const useTanstackQuery = (path, query = {}, returnData = true) => {
+export const useTanstackQuery = (path, query = {}, returnData = true, enable = true) => {
   const { data, ...rest } = useQuery({
     queryKey: [path],
     queryFn: async () => {
@@ -28,6 +28,7 @@ export const useTanstackQuery = (path, query = {}, returnData = true) => {
         throw error;
       }
     },
+    enabled: enable, // Add the enabled option here
   });
   return { data, ...rest };
 };
@@ -36,67 +37,47 @@ export const useTanstackMutation = ({
   path,
   action,
   navigatePage,
-  toastMessage,
   invalidateQueries,
+  toastMessage,
 }) => {
   const queryClient = useQueryClient();
   const form = useForm();
   const navigate = useNavigate();
-  const { mutate: originalMutate, ...rest } = useMutation({
+  const { mutate, ...rest } = useMutation({
     mutationFn: async (data) => {
-      if (action === "CREATE") {
-        return await axiosPost(path, data);
-      } else if (action === "UPDATE") {
-        return await axiosPut(`${path}/${data._id}`, data);
-      } else if (action === "PATCH") {
-        return await axiosPatch(path, data);
-      } else if (action === "DELETE") {
-        return data.active ? await axiosDelete(`${path}/${data._id}`) : await axiosDelete(`${path}/restore/${data._id}`);
-      } else if (action === "UPLOAD") {
-        const url = await uploadFileCloudinary(data)
-        return url;
-      }
-      return null;
-    },
-    onMutate: async (variables) => {
-      const toastId = toast.loading(toastMessage || "Processing...");
-      const startTime = Date.now(); // Record the start time
-      return { toastId, startTime };
-    },
-    onSuccess: (data, variables, context) => {
-      const elapsedTime = Date.now() - context.startTime; // Calculate elapsed time
-      const delay = Math.max(500 - elapsedTime, 0); // Calculate remaining delay to ensure at least 1 second
-      setTimeout(() => { // Delay the toast update if needed
-        toast.update(context.toastId, { render: toastMessage || data.message, type: "success", isLoading: false, autoClose: 5000 });
-        if (navigatePage) {
-          navigate(navigatePage);
+      let toastId = toast.loading('Processing...');
+      try {
+        let result;
+        if (action === "CREATE") {
+          result = await axiosPost(path, data);
+        } else if (action === "UPDATE") {
+          result = await axiosPut(`${path}/${data._id}`, data);
+        } else if (action === "PATCH") {
+          result = await axiosPatch(path, data);
+        } else if (action === "DELETE") {
+          result = data.active ? await axiosDelete(`${path}/${data._id}`) : await axiosDelete(`${path}/restore/${data._id}`);
+        } else if (action === "UPLOAD") {
+          const url = await uploadFileCloudinary(data);
+          result = { message: 'File uploaded successfully!', url };
+        } else {
+          result = { message: 'Unknown action' };
         }
-      }, delay);
+        toast.update(toastId, { render: result.message ? result.message : 'Operation completed successfully!', type: 'success', isLoading: false, autoClose: 5000 });
+        return result;
+      } catch (error) {
+        toast.update(toastId, { render: error.message ? error.message : 'Operation failed!', type: 'error', isLoading: false, autoClose: 5000 });
+        throw error;
+      }
     },
-    onError: (error, variables, context) => {
-      const elapsedTime = Date.now() - context.startTime; // Calculate elapsed time
-      const delay = Math.max(500 - elapsedTime, 0); // Calculate remaining delay to ensure at least 1 second
-      setTimeout(() => { // Delay the toast update if needed
-        toast.update(context.toastId, { render: `Error: ${error.message}`, type: "error", isLoading: false, autoClose: 5000 });
-      }, delay);
-    },
-    onSettled: (data, error, variables, context) => {
+    onSuccess: (data) => {
       if (invalidateQueries != false) {
         queryClient.invalidateQueries(path);
       }
+      if (navigatePage) {
+        navigate(navigatePage);
+      }
     },
   });
-
-  const mutate = (data, options = {}) => {
-    originalMutate(data, {
-      ...options,
-      onSettled: (data, error, variables, context) => {
-        if (options.onSettled) {
-          options.onSettled(data, error, variables, context);
-        }
-      },
-    });
-  };
 
   const onSubmit = (data) => {
     mutate(data);

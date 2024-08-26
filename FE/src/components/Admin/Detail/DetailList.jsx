@@ -5,15 +5,21 @@ import { useState } from "react";
 import CreateDetailModal from "./CreateDetailModal";
 import { useDeleteDetail } from "../../../common/hooks/detail/useDeleteDetail";
 import { toast } from "react-toastify";
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEY } from "../../../constants/queryKey";
 
 const DetailList = () => {
   const { data: details, refetch } = useGetAllDetails();
   const [open, setOpen] = useState(false);
   const deleteDetail = useDeleteDetail();
+  const queryClient = useQueryClient();
 
   const handleDelete = (id) => {
     deleteDetail.mutate({id},{
       onSuccess: (data) => {
+        queryClient.invalidateQueries({
+          queryKey:[QUERY_KEY.DETAILS]
+        })
         toast.success("Xóa thành công");
       }
     });
@@ -49,6 +55,9 @@ const DetailList = () => {
 
   return (
     <div>
+    
+
+    
       <Button type="primary text-[black]" className="text-white  bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" onClick={()=>setOpen(true)}>
           Thêm chi tiết sản phẩm
       </Button>

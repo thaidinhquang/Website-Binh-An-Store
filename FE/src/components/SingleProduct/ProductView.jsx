@@ -6,6 +6,7 @@ import {
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../Auth/core/Auth";
 import ThinLove from "../icons/ThinLove";
+import { toast } from 'react-toastify';
 
 const ProductView = ({ className }) => {
   const { currentUser } = useContext(AuthContext);
@@ -54,11 +55,18 @@ const ProductView = ({ className }) => {
 
   const handleAddToCart = (event) => {
     event.preventDefault();
-    const selectedVariant = variants?.variants.map((variant) => ({
-      key: variant.key,
-      value: variant.value,
-    }));
-
+    if (!currentUser) {
+      toast.error("Vui lòng đăng nhập để mua hàng");
+      return;
+    }
+    if (variants?.stock <= 0) {
+      toast.error("Không thể thêm sản phẩm vì sản phẩm đã hết hàng.");
+      return;
+    }
+    if (quantity > variants?.stock) {
+      toast.error("Không thể thêm sản phẩm vì số lượng vượt quá tồn kho.");
+      return;
+    }
     mutate({
       productId: variants?._id,
       quantity,
@@ -81,13 +89,13 @@ const ProductView = ({ className }) => {
 
   useEffect(() => {
     setVariant(() => product?.productItems[0]);
-    setSelectedImage(product?.image|| product?.productItems[0]?.image);  // Set initial selected image
+    setSelectedImage(product?.image || product?.productItems[0]?.image);  // Set initial selected image
   }, [product]);
 
   const handleSelectVariant = (variant) => {
     setVariant(variant);
     setSelectedImage(variant?.image);
-    setSelectedVariantId(variant._id); // Set the selected variant ID
+    // setSelectedVariantId(variant._id); // Set the selected variant ID
   };
 
   if (isLoading) return <p>Loading...</p>;
@@ -137,6 +145,9 @@ const ProductView = ({ className }) => {
             </div>
             <div className="my-2">
               <span>Số Lượng: {variants?.stock}</span>
+              {variants?.stock === 0 && (
+                <span className="text-red-500 ml-2">(Hết hàng)</span>
+              )}
             </div>
 
             <div className="flex gap-2 mb-4">
@@ -146,7 +157,7 @@ const ProductView = ({ className }) => {
                     onClick={() => handleSelectVariant(productItem)}
                     key={i}
                     className={`border-2 flex gap-2 h-[50px] items-center ${
-                      selectedVariantId === productItem._id ? "border-cyan-500" : "border-black"
+                      variants?._id === productItem?._id ? "border-cyan-500" : "border-black"
                     } p-2 cursor-pointer`}
                   >
                     {productItem.variants.map((item, index) => (
@@ -164,7 +175,7 @@ const ProductView = ({ className }) => {
                 <div className="flex justify-between items-center w-full">
                   <button onClick={handleDecrement} type="button" className="text-base text-qgray">-</button>
                   <span className="text-qblack">{quantity}</span>
-                  <button onClick={handleIncrement} type="button" className="text-base text-qgray">+</button>
+                  <button onClick={handleIncrement} type="button" className="text-base text-qgray" disabled={quantity >= variants?.stock}>+</button>
                 </div>
               </div>
 
@@ -179,7 +190,7 @@ const ProductView = ({ className }) => {
                         addToWishlist({ productId: product._id });
                       }
                     } else {
-                      alert("Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích");
+                      toast.error("Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích");
                     }
                   }}
                 >
@@ -193,9 +204,12 @@ const ProductView = ({ className }) => {
               </div>
 
               <div className="flex-1 h-full">
-                <button type="submit" className="black-btn text-sm font-semibold w-full h-full">
+                <button type="submit" className={`black-btn text-sm font-semibold w-full h-full ${variants?.stock === 0 || !currentUser ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={variants?.stock === 0}>
                   Add To Cart
                 </button>
+                {!currentUser && (
+                  <p className="text-red-500 mt-2">Vui lòng đăng nhập để mua hàng</p>
+                )}
               </div>
             </div>
 

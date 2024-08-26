@@ -14,7 +14,7 @@ const LayoutWebsite = ({ children, childrenClasses}) => {
       {children && children}
     </div>
     <Outlet/>
-    <DiscountBanner/>
+    <DiscountBanner type={3}/>
     <Footer />
   </div>
     </div>

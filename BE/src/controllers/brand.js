@@ -4,7 +4,7 @@ import Brand from "../models/Brand.js";
 export const createBrand = async (req, res, next) => {
   try {
     const data = await Brand.create(req.body);
-    return !data ? res.status(400).json({ message: "Create category failed!" }) : res.status(200).json({ data, message: "Create Brand successfully"})
+    return !data ? res.status(400).json({ message: "Thêm nhãn hàng thất bại" }) : res.status(200).json({ data, message: "Thêm nhãn hàng thành công"})
   } catch (error) {
     next(error)
   }
@@ -13,7 +13,7 @@ export const createBrand = async (req, res, next) => {
 export const updateBrand = async (req, res, next) => {
   try {
     const data = await Brand.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    return !data ? res.status(400).json({ message: "Update category failed!" }) : res.status(200).json({ data, message: "Update Brand successfully"})
+    return !data ? res.status(400).json({ message: "Cập nhật nhãn hàng thất bại" }) : res.status(200).json({ data, message: "Cập nhật nhãn hàng thành công"})
   } catch (error) {
     next(error)
   }
@@ -78,7 +78,7 @@ export const getOneBrandByName = async (req, res, next) => {
 export const removeBrand = async (req, res, next) => {
   try {
     const data = await Brand.findByIdAndUpdate(req.params.id, { active: false }, { new: true });
-    return !data ? res.status(400).json({ message: "Delete Brand failed!" }) : res.status(200).json({ data, message: "Delete Brand successfully"})
+    return !data ? res.status(400).json({ message: "Xóa nhãn hàng thất bại" }) : res.status(200).json({ data, message: "Xóa nhãn hàng thành công"})
   } catch (error) {
     next(error)
   }
@@ -87,7 +87,7 @@ export const removeBrand = async (req, res, next) => {
 export const restoreBrand = async (req, res, next) => {
   try {
     const data = await Brand.findByIdAndUpdate(req.params.id, { active: true }, { new: true });
-    return !data ? res.status(400).json({ message: "Restore Brand failed!" }) : res.status(200).json({ data, message: "Restore Brand successfully"})
+    return !data ? res.status(400).json({ message: "Khôi phục nhãn hàng thất bại" }) : res.status(200).json({ data, message: "Khôi phục nhãn hàng thành công"})
   }
   catch (error) {
     next(error)

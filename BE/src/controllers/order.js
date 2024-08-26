@@ -1,3 +1,4 @@
+import mongoose from "mongoose"; // Add this line
 import Stripe from "stripe";
 import Order from "../models/Order.js";
 import { ORDER_STATUS } from "../constants/order.js";
@@ -5,7 +6,7 @@ import { ROLES } from "../constants/Role.js";
 import sendEmail from "../utils/sendEmail.js";
 import User from "../models/User.js";
 import ProductItem from "../models/ProductItem.js";
-import mongoose from "mongoose";
+import Cart from "../models/Cart.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -77,27 +78,46 @@ export const createOrder = async (req, res) => {
       }
 
       if (productItem.stock < item.quantity) {
-        throw new Error("Not enough stock");
+        throw new Error("Không đủ hàng");
       }
 
       productItem.stock -= item.quantity;
       await productItem.save({ session });
     }
 
+    // Clear the cart after successful order
+    const userId = req.user?._id?.toString();
+    const cart = await Cart.findOne({ userId }).session(session);
+    if (cart) {
+      for (const item of req.body.items) {
+        const productIndex = cart.products.findIndex(
+          (product) => product.productId.toString() === item.productId
+        );
+        if (productIndex !== -1) {
+          cart.products.splice(productIndex, 1);
+        }
+      }
+      await cart.save({ session });
+    }
+
     await session.commitTransaction();
     session.endSession();
 
     return res.status(200).json({
-      message: "Created a new order.",
+      message: "Đặt hàng thành công",
       success: true,
       metadata: null,
     });
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
-    return console.log("Something went wrong...", error);
+    return res.status(400).json({
+      message: error.message,
+      success: false,
+    });
   }
 };
+
 // @POST CREATE ORDER BY CARD
 // export const createStripeOrder = async (session) => {
 //   try {
@@ -210,11 +230,26 @@ export const createStripeOrder = async (session) => {
       }
 
       if (productItem.stock < item.quantity) {
-        throw new Error("Not enough stock");
+        throw new Error("Không đủ hàng");
       }
 
       productItem.stock -= item.quantity;
       await productItem.save({ mongooseSession });
+    }
+
+    // Clear the cart after successful order
+    const userId = session.metadata?.userId;
+    const cart = await Cart.findOne({ userId }).session(mongooseSession);
+    if (cart) {
+      for (const item of dataItems) {
+        const productIndex = cart.products.findIndex(
+          (product) => product.productId.toString() === item.productId
+        );
+        if (productIndex !== -1) {
+          cart.products.splice(productIndex, 1);
+        }
+      }
+      await cart.save({ mongooseSession });
     }
 
     await mongooseSession.commitTransaction();
@@ -267,7 +302,9 @@ export const createStripeOrder = async (session) => {
       .status(200)
       .json({ message: "Order saved successfully", success: true });
   } catch (error) {
-    await mongooseSession.abortTransaction();
+    if (mongooseSession.inTransaction()) {
+      await mongooseSession.abortTransaction();
+    }
     mongooseSession.endSession();
     return console.error(
       "Error processing checkout.session.completed event:",
@@ -308,6 +345,7 @@ export const listenEvent = async (req, res) => {
   res.status(200).end();
 };
 
+
 // @GET ALL ORDER BY USER
 export const getAllOrdersByUser = async (req, res) => {
   const options = {
@@ -315,6 +353,10 @@ export const getAllOrdersByUser = async (req, res) => {
     limit: req.query.limit ? +req.query.limit : 10,
     sort: req.query.sort ? req.query.sort : { createdAt: -1 },
     lean: true,
+    populate: {
+      path: 'items.productId',
+      model: 'ProductItem'
+    }
   };
 
   const filter = {
@@ -364,7 +406,12 @@ export const getAllOrdersByUser = async (req, res) => {
 // @GET ORDER DETAIL
 export const getOrderDetails = async (req, res) => {
   try {
-    const order = await Order.findById(req.params.orderId).lean();
+    const order = await Order.findById(req.params.orderId)
+      .populate({
+        path: 'items.productId',
+        model: 'ProductItem'
+      })
+      .lean();
 
     if (!order) {
       throw new Error(`Not found any order with id: ${req.params.orderId} `);
@@ -374,7 +421,12 @@ export const getOrderDetails = async (req, res) => {
       .status(200)
       .json({ message: "OK", success: true, metadata: order });
   } catch (error) {
-    return console.log("Something went wrong.", error);
+    console.log("Something went wrong.", error);
+    return res.status(500).json({
+      message: "Something went wrong.",
+      success: false,
+      error: error.message,
+    });
   }
 };
 

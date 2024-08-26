@@ -24,7 +24,7 @@ const UpdateDetailModal = ({ record }) => {
       {
         onSuccess: () => {
           queryClient.invalidateQueries({
-            queryKey: [QUERY_KEY.DETAIL, record.key],
+            queryKey: [QUERY_KEY.DETAILS],
           });
           toast.success("Cập nhật thông số thành công");
         },

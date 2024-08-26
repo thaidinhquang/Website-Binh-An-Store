@@ -15,7 +15,7 @@ const ReceivedOrderPopup = ({ orderId }) => {
   const handleOk = () => {
     receivedOrder.mutate(orderId, {
       onSuccess: () => {
-        toast.success("Đã nhanh hàng thành công");
+        toast.success("Đã nhận hàng thành công");
         navigate(`/profile/orders`);
         setOpen(false);
       },

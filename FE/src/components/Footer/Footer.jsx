@@ -6,21 +6,24 @@ import Youtube from "../icons/Youtube";
 const Footer = () => {
   return (
     <footer className="footer-section-wrapper bg-white print:hidden">
-      <div className="container-x block mx-auto pt-[56px]">
+      <div className="container-x block mx-auto">
         <div className="w-full flex flex-col items-center mb-[50px]">
           {/* logo area */}
-          <div className="mb-[40px]">
+          <div className="">
             <Link to="/">
-              <h1>Bình An Store</h1>
+              <img className="w-40" src="/assets/images/logo.png" alt="" />
             </Link>
           </div>
           <div className="w-full h-[1px] bg-[#E9E9E9]"></div>
         </div>
         <div className="lg:flex justify-between mb-[50px]">
           <div className="lg:w-[424px] ml-0 w-full mb-10 lg:mb-0">
-            <h1 className="text-[18] font-500 text-[#2F2F2F] mb-5">Về Chúng Tôi</h1>
+            <h1 className="text-[18] font-500 text-[#2F2F2F] mb-5">
+              Về Chúng Tôi
+            </h1>
             <p className="text-[#9A9A9A] text-[15px] w-[247px] leading-[28px]">
-              Chúng tôi biết có rất nhiều nhà phát triển ngoài kia nhưng chúng tôi tự hào là một công ty trong ngành.
+              Chúng tôi biết có rất nhiều nhà phát triển ngoài kia nhưng chúng
+              tôi tự hào là một công ty trong ngành.
             </p>
           </div>
           <div className="flex-1 lg:flex">
@@ -57,7 +60,9 @@ const Footer = () => {
             <div className="lg:w-1/3 lg:flex lg:flex-col items-center w-full mb-10 lg:mb-0">
               <div>
                 <div className="mb-5">
-                  <h6 className="text-[18] font-500 text-[#2F2F2F]">Liên Kết Chung</h6>
+                  <h6 className="text-[18] font-500 text-[#2F2F2F]">
+                    Liên Kết Chung
+                  </h6>
                 </div>
                 <div>
                   <ul className="flex flex-col space-y-4">
@@ -134,8 +139,7 @@ const Footer = () => {
               </Link>
             </div>
             <span className="sm:text-base text-[10px] text-qgray font-300">
-              ©2024
-              Tất cả các quyền
+              ©2024 Tất cả các quyền
             </span>
           </div>
           <div className="">

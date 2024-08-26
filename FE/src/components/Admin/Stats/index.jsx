@@ -4,14 +4,14 @@ import OrdersByDayChart from "./OrdersByDayChart";
 import OrdersByMonth from "./OrdersByMonth";
 import TotalStatistics from "./TotalStatistics";
 import {
-  useTanstackMutation,
+
   useTanstackQuery,
 } from "../../../common/hooks/useTanstackQuery";
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+// import { Link, useLocation } from "react-router-dom";
 import { DatePicker } from "antd";
-import { set } from "@ant-design/plots/es/core/utils";
 import dayjs from "dayjs";
+import TopSellingProductsTable from "./TopSellingProductsTable";
 
 const Statistics = () => {
   const { data: statsData } = useTotalStatistics();
@@ -32,31 +32,35 @@ const Statistics = () => {
   }, [sort]);
 
   const onChange = (dateDate, dateString, type) => {
-    if (type == "fromDate") {
+    if (type === "fromDate") {
       setFromDate(dateString);
     }
-    if (type == "toDate") {
+    if (type === "toDate") {
       setToDate(dateString);
     }
   };
 
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND'
+    }).format(price);
+  };
+
   const stats = statsData?.data && statsData?.data?.metadata;
+
+  // Sort the data based on totalQuantity in descending order
+  const sortedData = data?.sort((a, b) => b.totalQuantity - a.totalQuantity);
 
   return (
     <div className="w-full h-full bg-gray-100 p-6">
-      {" "}
-      {/* Added bg-gray-100 and p-6 */}
       {/* Total Statistics Section */}
       <TotalStatistics stats={stats} />
       <div className="mt-8 bg-white p-6 rounded-lg shadow-md">
-        {" "}
-        {/* Added p-6, rounded-lg, and shadow-md */}
         <h2 className="text-xl font-semibold mb-4">Doanh số theo ngày</h2>
         <OrdersByDayChart stats={stats} />
       </div>
       <div className="mt-8 bg-white p-6 rounded-lg shadow-md">
-        {" "}
-        {/* Added p-6, rounded-lg, and shadow-md */}
         <h2 className="text-xl font-semibold mb-4">Thống kê theo tháng</h2>
         <OrdersByMonth orderStats={orderStats} />
       </div>
@@ -90,7 +94,7 @@ const Statistics = () => {
           </button>
           <button
             onClick={() => {
-              setSort(sort == 1 ? -1 : 1);
+              setSort(sort === 1 ? -1 : 1);
             }}
             className="w-[13px] ml-[20px] pt-[10px]"
           >
@@ -99,69 +103,11 @@ const Statistics = () => {
             </svg>
           </button>
         </div>
-        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-              <tr>
-                <td scope="col" className="px-6 py-3">
-                  Order
-                </td>
-                <td scope="col" className="px-6 py-3">
-                  Ảnh Sản Phẩm
-                </td>
-                <td scope="col" className="px-6 py-3">
-                  Tên Sản Phẩm
-                </td>
-                <td scope="col" className="px-6 py-3">
-                  Giá Sản Phẩm
-                </td>
-                <td scope="col" className="px-6 py-3">
-                  Số Sản Phẩm Đã Bán
-                </td>
-                <td scope="col" className="px-6 py-3">
-                  Chi tiết
-                </td>
-              </tr>
-            </thead>
-            <tbody>
-              {data?.length > 0 ? (
-                data?.map((product, index) => (
-                  <tr
-                    key={product._id}
-                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                  >
-                    <th className="px-6 py-4">{index + 1}</th>
-                    <th className="px-6 py-4">
-                      <img
-                        src={product.productImage}
-                        width={100}
-                        className=" rounded-lg"
-                        alt=""
-                      />
-                    </th>
-                    <th className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                      <p className="inline-block">{product.productName}</p>
-                    </th>
-                    <th className="px-6 py-4">{product.productPrice}</th>
-                    <th className="px-6 py-4">{product.totalQuantity}</th>
-                    <th className="px-6 py-4">
-                      <span>
-                        {" "}
-                        <Link to={`/detail/${product._id}`}>--{">"}</Link>
-                      </span>
-                    </th>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={6} className="text-center">
-                    Không có sản phẩm nào
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+        <TopSellingProductsTable
+          data={sortedData}
+          isLoading={isLoading}
+          formatPrice={formatPrice}
+        />
       </div>
     </div>
   );

@@ -1,11 +1,7 @@
 import { Link } from "react-router-dom";
-import { useTanstackMutation } from "../../common/hooks/useTanstackQuery";
 
 const SuccessMessage = () => {
-    const { mutate: clearCart } = useTanstackMutation({
-        path: `cart/clear`,
-        action: "CREATE",
-      });
+  
     return (
         <div className="bg-gray-100 h-screen flex items-center justify-center">
             <div className="bg-white p-6 md:mx-auto min-w-[500px]">
@@ -19,7 +15,7 @@ const SuccessMessage = () => {
                     <p className="text-gray-600 my-2">Cảm ơn bạn vì đã mua hàng.</p>
                     <p> Chúc bạn 1 ngày tốt lành!  </p>
                     <div className="py-10 text-center">
-                        <Link to={'/'} onClick={()=>clearCart()} className="px-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3">
+                        <Link to={'/'} className="px-12 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3">
                             Trở lại trang chủ
                         </Link>
                     </div>

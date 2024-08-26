@@ -17,7 +17,7 @@ const ConfirmShippingPopup = ({ orderId }) => {
   const handleOk = () => {
     shippingOrder.mutate(orderId, {
       onSuccess: () => {
-        toast.success("This order is on delivery");
+        toast.success("Đơn hàng này đang được giao");
         navigate(0);
         setOpen(false);
       },
@@ -28,13 +28,13 @@ const ConfirmShippingPopup = ({ orderId }) => {
   };
 
   const handleCancel = () => {
-    console.log("Clicked cancel button");
+    console.log("Đã ấn vào nút hủy bỏ");
     setOpen(false);
   };
 
   return (
     <Popconfirm
-      title="Confirm to delivery?"
+      title="Xác nhận giao hàng?"
       okText="Yes"
       okType="danger"
       open={open}

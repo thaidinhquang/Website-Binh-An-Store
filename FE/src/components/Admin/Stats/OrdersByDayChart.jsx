@@ -33,7 +33,7 @@ const OrdersByDayChart = ({ stats }) => {
     label: {
       text: (originData) => {
         const val = parseFloat(originData.amount);
-        return `Revenue: ${val}`;
+        return `Doanh thu: ${val}`;
       },
       offset: 10,
     },

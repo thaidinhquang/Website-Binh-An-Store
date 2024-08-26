@@ -3,24 +3,27 @@ import { useTanstackMutation, useTanstackQuery } from "../../../common/hooks/use
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../../Auth/core/Auth";
 import socket from "/src/config/socket";
+import { Form, Input, Button, Spin } from "antd"; // Nhập các thành phần từ Ant Design
 
 const BrandForm = () => {
     const { id } = useParams();
-    const { form, onSubmit } = useTanstackMutation({
+    const [form] = Form.useForm(); // Khởi tạo form
+    const { mutate } = useTanstackMutation({
         path: `brands`,
         action: id ? "UPDATE" : "CREATE",
         navigatePage: "/admin/brands",
     });
     const { currentUser } = useContext(AuthContext);
-    const { data, isLoading } = id? useTanstackQuery(`brands/${id}`) : { data: null };
-    if (id) {
-        const userEditingPost = { id: currentUser._id, post_id: id, fullname: currentUser.email };
-        const handleUnload = () => {
-            socket.emit('leaveEditPost', userEditingPost);
-        };
-        useEffect(() => {
+    const { data, isLoading } = id ? useTanstackQuery(`brands/${id}`) : { data: null };
+
+    useEffect(() => {
+        if (id) {
+            const userEditingPost = { id: currentUser._id, post_id: id, fullname: currentUser.email };
+            const handleUnload = () => {
+                socket.emit('leaveEditPost', userEditingPost);
+            };
             if (data) {
-                form.reset(data);
+                form.setFieldsValue(data); // Đảm bảo rằng form được thiết lập với dữ liệu nhãn hàng
             }
             window.addEventListener('unload', handleUnload);
             socket.emit('joinEditPost', userEditingPost);
@@ -29,54 +32,54 @@ const BrandForm = () => {
                 socket.emit('leaveEditPost', userEditingPost);
                 window.removeEventListener('unload', handleUnload);
             };
-        }, [data]);
-    }
-    if (isLoading) return <p>Loading...</p>
-    return (
-        <>
-            <div>{id ? <div className="text-lg font-bold mb-4">Sửa thông tin danh mục</div> : <div className="text-lg font-bold mb-4">Thêm nhãn hàng mới</div>}</div>
-            <div className="flex justify-end">
-                <Link to="/admin/brands">
-                    <button className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
-                        Quay lại
-                    </button>
-                </Link>
-            </div>
+        }
+    }, [data, id, form, currentUser]);
 
-            <div>
-                <div>
-                    <div>
-                        <form onSubmit={form.handleSubmit(onSubmit)}>
-                            <div>
-                                <label className="block text-gray-700 text-sm font-bold mb-2">
-                                    Tên nhãn hàng
-                                </label>
-                                <input
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                                    {...form.register("name", { required: 'Không được bỏ trống', minLength: { value: 2, message: 'Tên nhãn hàng phải có ít nhất 1 ký tự!' } })}
-                                    type="text"
-                                />
-                                {form.formState.errors.name && <span className="text-red-500">{form.formState.errors.name.message}</span>}
-                            </div>
-                            <div>
-                                <label className="block text-gray-700 text-sm font-bold mb-2">
-                                    Slug:
-                                </label>
-                                <input
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                                    {...form.register("slug", { required: 'không được bỏ trống', minLength: { value: 2, message: 'Tên slug nhãn hàng phải có ít nhất 1 ký tự!' } })}
-                                    type="text"
-                                />
-                                {form.formState.errors.slug && <span className="text-red-500">{form.formState.errors.slug.message}</span>}
-                            </div>
-                            <button className="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900">
-                                {id ? "Sửa" : "Thêm"}
-                            </button>
-                        </form>
-                    </div>
+    if (isLoading) return <Spin size="large" />;
+
+    const onSubmit = (data) => {
+        if (id) {
+            mutate({ ...data, _id: id }); // Gửi id cùng với dữ liệu
+        } else {
+            mutate(data); // Chỉ gửi dữ liệu cho tạo mới
+        }
+    };
+
+    return (
+        <div className="bg-gray-100 min-h-screen p-6">
+            <div className="bg-white rounded-lg shadow-md p-6">
+                <h2 className="text-lg font-bold mb-4">{id ? "Sửa thông tin nhãn hàng" : "Thêm nhãn hàng mới"}</h2>
+                <div className="flex justify-end mb-4">
+                    <Link to="/admin/brands">
+                        <Button type="default">Quay lại</Button>
+                    </Link>
                 </div>
+
+                <Form form={form} onFinish={onSubmit} layout="vertical">
+                    <Form.Item
+                        label="Tên nhãn hàng"
+                        name="name"
+                        rules={[{ required: true, message: 'Không được bỏ trống' }, { min: 2, message: 'Tên nhãn hàng phải có ít nhất 2 ký tự' }]}
+                    >
+                        <Input placeholder="Nhập tên nhãn hàng" />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Slug"
+                        name="slug"
+                        rules={[{ required: true, message: 'Không được bỏ trống' }, { min: 2, message: 'Tên slug nhãn hàng phải có ít nhất 2 ký tự' }]}
+                    >
+                        <Input placeholder="Nhập slug nhãn hàng" />
+                    </Form.Item>
+
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit" className="my-8 px-4 py-2 text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out">
+                            {id ? "Sửa" : "Thêm"}
+                        </Button>
+                    </Form.Item>
+                </Form>
             </div>
-        </>
+        </div>
     );
 };
 

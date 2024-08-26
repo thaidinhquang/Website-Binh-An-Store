@@ -12,7 +12,7 @@ const CancelModal = ({ order }) => {
 
   const handleCancel = (values) => {
     if (!values.content) {
-      return toast.error("Please input a reason!");
+      return toast.error("Yêu cầu viết lí do!");
     }
 
     cancelOrder.mutate(
@@ -23,10 +23,10 @@ const CancelModal = ({ order }) => {
       {
         onSuccess: () => {
           setOpen(false);
-          toast.success("Cancel order successfully");
+          toast.success("Hủy đơn hàng thành công");
         },
         onError: () => {
-          toast.error("Cancel order failed");
+          toast.error("Hủy đơn hàng thất bại");
         },
       }
     );
@@ -41,8 +41,8 @@ const CancelModal = ({ order }) => {
       <Modal
         maskClosable={false}
         open={open}
-        title="Cancel Order"
-        cancelText="Cancel"
+        title="Hủy đơn hàng"
+        cancelText="Hủy bỏ"
         okButtonProps={{ autoFocus: true, htmlType: "submit" }}
         okType="default"
         onCancel={() => setOpen(false)}
@@ -60,13 +60,13 @@ const CancelModal = ({ order }) => {
           </Form>
         )}
       >
-        <p className="font-semibold">Are you sure to cancel this order?</p>
+        <p className="font-semibold">Bạn có chắc hủy đơn hàng này không?</p>
         <Form.Item
           name="content"
           className="mt-2"
-          rules={[{ required: true, message: "Please input a reason!" }]}
+          rules={[{ required: true, message: "Làm ơn nêu lí do" }]}
         >
-          <Input.TextArea placeholder="Write a reason..." />
+          <Input.TextArea placeholder="Viết lí do....." />
         </Form.Item>
       </Modal>
     </>
