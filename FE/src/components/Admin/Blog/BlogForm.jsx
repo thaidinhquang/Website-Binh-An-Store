@@ -112,6 +112,7 @@ const BlogForm = () => {
                                 htmlType="submit" 
                                 loading={mutation.isPending || uploadMutation.isPending}
                                 disabled={mutation.isPending || uploadMutation.isPending}
+                                className="bg-blue-500"
                             >
                                 {mutation.isPending ? "Đang Thêm..." : "Thêm"}
                             </Button>

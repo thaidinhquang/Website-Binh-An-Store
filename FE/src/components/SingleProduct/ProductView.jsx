@@ -55,6 +55,10 @@ const ProductView = ({ className }) => {
 
   const handleAddToCart = (event) => {
     event.preventDefault();
+    if (!currentUser) {
+      toast.error("Vui lòng đăng nhập để mua hàng");
+      return;
+    }
     if (variants?.stock <= 0) {
       toast.error("Không thể thêm sản phẩm vì sản phẩm đã hết hàng.");
       return;
@@ -186,7 +190,7 @@ const ProductView = ({ className }) => {
                         addToWishlist({ productId: product._id });
                       }
                     } else {
-                      alert("Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích");
+                      toast.error("Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích");
                     }
                   }}
                 >
@@ -200,9 +204,12 @@ const ProductView = ({ className }) => {
               </div>
 
               <div className="flex-1 h-full">
-                <button type="submit" className={`black-btn text-sm font-semibold w-full h-full ${variants?.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={variants?.stock === 0}>
+                <button type="submit" className={`black-btn text-sm font-semibold w-full h-full ${variants?.stock === 0 || !currentUser ? 'opacity-50 cursor-not-allowed' : ''}`} disabled={variants?.stock === 0}>
                   Add To Cart
                 </button>
+                {!currentUser && (
+                  <p className="text-red-500 mt-2">Vui lòng đăng nhập để mua hàng</p>
+                )}
               </div>
             </div>
 
