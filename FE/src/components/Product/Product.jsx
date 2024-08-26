@@ -7,7 +7,7 @@ import Pageination from '../UI/Pagination';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from "../Auth/core/Auth";
 
-const ProductCard = ({ limit, pagination, className }) => {
+const ProductCard = ({ limit, pagination, className, related = '' }) => {
   const { currentUser } = useContext(AuthContext);
   const location = useLocation();
   const search = useMemo(() => new URLSearchParams(location.search), [location.search]);
@@ -15,13 +15,14 @@ const ProductCard = ({ limit, pagination, className }) => {
   const sort = search.get('sort') || '';
   const name = search.get('name') || '';
   const categories = search.get('categories') || '';
-  const { data, isLoading, refetch } = useTanstackQuery('products', { limit, active: true, page, sort, name, categories });
+  const { data, isLoading, refetch } = useTanstackQuery(related ? 'products/related/' + related : 'products', { limit, active: true, page, sort, name, categories });
   const { mutate, isPending } = useTanstackMutation({ path: `cart/add-item`, action: "CREATE" });
   const { data: wishlistProducts } = useTanstackQuery('wishlist/products');
   const { mutate: addToWishlist } = useTanstackMutation({ path: `wishlist/add`, action: "CREATE" });
   const { mutate: removeFromWishlist } = useTanstackMutation({ path: `wishlist/remove`, action: "CREATE" });
-  
 
+  console.log(data);
+  
   useEffect(() => {
     refetch();
   }, [search]);
@@ -32,13 +33,13 @@ const ProductCard = ({ limit, pagination, className }) => {
       currency: 'VND'
     }).format(price);
   };
- 
-const getStatus = (createdAt) => {
-  const creationDate = new Date(createdAt);
-  const now = new Date();
-  const twoDays = 2 * 24 * 60 * 60 * 1000; // milliseconds in 2 days
-  return now - creationDate <= twoDays ? "Mới" : "";
-};
+
+  const getStatus = (createdAt) => {
+    const creationDate = new Date(createdAt);
+    const now = new Date();
+    const twoDays = 2 * 24 * 60 * 60 * 1000; // milliseconds in 2 days
+    return now - creationDate <= twoDays ? "Mới" : "";
+  };
 
   const checkProductInWishlist = (product) => {
     return wishlistProducts?.findIndex((item) => item.productId === product._id) !== -1;
@@ -54,17 +55,17 @@ const getStatus = (createdAt) => {
         {data?.docs.map((product) => (
           <div key={product._id} className="product-card-one bg-white relative group overflow-hidden shadow-md">
             <div className="product-card-img  overflow-hidden">
-            {getStatus(product.createdAt) && (
-              <span className="new-product-label absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-full">
-                {getStatus(product.createdAt)}
-              </span>
-            )}
-              <div       className="product-card-img w-full h-[300px] flex items-center">
-              <img
-          
-                src={product.image}
-                alt=""
-              />
+              {getStatus(product.createdAt) && (
+                <span className="new-product-label absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-full">
+                  {getStatus(product.createdAt)}
+                </span>
+              )}
+              <div className="product-card-img w-full h-[300px] flex items-center">
+                <img
+
+                  src={product.image}
+                  alt=""
+                />
               </div>
             </div>
             <div className="product-card-details px-[30px] pb-[30px] relative">
@@ -82,7 +83,7 @@ const getStatus = (createdAt) => {
               </Link>
               <p className="price">
                 <span className="offer-price text-qred font-semibold text-[15px] ml-2">
-                {formatPrice(product?.productItems?.[0]?.price)}
+                  {formatPrice(product?.productItems?.[0]?.price)}
                 </span>
               </p>
             </div>
@@ -92,24 +93,24 @@ const getStatus = (createdAt) => {
                   <QuickViewIco />
                 </span>
               </Link>
-              
-<button
-onClick={() => {
-  if (currentUser) {
-    if (checkProductInWishlist(product)) {
-      removeFromWishlist({ productId: product._id });
-    } else {
-      addToWishlist({ productId: product._id });
-    }
-  } else {
-    alert('Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích');
-  }
-}}
->
-<span className={`w-10 h-10 flex justify-center items-center rounded ${checkProductInWishlist(product) ? 'bg-white' : 'bg-primarygray'} hover:bg-white`}>
-  <ThinLove className="fill-current" fillColor={checkProductInWishlist(product) ? 'red' : 'black'} />
-</span>
-</button>
+
+              <button
+                onClick={() => {
+                  if (currentUser) {
+                    if (checkProductInWishlist(product)) {
+                      removeFromWishlist({ productId: product._id });
+                    } else {
+                      addToWishlist({ productId: product._id });
+                    }
+                  } else {
+                    alert('Vui lòng đăng nhập để thêm sản phẩm vào danh sách yêu thích');
+                  }
+                }}
+              >
+                <span className={`w-10 h-10 flex justify-center items-center rounded ${checkProductInWishlist(product) ? 'bg-white' : 'bg-primarygray'} hover:bg-white`}>
+                  <ThinLove className="fill-current" fillColor={checkProductInWishlist(product) ? 'red' : 'black'} />
+                </span>
+              </button>
             </div>
           </div>
         ))
