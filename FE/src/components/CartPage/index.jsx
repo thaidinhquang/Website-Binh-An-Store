@@ -92,26 +92,43 @@ const CartPage = ({ cart = true, className }) => {
 
   const updateProduct = (product, action) => {
     const productId = product.productId._id;
-    const quantity = data.products.find(
+    const productData = data.products.find(
       (item) => item.productId._id === productId
-    ).quantity;
+    );
+    const quantity = productData.quantity;
+    const stock = product.productId.stock; // Assuming stock is a property of productId
+
     if (action === "increase") {
-      increaseProduct({ productId });
-      data.products.find((item) => item.productId._id === productId).quantity++;
-    }
+      if (quantity < 5 && quantity < stock) { // Limit to 5 products and stock
+        increaseProduct({ productId });
+        productData.quantity++;
+      } else if (quantity >= stock) {
+        toast.error("Số lượng vượt quá tồn kho");
+      } else {
+        toast.error("Không được lấy quá 5 sản phẩm");
+      }
+    }   
+
     if (action === "decrease") {
-      if (quantity > 1) {
+      if (quantity > 1) { // Limit to minimum 1 product
         decreaseProduct({ productId });
-        data.products.find((item) => item.productId._id === productId)
-          .quantity--;
+        productData.quantity--;
+      } else {
+        toast.error("Số lượng không được dưới 1");
       }
     }
+
     if (action === "remove") {
-      removeProduct({ productId });
-      data.products = data.products.filter(
-        (item) => item.productId._id !== productId
-      );
+      if (data.products.length > 1) { // Prevent removing the last product
+        removeProduct({ productId });
+        data.products = data.products.filter(
+          (item) => item.productId._id !== productId
+        );
+      } else {
+        toast.error("Không thể xóa sản phẩm cuối cùng");
+      }
     }
+
     setTimeout(() => {
       refetch();
     }, 1000);

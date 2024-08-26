@@ -114,10 +114,14 @@ export const removeItemFromCart = async (req, res, next) => {
 export const updateItemInCart = async (req, res, next) => {
   try {
     const userId = req.user._id;
-    const { productId, quantity, attributesId, valuesId } = req.body;
+    const { productId, quantity } = req.body;
 
     if (quantity <= 0) {
       return res.status(400).json({ message: "Số lượng phải lớn hơn 0" });
+    }
+
+    if (quantity > 5) {
+      return res.status(400).json({ message: "Số lượng sản phẩm không được lớn hơn 5" });
     }
 
     const product = await ProductItem.findById(productId);
@@ -125,37 +129,28 @@ export const updateItemInCart = async (req, res, next) => {
       return res.status(404).json({ message: "Không tìm thấy sản phẩm" });
     }
 
-    if (quantity > 5 || quantity > product.stock) {
-      return res.status(400).json({ message: "Số lượng sản phẩm không được lớn hơn 5 hoặc số lượng trong kho" });
+    if (quantity > product.stock) {
+      return res.status(400).json({ message: "Số lượng sản phẩm không được lớn hơn số lượng trong kho" });
     }
 
     const cart = await Cart.findOne({ userId });
     if (!cart) {
-      return res.status(404).json({ message: "Cart not found" });
+      return res.status(404).json({ message: "Không tìm thấy giỏ hàng" });
     }
 
     const productIndex = cart.products.findIndex(
       (product) => product.productId.toString() === productId
     );
     if (productIndex === -1) {
-      return res
-        .status(404)
-        .json({ message: "Không tìm thấy sản phẩm trong giỏ hàng" });
+      return res.status(404).json({ message: "Không tìm thấy sản phẩm trong giỏ hàng" });
     }
 
     cart.products[productIndex].quantity = quantity;
-    if (attributesId) {
-      cart.products[productIndex].attributesId = attributesId;
-    }
-    if (valuesId) {
-      cart.products[productIndex].valuesId = valuesId;
-    }
-
     await cart.save();
 
     const updatedCart = await Cart.findOne({ userId }).populate({
       path: "products.productId",
-      model: "Product",
+      model: "ProductItem",
     });
 
     return res.status(200).json({
