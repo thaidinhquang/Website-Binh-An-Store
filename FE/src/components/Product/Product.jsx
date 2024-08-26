@@ -16,13 +16,9 @@ const ProductCard = ({ limit, pagination, className, related = '' }) => {
   const name = search.get('name') || '';
   const categories = search.get('categories') || '';
   const { data, isLoading, refetch } = useTanstackQuery(related ? 'products/related/' + related : 'products', { limit, active: true, page, sort, name, categories });
-  const { mutate, isPending } = useTanstackMutation({ path: `cart/add-item`, action: "CREATE" });
   const { data: wishlistProducts } = useTanstackQuery('wishlist/products');
   const { mutate: addToWishlist } = useTanstackMutation({ path: `wishlist/add`, action: "CREATE" });
   const { mutate: removeFromWishlist } = useTanstackMutation({ path: `wishlist/remove`, action: "CREATE" });
-
-  console.log(data);
-  
   useEffect(() => {
     refetch();
   }, [search]);
@@ -70,9 +66,9 @@ const ProductCard = ({ limit, pagination, className, related = '' }) => {
             </div>
             <div className="product-card-details px-[30px] pb-[30px] relative">
               <div className="absolute w-full h-10 px-[30px] left-0 top-40 group-hover:top-[50px] transition-all duration-300 ease-in-out">
-                <Link to={`/detail/${product._id}`} className={isPending ? "blue-btn" : "yellow-btn"}>
+                <Link to={`/detail/${product._id}`} className={"yellow-btn"}>
                   <div className="flex items-center space-x-3">
-                    <span>{isPending ? "..." : "Xem chi tiết"}</span>
+                    <span>Xem chi tiết</span>
                   </div>
                 </Link>
               </div>

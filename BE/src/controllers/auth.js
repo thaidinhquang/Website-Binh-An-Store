@@ -129,8 +129,8 @@ export const sendOTP = async (req, res, next) => {
 
 export const resetPassword = async (req, res, next) => {
     try {
-        const { email, password, otp, cpassword } = req.body;
-        if(password !== cpassword) {
+        const { email, password, otp, cPassword } = req.body;
+        if(password !== cPassword) {
             return res.status(400).json({
                 message: "Mật khẩu không trùng khớp!",
             });
