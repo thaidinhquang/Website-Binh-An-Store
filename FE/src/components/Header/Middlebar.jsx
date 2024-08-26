@@ -12,9 +12,9 @@ import ThinLove1 from "../icons/ThinLove1";
 import SearchBox from "../SearchBox";
 
 const Middlebar = ({ className }) => {
-  const { currentUser } = useContext(AuthContext);
-  const { data: cartCount } = useTanstackQuery("cart/count");
-  const { data: wishlistCount } = useTanstackQuery("wishlist/count");
+  const { currentUser, isLogin } = useContext(AuthContext);
+  const { data: cartCount } = useTanstackQuery("cart/count", {}, true, isLogin);
+  const { data: wishlistCount } = useTanstackQuery("wishlist/count", {}, true, isLogin);
   return (
     <div>
       <div className={`w-full h-[86px] bg-white ${className}`}>
@@ -27,8 +27,8 @@ const Middlebar = ({ className }) => {
                 </Link>
               </div>
               <div className={`w-[517px] h-[44px]`}>
-              <SearchBox className={``} type={1} />
-            </div>
+                <SearchBox className={``} type={1} />
+              </div>
               {currentUser ? (
                 <div className="flex space-x-6 items-center">
                   <div className="favorite relative">

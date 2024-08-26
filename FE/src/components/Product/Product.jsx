@@ -8,7 +8,7 @@ import { useContext, useEffect, useMemo, useState } from 'react';
 import { AuthContext } from "../Auth/core/Auth";
 
 const ProductCard = ({ limit, pagination, className, related = '' }) => {
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser, isLogin } = useContext(AuthContext);
   const location = useLocation();
   const search = useMemo(() => new URLSearchParams(location.search), [location.search]);
   const page = search.get('page') || 1;
@@ -16,7 +16,7 @@ const ProductCard = ({ limit, pagination, className, related = '' }) => {
   const name = search.get('name') || '';
   const categories = search.get('categories') || '';
   const { data, isLoading, refetch } = useTanstackQuery(related ? 'products/related/' + related : 'products', { limit, active: true, page, sort, name, categories });
-  const { data: wishlistProducts } = useTanstackQuery('wishlist/products');
+  const { data: wishlistProducts } = useTanstackQuery('wishlist/products', {}, true, isLogin);
   const { mutate: addToWishlist } = useTanstackMutation({ path: `wishlist/add`, action: "CREATE" });
   const { mutate: removeFromWishlist } = useTanstackMutation({ path: `wishlist/remove`, action: "CREATE" });
   useEffect(() => {
