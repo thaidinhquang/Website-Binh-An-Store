@@ -28,7 +28,7 @@ const ConfirmShippingPopup = ({ orderId }) => {
   };
 
   const handleCancel = () => {
-    console.log("Clicked cancel button");
+    console.log("Đã ấn vào nút hủy bỏ");
     setOpen(false);
   };
 
