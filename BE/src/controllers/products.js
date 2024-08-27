@@ -5,7 +5,6 @@ import Product from "../models/Product.js";
 import mongoose from "mongoose";
 import ProductItem from "../models/ProductItem.js";
 
-
 export const getAllProduct = async (req, res, next) => {
   try {
     const options = {
@@ -51,8 +50,10 @@ export const getAllProduct = async (req, res, next) => {
     const products = await Product.paginate(query, options);
 
     // Fetch all ProductItems for the retrieved products
-    const productIds = products.docs.map(product => product._id);
-    const productItems = await ProductItem.find({ productId: { $in: productIds } });
+    const productIds = products.docs.map((product) => product._id);
+    const productItems = await ProductItem.find({
+      productId: { $in: productIds },
+    });
 
     // Group ProductItems by ProductId
     const productItemsByProduct = productItems.reduce((acc, item) => {
@@ -64,7 +65,7 @@ export const getAllProduct = async (req, res, next) => {
     }, {});
 
     // Attach ProductItems to their respective Products
-    products.docs = products.docs.map(product => ({
+    products.docs = products.docs.map((product) => ({
       ...product.toObject(),
       productItems: productItemsByProduct[product._id] || [],
     }));
@@ -80,21 +81,33 @@ export const getAllProduct = async (req, res, next) => {
 
 export const getDetailProductPopulate = async (req, res, next) => {
   try {
-    const data = await Product.findById(req.params.id).populate("brand").populate("category");
-    const productItems = await ProductItem.find({ productId: data._id });
-
+    const data = await Product.findById(req.params.id)
+      .populate("brand")
+      .populate("category");
+    const productItems = await ProductItem.find({
+      productId: data._id,
+    }).populate({
+      path: "reviews",
+      select: "rating comment email name",
+    });
     return !data
       ? res.status(400).json({ message: "Khong tim thay san pham!" })
       : res.status(200).json({ data: { ...data.toObject(), productItems } }); // Đưa productItems vào bên trong data
   } catch (error) {
     next(error);
+    s;
   }
 };
 
 export const getDetailProduct = async (req, res, next) => {
   try {
     const data = await Product.findById(req.params.id);
-    const productItems = await ProductItem.find({ productId: data._id });
+    const productItems = await ProductItem.find({
+      productId: data._id,
+    }).populate({
+      path: "reviews",
+      select: "rating comment email name",
+    });
     return !data
       ? res.status(400).json({ message: "Khong tim thay san pham!" })
       : res.status(200).json({ data: { ...data.toObject(), productItems } });
@@ -114,14 +127,18 @@ export const getProductRelated = async (req, res, next) => {
       .limit(4); // Limit to 4 products
 
     if (!products) {
-      return res.status(400).json({ message: "Không tìm thấy sản phẩm liên quan!" });
+      return res
+        .status(400)
+        .json({ message: "Không tìm thấy sản phẩm liên quan!" });
     }
 
     // Extract product IDs
-    const productIds = products.map(product => product._id);
+    const productIds = products.map((product) => product._id);
 
     // Fetch ProductItems
-    const productItems = await ProductItem.find({ productId: { $in: productIds } });
+    const productItems = await ProductItem.find({
+      productId: { $in: productIds },
+    });
 
     // Group ProductItems by ProductId
     const productItemsByProduct = productItems.reduce((acc, item) => {
@@ -133,7 +150,7 @@ export const getProductRelated = async (req, res, next) => {
     }, {});
 
     // Attach ProductItems to their respective Products
-    const productsWithItems = products.map(product => ({
+    const productsWithItems = products.map((product) => ({
       ...product.toObject(),
       productItems: productItemsByProduct[product._id] || [],
     }));
@@ -302,7 +319,9 @@ export const updateProduct = async (req, res, next) => {
     await ProductItem.deleteMany(
       {
         productId: id,
-        _id: { $nin: updatedProductItems.map((item) => item._id).filter(Boolean) },
+        _id: {
+          $nin: updatedProductItems.map((item) => item._id).filter(Boolean),
+        },
       },
       { session }
     );

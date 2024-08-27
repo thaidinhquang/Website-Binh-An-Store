@@ -1,67 +1,54 @@
+import mongoose from "mongoose";
 import Product from "../models/Product.js";
-
-
+import ProductItem from "../models/ProductItem.js";
+import Review from "../models/Review.js";
 
 export const createProductReview = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
-    const productId  = req.params.id
+    const productId = req.params.id;
     const { comment, rating } = req.body;
     // find product
-    const product = await Product.findById(productId);
-    // check previous review
-    const alreadyReviewed = product.reviews.find(
-      (r) => r.user.toString() === req.user._id.toString()
-    );
-    if (alreadyReviewed) {
-      return res.status(400).send({
-        success: false,
-        message: "Sản phẩm này đã đánh giá",
-      });
-    }
-    // review object
+    const product = await ProductItem.findById(productId);
+
     const review = {
-      email:req.user.email,
+      email: req.user.email,
       name: req.user.name,
       rating: Number(rating),
       comment,
       user: req.user._id,
     };
+
+    const newReview = new Review(review);
+    await newReview.save({ session });
+
     // passing review object to reviews array
-    product.reviews.push(review);
-    // number or reviews
-    product.numReviews = product.reviews.length;
-    product.rating =
-      product.reviews.reduce((acc, item) => item.rating + acc, 0) /
-      product.reviews.length;
+    product.reviews.push(newReview._id);
+
     // save
-    await product.save();
-    res.status(200).send({
+    await product.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return res.status(200).send({
       success: true,
       message: "Review Added!",
     });
   } catch (error) {
-    console.log(error);
-    // cast error ||  OBJECT ID
-    if (error.name === "CastError") {
-      return res.status(500).send({
-        success: false,
-        message: "Invalid Id",
-      });
-    }
-    res.status(500).send({
-      success: false,
-      message: "Error In Review Comment API",
-      error,
-    });
+    console.log("Something went wrong: ", error);
   }
 };
-
 
 export const getProductReviews = async (req, res) => {
   try {
     const productId = req.params.id;
     // Tìm sản phẩm theo ID
-    const product = await Product.findById(productId).populate('reviews.user', 'name');
+    const product = await Product.findById(productId).populate(
+      "reviews.user",
+      "name"
+    );
     if (!product) {
       return res.status(404).send({
         success: false,
@@ -90,12 +77,9 @@ export const getProductReviews = async (req, res) => {
   }
 };
 
-
-
-
 export const deleteProductReview = async (req, res) => {
   try {
-    const productId  = req.params.id
+    const productId = req.params.id;
     // Tìm sản phẩm theo ID
     const product = await Product.findById(productId);
     if (!product) {
@@ -103,7 +87,9 @@ export const deleteProductReview = async (req, res) => {
     }
 
     // Tìm index của review cần xóa
-    const reviewIndex = product.reviews.findIndex(review => review._id.toString() === req.params.reviewId);
+    const reviewIndex = product.reviews.findIndex(
+      (review) => review._id.toString() === req.params.reviewId
+    );
     if (reviewIndex === -1) {
       return res.status(404).json({ message: "Review not found" });
     }
@@ -113,7 +99,9 @@ export const deleteProductReview = async (req, res) => {
 
     // Cập nhật số lượng review và rating trung bình
     product.numReviews = product.reviews.length;
-    product.rating = product.reviews.reduce((acc, review) => acc + review.rating, 0) / product.numReviews;
+    product.rating =
+      product.reviews.reduce((acc, review) => acc + review.rating, 0) /
+      product.numReviews;
 
     // Lưu sản phẩm sau khi đã xóa review
     await product.save();
@@ -124,7 +112,6 @@ export const deleteProductReview = async (req, res) => {
   }
 };
 
-
 export const getAllReviews = async (req, res) => {
   try {
     // Lấy tất cả các sản phẩm
@@ -132,11 +119,13 @@ export const getAllReviews = async (req, res) => {
 
     // Lấy tất cả các đánh giá từ các sản phẩm
     const allReviews = products.reduce((acc, product) => {
-      return acc.concat(product.reviews.map(review => ({
-        ...review._doc,
-        productId: product._id,
-        productName: product.name
-      })));
+      return acc.concat(
+        product.reviews.map((review) => ({
+          ...review._doc,
+          productId: product._id,
+          productName: product.name,
+        }))
+      );
     }, []);
 
     // Trả về danh sách tất cả các đánh giá
@@ -154,9 +143,7 @@ export const getAllReviews = async (req, res) => {
   }
 };
 
-
 // Cập nhật đánh giá sản phẩm
-
 
 export const updateProductReview = async (req, res) => {
   try {
@@ -174,7 +161,9 @@ export const updateProductReview = async (req, res) => {
     }
 
     // Tìm index của đánh giá cần cập nhật
-    const reviewIndex = product.reviews.findIndex(review => review._id.toString() === reviewId);
+    const reviewIndex = product.reviews.findIndex(
+      (review) => review._id.toString() === reviewId
+    );
     if (reviewIndex === -1) {
       return res.status(404).send({
         success: false,
@@ -195,7 +184,8 @@ export const updateProductReview = async (req, res) => {
     if (review.updateCount >= 2) {
       return res.status(403).send({
         success: false,
-        message: "You have reached the maximum number of updates for this review",
+        message:
+          "You have reached the maximum number of updates for this review",
       });
     }
 
@@ -206,7 +196,9 @@ export const updateProductReview = async (req, res) => {
 
     // Cập nhật số lượng đánh giá và điểm trung bình
     product.numReviews = product.reviews.length;
-    product.rating = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.numReviews;
+    product.rating =
+      product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+      product.numReviews;
 
     // Lưu sản phẩm sau khi cập nhật đánh giá
     await product.save();
@@ -232,17 +224,15 @@ export const updateProductReview = async (req, res) => {
   }
 };
 
-
-
-
-
-
 export const getReviewUser = async (req, res) => {
   try {
     const reviewId = req.params.reviewId;
 
     // Tìm sản phẩm chứa đánh giá bằng cách tìm tất cả sản phẩm có đánh giá với ID review
-    const product = await Product.findOne({ "reviews._id": reviewId }).populate('reviews.user', 'name email');
+    const product = await Product.findOne({ "reviews._id": reviewId }).populate(
+      "reviews.user",
+      "name email"
+    );
 
     if (!product) {
       return res.status(404).send({
@@ -268,7 +258,7 @@ export const getReviewUser = async (req, res) => {
         ...review.toObject(),
         productId: product._id,
         productName: product.name,
-      }
+      },
     });
   } catch (error) {
     console.log(error);

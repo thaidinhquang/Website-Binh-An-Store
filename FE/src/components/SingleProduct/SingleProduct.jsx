@@ -9,12 +9,12 @@ import ProductRelated from "../Product/ProductRelated";
 
 const SingleProduct = () => {
   const [tab, setTab] = useState("des");
+
   const [showFullDescription, setShowFullDescription] = useState(false); // Add state for toggling description
   const reviewElement = useRef(null);
-
+  const [reviews, setReviews] = useState([]);
   const { id } = useParams();
   const { data: product } = useTanstackQuery(`/products/${id}`);
-
   const toggleDescriptionVisibility = () => {
     setShowFullDescription(!showFullDescription);
   };
@@ -22,6 +22,8 @@ const SingleProduct = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {}, [reviews]);
 
   return (
     <div>
@@ -41,7 +43,7 @@ const SingleProduct = () => {
             </div>
             <div className="w-full bg-white pb-[60px]">
               <div className="container-x mx-auto">
-                <ProductView />
+                <ProductView setReviews={setReviews} />
               </div>
             </div>
           </div>
@@ -56,10 +58,11 @@ const SingleProduct = () => {
                   <li>
                     <span
                       onClick={() => setTab("des")}
-                      className={`py-[15px] sm:text-[15px] text-sm sm:block border-b font-medium cursor-pointer ${tab === "des"
+                      className={`py-[15px] sm:text-[15px] text-sm sm:block border-b font-medium cursor-pointer ${
+                        tab === "des"
                           ? "border-qyellow text-qblack "
                           : "border-transparent text-qgray"
-                        }`}
+                      }`}
                     >
                       Mô Tả
                     </span>
@@ -67,10 +70,11 @@ const SingleProduct = () => {
                   <li>
                     <span
                       onClick={() => setTab("review")}
-                      className={`py-[15px] sm:text-[15px] text-sm sm:block border-b font-medium cursor-pointer ${tab === "review"
+                      className={`py-[15px] sm:text-[15px] text-sm sm:block border-b font-medium cursor-pointer ${
+                        tab === "review"
                           ? "border-qyellow text-qblack "
                           : "border-transparent text-qgray"
-                        }`}
+                      }`}
                     >
                       Đánh Giá
                     </span>
@@ -102,7 +106,7 @@ const SingleProduct = () => {
                       Reviews
                     </h6>
                     <div className="w-full">
-                      <Reviews />
+                      <Reviews reviews={reviews} />
                     </div>
                   </div>
                 )}
@@ -113,8 +117,7 @@ const SingleProduct = () => {
           <div className="related-product w-full bg-white">
             <div className="container-x mx-auto">
               <div className="w-full py-[60px]">
-                <h1 className="sm:text-3xl text-xl font-600 text-qblacktext leading-none mb-[30px]">
-                </h1>
+                <h1 className="sm:text-3xl text-xl font-600 text-qblacktext leading-none mb-[30px]"></h1>
                 <ProductNew related={id} category={product?.category._id} />
                 <ProductNew />
               </div>
