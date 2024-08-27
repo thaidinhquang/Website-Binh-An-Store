@@ -113,7 +113,6 @@ const ProductList = () => {
         setPage={setPage}
         setLimit={setLimit}
       />
-      <Pageination data={data} />
     </>
   );
 };

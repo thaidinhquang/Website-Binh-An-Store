@@ -11,6 +11,7 @@ import { uploadFileCloudinary } from "../../../common/libs/uploadImageCloud";
 import { useCreateProduct } from "../../../common/hooks/product/useCreateProduct";
 import { CloseOutlined } from "@ant-design/icons";
 import { toast } from "react-toastify";
+import { useTanstackMutation } from "../../../common/hooks/useTanstackQuery";
 
 const ProductForm = () => {
   const { id } = useParams();
@@ -29,6 +30,11 @@ const ProductForm = () => {
   const { data: productData, isLoading } = id ? useGetDetailProduct(id) : { data: null };
   const updateProduct = useUpdateProduct(id);
   const createProduct = useCreateProduct(id);
+  const { mutate } = useTanstackMutation({
+    path: `products`,
+    action: id ? "UPDATE" : "CREATE",
+    navigatePage: "/admin/products",
+});
   const queryClient = useQueryClient();
   const { data: brands } = useBrands();
   const { data: categories } = useCategories();
@@ -198,7 +204,7 @@ const categoryOptions = Array.isArray(categories) ? categories.map((category) =>
           if (item?.list) {
             item.list.forEach((value) => {
               if (value?.value) {
-                var dbProductItem = productData?.data.productItems?.find((prdItem) => `${item.name}-${value.value}` === `${prdItem?.variants[0].key}-${prdItem?.variants[0].value}`);
+                var dbProductItem = productData?.data?.productItems?.find((prdItem) => `${item?.name}-${value.value}` === `${prdItem?.variants[0]?.key}-${prdItem?.variants[0].value}`);
                 var newData = {
                   key: count,
                   _id: dbProductItem ? dbProductItem._id : undefined, // Preserve _id if exists
@@ -221,13 +227,13 @@ const categoryOptions = Array.isArray(categories) ? categories.map((category) =>
           const value1 = variantForm[1].list[i];
           if (value?.value && value1?.value) {
             var dbProductItem = productData?.data.productItems?.find((prdItem) => 
-              `${prdItem?.variants[0].key}-${prdItem?.variants[0].value}||${prdItem?.variants[1].key}-${prdItem?.variants[1].value}` === 
-              `${variantForm[0].name}-${value.value}||${variantForm[1].name}-${value1.value}`
+              `${prdItem?.variants[0]?.key}-${prdItem?.variants[0]?.value}||${prdItem?.variants[1]?.key}-${prdItem?.variants[1]?.value}` === 
+              `${variantForm[0]?.name}-${value?.value}||${variantForm[1]?.name}-${value1?.value}`
             );
             var newData = {
               key: count,
               _id: dbProductItem ? dbProductItem._id : undefined, // Preserve _id if exists
-              label: `${variantForm[0].name}-${value.value}||${variantForm[1].name}-${value1.value}`,
+              label: `${variantForm[0]?.name}-${value?.value}||${variantForm[1]?.name}-${value1?.value}`,
               price: dbProductItem ? dbProductItem.price : '0',
               image: dbProductItem ? dbProductItem.image : 'https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg',
               stock: dbProductItem ? dbProductItem.stock : '0',
@@ -306,7 +312,6 @@ const categoryOptions = Array.isArray(categories) ? categories.map((category) =>
   });
 
   const onAddProduct = (values) => {
-    console.log(values);
     var dataDallery = [image1,image2,image3].filter((item)=>item!=null);
     var keyNames = Object.keys(values.attributes);
     var dataAttribute = keyNames?.map((item)=>{
@@ -332,35 +337,39 @@ const categoryOptions = Array.isArray(categories) ? categories.map((category) =>
       };
     });
     var dataSubmit = {...values,attributes:dataAttribute,variants:dataVariants}
-    console.log(dataSubmit);
-
-    if(id){
-      updateProduct.mutate(
-        dataSubmit,
-        {
-          onSuccess: () => {
-            queryClient.invalidateQueries({
-              queryKey: [QUERY_KEY.DETAIL, id],
-            });
-            toast.success("Cập nhật sản phẩm thành công");
-            navigate("/admin/products")
-          },
-        }
-      );
-    }else{
-      createProduct.mutate(
-        dataSubmit,
-        {
-          onSuccess: () => {
-            queryClient.invalidateQueries({
-              queryKey: [QUERY_KEY.DETAILS],
-            });
-            toast.success("Thêm mới sản phẩm thành công");
-            navigate("/admin/products")
-          },
-        }
-      );
-    }
+    if(id) {
+      mutate({
+        ...dataSubmit,_id:id})}
+        else {
+          mutate(dataSubmit);
+  }
+    // if(id){
+    //   updateProduct.mutate(
+    //     dataSubmit,
+    //     {
+    //       onSuccess: () => {
+    //         queryClient.invalidateQueries({
+    //           queryKey: [QUERY_KEY.DETAIL, id],
+    //         });
+    //         toast.success("Cập nhật sản phẩm thành công");
+    //         navigate("/admin/products")
+    //       },
+    //     }
+    //   );
+    // }else{
+    //   createProduct.mutate(
+    //     dataSubmit,
+    //     {
+    //       onSuccess: () => {
+    //         queryClient.invalidateQueries({
+    //           queryKey: [QUERY_KEY.DETAILS],
+    //         });
+    //         toast.success("Thêm mới sản phẩm thành công");
+    //         navigate("/admin/products")
+    //       },
+    //     }
+    //   );
+    // }
     
   };
 

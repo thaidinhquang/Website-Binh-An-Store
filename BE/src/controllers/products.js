@@ -195,7 +195,10 @@ export const createProduct = async (req, res) => {
       brand,
       variants,
     } = req.body;
-
+    const checkProductName = Product.findOne({name: name});
+    if (checkProductName) {
+      return res.status(500).json({ message: "Tên đã tồn tại" });
+    }
     const product = new Product({
       name,
       image,
@@ -311,7 +314,7 @@ export const updateProduct = async (req, res, next) => {
     session.endSession();
 
     res.status(200).json({
-      message: "Product and product items updated successfully",
+      message: "Cập nhật thành công",
       product: updatedProduct,
       productItems: updatedProductItems,
     });

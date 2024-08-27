@@ -62,10 +62,10 @@ export const useTanstackMutation = ({
         } else {
           result = { message: 'Unknown action' };
         }
-        toast.update(toastId, { render: result.message ? result.message : 'Operation completed successfully!', type: 'success', isLoading: false, autoClose: 5000 });
+        toast.update(toastId, { render: result.message, type: 'success', isLoading: false, autoClose: 5000 });
         return result;
       } catch (error) {
-        toast.update(toastId, { render: error.message ? error.message : 'Operation failed!', type: 'error', isLoading: false, autoClose: 5000 });
+        toast.update(toastId, { render: error.message, type: 'error', isLoading: false, autoClose: 5000 });
         throw error;
       }
     },
